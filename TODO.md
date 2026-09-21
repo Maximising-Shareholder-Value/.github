@@ -85,15 +85,21 @@ finished item is ever fully lost, just moved to where it belongs.
       searched still falls back to symbol-only display. Long-tail gap
       tracked in [BLOCKERS.md](BLOCKERS.md).
 
-**Still blocked** — see [BLOCKERS.md](BLOCKERS.md) for the full detail,
-this is the short version: NAV, net assets/AUM, expense ratio, category,
-fund family, legal type, dividend yield, top holdings, and sector
-weightings all need a confirmed FMP key that hasn't been provided yet.
-Bid/ask and today's live volume have no free source anywhere, for any
-instrument type, confirmed — not solvable by a new ETF-specific vendor.
+**Confirmed dead end, 2026-09-21** — Jozsua provided a real FMP key;
+tested live against the exact endpoints needed. All three (ETF Holdings,
+ETF Info, ETF Sector Weighting) return `HTTP 402`, gated to FMP's
+**Ultimate** (top) tier. Also tested Twelve Data's `/statistics` through
+the existing live proxy — same story, paid-plan-only. See
+[BLOCKERS.md](BLOCKERS.md) for the full detail. This is now a genuine
+**pay-or-drop decision**, not a "find the right free source" research
+task — nothing left to investigate on the free-tier front.
 - [ ] **"About the fund" overview section** (category, AUM, NAV, expense
-      ratio, yield, legal type, YTD total return) — blocked on FMP.
-- [ ] **Holdings + sector weighting** section — blocked on FMP.
+      ratio, yield, legal type, YTD total return) — blocked, needs a
+      paid-plan decision from Jozsua.
+- [ ] **Holdings + sector weighting** section — same blocker.
+- [ ] Bid/ask and today's live volume have no free source anywhere, for
+      any instrument type, confirmed — not solvable by a new
+      ETF-specific vendor, this isn't an ETF-page problem specifically.
 
 ## Embedded side-by-side comparison (scoped 2026-09-19)
 

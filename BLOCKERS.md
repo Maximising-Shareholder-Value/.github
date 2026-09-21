@@ -44,23 +44,43 @@ placeholder for this instead of omitting it entirely, matching the
 homepage world map's existing "Sample data" pattern — not real,
 disclosed as such.
 
-### ETF/fund "vital stats" — NAV, net assets/AUM, expense ratio, category, fund family, legal type, dividend yield
-**Blocked since:** 2026-09-19, **partially unblockable as of 2026-09-21.**
-Confirmed live that Finnhub's dedicated `/etf/*` endpoints
-(profile/holdings/sector/country) are premium-gated — all four return
-`"You don't have access to this resource."` — and `/stock/metric`
-returns zero yield/NAV/AUM fields for ETFs. **The one real lead is
-Financial Modeling Prep (FMP)**, which has the right endpoint shapes
-(ETF Information, Holdings, Sector Weighting) on a free-signup tier —
-but whether that specific data is included in the *free* 250/day tier
-vs. gated to a paid plan is **unconfirmed**, because FMP's own docs
-pages block automated fetching and secondhand sources disagree.
-**What's needed to unblock this:** a free FMP API key (sign up at
-[financialmodelingprep.com](https://site.financialmodelingprep.com) —
-confirmed no credit card required, just email + password) shared here
-so the specific endpoints can be tested live before committing to
-building on them. **Status: still waiting on this key as of 2026-09-21**
-— asked for it once already (see `HISTORY.md` Phase 8/`TODO.md`).
+### ETF/fund "vital stats" — NAV, net assets/AUM, expense ratio, holdings, sector weighting
+**Blocked since 2026-09-19 — CONFIRMED DEAD END on free tiers as of
+2026-09-21 (Jozsua provided a real FMP key, tested live).**
+
+- Finnhub's dedicated `/etf/*` endpoints (profile/holdings/sector/
+  country) are premium-gated — confirmed live, all four return
+  `"You don't have access to this resource."`. `/stock/metric` returns
+  zero yield/NAV/AUM fields for ETFs.
+- **Financial Modeling Prep, tested with a real key:** the key itself
+  works fine (`/stable/quote`, `/stable/profile` both return real,
+  current data). But `/stable/etf/holdings`, `/stable/etf/info`, and
+  `/stable/etf/sector-weightings` all return
+  `HTTP 402 "Restricted Endpoint... upgrade your plan"` — confirmed
+  live, not guessed. Per FMP's own pricing page, ETF/mutual fund
+  holdings specifically require their **Ultimate** tier — their top
+  plan, not Starter or even Premium. Realistic cost is well past casual-
+  upgrade territory (their Starter/Premium range alone runs
+  $29–199/month; Ultimate is priced above that).
+- **Twelve Data, tested through the existing live proxy** (same key
+  already used for charts, so this cost nothing extra to check): the
+  `/etfs` endpoint returns a real fund name but ISIN/CUSIP come back as
+  `"request_access_via_add_ons"`, and the `/statistics` endpoint
+  (fund-level stats) returns `HTTP 403`: *"available exclusively with
+  pro or ultra or venture or enterprise plans."* Same story, different
+  vendor.
+
+**Conclusion: there is no free path to NAV/AUM/expense ratio/holdings/
+sector weighting for ETFs, full stop — three vendors checked, three
+paywalls, all confirmed by live requests, not assumed.** The only way
+forward is a paid plan (FMP Ultimate or Twelve Data Pro+, cost not
+precisely confirmed but clearly a real recurring expense, not a few
+dollars) — a genuine build-vs-spend decision, not an engineering one.
+**Until/unless that's decided, this specific data stays unavailable.**
+The FMP key Jozsua provided was tested live and **not stored anywhere**
+(no current free-tier use for it, so no reason to hold onto a credential
+with nothing to do) — if a paid FMP plan is ever chosen, or another use
+for the key comes up, ask for it again.
 
 ### ETF/fund top holdings, sector weightings, portfolio composition
 **Same blocker as above** — same FMP endpoints, same missing key.
