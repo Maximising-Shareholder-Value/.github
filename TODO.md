@@ -164,6 +164,16 @@ stocks? same `BROWSE_CATEGORIES` bucket for ETFs?) before building.
       shipping. **Deliberately not built yet:** a 2+ country comparison
       view, and a picker for countries outside the default 5 — both
       fast-follows, not blocking this first pass.
+- [x] **World map tied to the macro dashboard — shipped, 2026-09-21.**
+      Hovering a tracked country's real landmass on the Global Markets
+      map now shows its index price plus a live World Bank macro
+      snapshot (same indicators as the Macro tab above), so the map and
+      the macro dashboard aren't two disconnected features. Removed the
+      permanent price/% text under each map label in the process (now
+      redundant with the sidebar list, which also gained country flags).
+      Covers all 13 map countries, not just the 5 Macro-tab defaults —
+      World Bank data is free/unlimited, so there was no reason to limit
+      it to 5.
 - [ ] OECD SDMX/DBnomics (callable directly from the browser, no proxy
       needed) remain an option to add later for countries/indicators
       World Bank doesn't cover well — not blocking, since World Bank

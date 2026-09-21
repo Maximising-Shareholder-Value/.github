@@ -327,6 +327,33 @@ both were "backend ready, just needs UI" items, which is exactly why
 they were tackled before pillars 2/3/5/6, all of which need real
 curation or design work first.
 
+## Phase 15 — World map tied to the macro dashboard (2026-09-21)
+
+Same day, immediately after pillar 4 shipped — Jozsua asked for the map
+and the new macro dashboard to actually connect to each other, rather
+than being two disconnected features that happened to both exist.
+
+Removed the price/% line that used to sit permanently under every map
+label (it duplicated the sidebar list one-for-one) and replaced it with
+a hover interaction on each tracked country's real landmass — confirmed
+live that `worldmap.svg` carries a per-country CSS class on its land
+paths (e.g. `class="land coast jp"`), which made real per-country hover
+detection straightforward rather than needing a redesigned map. The
+hover popup shows the country's index price plus a live World Bank
+macro snapshot (reusing the same indicators/fetch logic pillar 4 just
+shipped). Hong Kong has no separate landmass shape at this map's
+resolution (confirmed: zero SVG matches for any "hk" class) — its
+marker dot is the hover target there instead. Sidebar list also gained
+country flags.
+
+A real bug was caught and fixed during testing: initially the hover
+listeners were being re-attached to the map's country shapes on every
+30-second re-render, which would have piled up duplicate listeners
+forever since those SVG paths are part of a persistent, cached root
+element (unlike the marker layer, which is destroyed and rebuilt each
+render). Fixed by guarding the shape-hover attachment to run exactly
+once via a dataset flag.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
