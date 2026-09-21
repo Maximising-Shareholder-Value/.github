@@ -303,6 +303,30 @@ artifact and greenlit pillar 1 specifically:
   ticker page instead, tied to a specific company, once pillar 2+3
   actually has data to show; revisit featuring it on the homepage after.
 
+## Phase 14 — Pillar 4 shipped (v1): multi-country macro dashboard (2026-09-21)
+
+Same day, after the ETF-stats parking decision — Jozsua asked "what
+should I do now," was given a clear recommendation (macro dashboard: the
+only pillar item where every blocking decision was already made and
+nothing new was needed), and said yes.
+
+Built and shipped in one pass: a country picker in the Macro tab. US
+stays on FRED (unchanged); China, Germany, Japan, and the UK are backed
+by the World Bank proxy that had been sitting live-but-unused since
+Phase 9. Landed on 4 indicators — GDP growth, inflation, unemployment,
+current account balance — after live-testing showed World Bank's
+interest-rate series (which would have matched the US tab's Fed Funds
+Rate more closely) come back null for advanced economies in recent
+years; current account balance was the replacement that actually had
+real 2025 data across all 5 countries. Verified against real World Bank
+data for China, Germany, and Japan individually before shipping, not
+just assumed to work because the US path already did.
+
+This closes pillars 1 and 4's first iterations in the same session —
+both were "backend ready, just needs UI" items, which is exactly why
+they were tackled before pillars 2/3/5/6, all of which need real
+curation or design work first.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to

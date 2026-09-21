@@ -151,17 +151,19 @@ stocks? same `BROWSE_CATEGORIES` bucket for ETFs?) before building.
       Japan, UK — over featuring his own footprint (Singapore/Indonesia/
       Australia) or both. A full country picker still covers everywhere
       else; these five are just what's shown before anyone searches.
-- [ ] **Still open: the actual macro dashboard UI on msv-web.** The
-      existing Macro tab (`home.js`) is hardcoded to US-only FRED series
-      — needs a country selector (defaulting to the 5 above), a way to
-      fetch/display World Bank indicators per country, and ideally a
-      comparison view (2+ countries side by side, matching the original
-      ask). Remaining smaller decisions before/while building (not yet
-      confirmed with Jozsua, reasonable defaults to build against unless
-      he says otherwise): lead with the same 4 indicators as the existing
-      US tab (GDP growth, inflation, unemployment, a rate/yield series)
-      for consistency; single-country view first, comparison as a
-      fast-follow rather than blocking v1 on it.
+- [x] **Macro dashboard UI — shipped (v1), 2026-09-21.** A country picker
+      in the Macro tab: US stays on FRED (unchanged, monthly data);
+      China/Germany/Japan/UK are backed by the already-live World Bank
+      proxy. Indicators: GDP growth, inflation, unemployment, current
+      account balance — a rate/yield indicator was tried first
+      (matching the US tab), but World Bank's interest-rate series come
+      back null for these advanced economies in recent years (confirmed
+      live), so it was swapped for current account balance, which has
+      real 2025 data for all 5 countries. Verified against real World
+      Bank data for China/Germany/Japan (not just mocked) before
+      shipping. **Deliberately not built yet:** a 2+ country comparison
+      view, and a picker for countries outside the default 5 — both
+      fast-follows, not blocking this first pass.
 - [ ] OECD SDMX/DBnomics (callable directly from the browser, no proxy
       needed) remain an option to add later for countries/indicators
       World Bank doesn't cover well — not blocking, since World Bank
