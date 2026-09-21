@@ -275,6 +275,34 @@ artifact and greenlit pillar 1 specifically:
   logged in [TODO.md](TODO.md) since it needs him to change it himself
   in the Cloudflare dashboard (no API permission available here).
 
+## Phase 13 — Governance docs moved to this repo, FMP tested and parked (2026-09-21)
+
+- **This `.github` repo became the real governance/PMO hub.** The five
+  docs above (ROADMAP/TODO/HISTORY/BLOCKERS/API_RESEARCH) used to live
+  in `msv-web/.github/`, which shared a name with this repo and caused
+  real confusion — Jozsua expected *this* repo to be the project's
+  planning home, and kept finding it empty while the actual content was
+  siloed inside the frontend repo. Moved here; `msv-web/.github/` now
+  holds only its CI workflow.
+- **The FMP key Jozsua provided was tested live against the exact ETF
+  endpoints needed** (Holdings, Info, Sector Weighting) — all three
+  gated to FMP's Ultimate tier, confirmed by real `HTTP 402` responses,
+  not guessed. Twelve Data's fundamentals endpoint, tested the same way
+  through the existing proxy, is equally paid-only. **Jozsua's call:
+  park the rich ETF stats (NAV/AUM/expense ratio/holdings/sector
+  weighting) rather than pay for a data plan** — the key was not stored
+  anywhere since there's currently nothing free-tier for it to unlock.
+- Also this session: the site got a 10% overall zoom bump and wider
+  content containers (1400px → 1600px) on desktop, and the "What's New"
+  popup now shows a real date+time per entry instead of just a day.
+- Clarified for Jozsua: the "Global Markets" world map and the "Macro"
+  tab are two different things — pillar 4 (multi-country macro) is about
+  the Macro tab, not the map.
+- Discussed (not built) replacing the homepage's Market News section
+  with supply-chain content — recommendation was to build that on the
+  ticker page instead, tied to a specific company, once pillar 2+3
+  actually has data to show; revisit featuring it on the homepage after.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to

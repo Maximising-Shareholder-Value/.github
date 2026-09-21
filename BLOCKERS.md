@@ -45,8 +45,12 @@ homepage world map's existing "Sample data" pattern — not real,
 disclosed as such.
 
 ### ETF/fund "vital stats" — NAV, net assets/AUM, expense ratio, holdings, sector weighting
-**Blocked since 2026-09-19 — CONFIRMED DEAD END on free tiers as of
-2026-09-21 (Jozsua provided a real FMP key, tested live).**
+**🅿️ PARKED, 2026-09-21 — Jozsua's explicit decision, not being pursued.**
+Blocked since 2026-09-19, confirmed a dead end on free tiers on
+2026-09-21 (real FMP key provided, tested live) — see below for the
+research trail. Rather than pay for a data plan to unlock this, Jozsua
+chose to park it. **Don't pick this back up as a default next step** —
+only revisit if a paid plan is deliberately chosen later.
 
 - Finnhub's dedicated `/etf/*` endpoints (profile/holdings/sector/
   country) are premium-gated — confirmed live, all four return
