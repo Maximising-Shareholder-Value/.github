@@ -203,12 +203,22 @@ Five categories scoped (msv-web's `learn.js`, `LEARN_CATEGORIES`):
 
 ## Pillar 2+3: supply chain visualization pilot
 
-- [ ] Pick the pilot theme (AI infrastructure is the natural first choice
-      — it's Jozsua's own recurring research interest per the attached
-      Claude conversations from 2026-09-19).
-- [ ] Curate 5-10 companies and their real upstream/downstream
-      relationships — this is a research task, likely LLM-assisted but
-      needs human verification per company, not a live feed.
+- [x] **Pilot theme picked: AI infrastructure** — Jozsua's own recurring
+      research interest, confirmed 2026-09-22.
+- [x] **Company relationships researched, 2026-09-22** — see
+      [SUPPLY_CHAIN_RESEARCH.md](SUPPLY_CHAIN_RESEARCH.md) for the full
+      sourced dataset (13 pilot nodes, ~19 relationships, each cited to
+      an SEC filing, official company statement, or corroborated
+      journalism, with a confidence rating). **Not yet reviewed/approved
+      by Jozsua** — explicitly not live-ready per the site's "no
+      fabricated data" standard until he's checked it himself, same as
+      the doc's own closing note says.
+- [ ] **Jozsua's review pass** — confirm the relationships look right,
+      flag anything off, and decide the open question flagged in that
+      doc: OpenAI and Anthropic are private with no ticker, but are
+      central to several of the most newsworthy relationships found —
+      show them as unlisted (no price data) nodes, or restrict the pilot
+      to ticker-only entities?
 - [ ] Decide the data format (static JSON shipped with the frontend is
       the simplest starting point — no new backend needed).
 - [ ] Design the actual visualization (this is the "sexy visual" ask —

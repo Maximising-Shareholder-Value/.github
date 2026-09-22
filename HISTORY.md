@@ -480,7 +480,7 @@ comparison, and a risk-tolerance spectrum bar — all basic SVG/CSS
 shapes, no images, verified live via Playwright with zero console
 errors before merge.
 
-## Homepage overhaul — scoped, not yet started (2026-09-22)
+## Homepage overhaul — scoped 2026-09-22, phase 1 shipped same day
 
 Jozsua asked, in the same message as the above: where does the Learn
 tab even live right now (answer: buried in the same tab row as Winners/
@@ -505,15 +505,63 @@ to redo if the direction is wrong). Jozsua's answers:
   maintained, pairs with the Macro tab). Explicitly declined: leaving it
   at just the sidebar + Learn placement — Jozsua wants the extras too.
 
-**Not yet started.** This is a genuinely large, structural piece of work
-on top of everything shipped today — flagged to Jozsua as needing its
-own dedicated pass rather than being bundled into the same session as
-the Learn content. Planned build order once picked up: (1) the sidebar
-shell + Learn banner as one focused PR first, since that's the riskiest/
-most structural part and everything else layers on top of it, (2) the
-Watchlist feature, (3) the "Did you know" tip (cheapest — just surfaces
-existing Learn content), (4) the sector heatmap, (5) the economic
-calendar strip.
+Flagged to Jozsua as needing its own dedicated pass rather than being
+bundled into the same session as the Learn content — planned build
+order: (1) the sidebar shell + Learn banner as one focused PR first,
+since that's the riskiest/most structural part and everything else
+layers on top of it, (2) the Watchlist feature, (3) the "Did you know"
+tip (cheapest — just surfaces existing Learn content), (4) the sector
+heatmap, (5) the economic calendar strip.
+
+### Phase 1 shipped same day — msv-web PR #23
+
+Repositioned existing functionality only, deliberately no new data
+fetches, so this structural change stayed bounded and testable on its
+own:
+- New collapsible left sidebar: a lighter quick search (calls
+  `loadTicker()` directly — no autocomplete, since `autocomplete.js` is
+  wired to the single header `#tickerInput` only), quick links to
+  Learn/Compare/Macro, a "Watchlist — Soon" placeholder, and Recently
+  Viewed (moved from its old horizontal row into a vertical sidebar
+  list). Collapse state persists via `localStorage`.
+- Learn promoted out of the tab row entirely into its own banner card
+  ("New to investing? Start here") above Global Markets — removed from
+  `buildTabs()`'s tab list; `switchTab("learn")` works identically,
+  only the entry point changed.
+- Real bug caught in testing: the sidebar's Recently Viewed section
+  wasn't hidden when the sidebar collapsed (it hadn't been wrapped in
+  the same `.sidebar-body` class the other sections use), so its
+  content visibly overflowed the collapsed rail — fixed before merge.
+
+Verified live via Playwright: sidebar collapse + persistence across
+reload, sidebar search loading a real ticker page, all 3 quick links
+navigating correctly, Learn confirmed out of the tab row, Recently
+Viewed populating correctly, dark/light theme, and mobile width (390px,
+sidebar stacks above main content). Zero console/page errors. Phase 2
+(Watchlist, sector heatmap, economic/earnings calendars, "Did you know"
+tip) not started yet — see TODO.md's "Homepage overhaul" section.
+
+## Supply chain pilot: AI infrastructure researched (2026-09-22)
+
+Same day, run in the background (a research-only subagent, no code/file
+access) while the homepage overhaul was being built, per Jozsua's
+explicit go-ahead. Produced a sourced dataset of 13 candidate pilot
+nodes and ~19 real company relationships (supplier/customer/investor/
+manufacturing-partner), each cited to an SEC filing, official company
+statement, or corroborated journalism with a confidence rating — see
+[SUPPLY_CHAIN_RESEARCH.md](SUPPLY_CHAIN_RESEARCH.md) for the full
+dataset and sourcing methodology.
+
+**Explicitly not live-ready** — per this app's "no fabricated data"
+standard, the dataset needs Jozsua's own review pass before it's treated
+as ready to inform any visualization work, the same discipline used for
+every other data source in this app (confirmed live, not just assumed
+from a blog post). One specific row is already flagged in the doc as
+needing careful handling if it ships: NVIDIA's own SEC filings disclose
+real customer concentration (high confidence), but the specific company
+*identities* behind "Customer A/B/C/D" are journalist/analyst inference,
+not confirmed by NVIDIA — that distinction needs to survive into any
+final UI, not get flattened into a flat "confirmed fact" list.
 
 ---
 
