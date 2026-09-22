@@ -6,13 +6,17 @@ is the first step of that pillar's own scoping note in
 downstream relationships — this is a research task, likely LLM-assisted
 but needs human verification per company, not a live feed."
 
-**Status: researched, NOT yet reviewed or approved by Jozsua.** Nothing
-in this document should be treated as ready to display on the live site
-— per this app's "no fabricated data" standard (see the root `CLAUDE.md`
-of msv-web), every claim here needs a human sign-off pass before it
-becomes a real feature, the same way every other data source in this app
-was confirmed live before being trusted. Treat this as a draft dataset
-for review, not a finished deliverable.
+**Status: live, 2026-09-22 — msv-web PR #26, the "Supply Chain" tab.**
+Jozsua's instruction ("just make the supply-chain research data set live
+in the app please") is treated as his sign-off on this research. The
+OpenAI/Anthropic open question below was resolved by including them as
+real nodes, clearly labeled "No ticker — private company." All 17 nodes
+and 20 relationships here are transcribed verbatim into `supplyChain.js`
+— every relationship card in the live UI shows its own source and
+confidence rating rather than stating anything as flat fact, preserving
+the caveat on the NVIDIA "Customer A/B/C/D" row specifically. This
+document remains the source of truth for that data — if a relationship
+here is ever corrected, update `supplyChain.js` to match.
 
 ## Sourcing method
 

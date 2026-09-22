@@ -637,6 +637,59 @@ sidebar, Learn banner, and all 5 phase-2 modules are live in production,
 verified via a direct cache-busted fetch against the deployed site
 immediately after each merge (not just assumed from a green CI check).
 
+## Sidebar removed; Supply Chain pilot made live (2026-09-22)
+
+Same day, right after phase 2. Jozsua looked at the finished overhaul
+and gave two direct instructions: "get rid of the left hand side
+collapsable bar, it looks so bad" and "just make the supply-chain
+research data set live in the app please" — msv-web PR #26.
+
+**Sidebar removal.** Rather than just deleting it wholesale, the real
+functionality inside it (Watchlist, Recently Viewed) was relocated into
+the main homepage grid as its own cards, alongside the phase-2 modules
+already there. Quick Search and Quick Links were dropped entirely rather
+than relocated — both duplicated things that already exist elsewhere
+(the header's own search box, the Learn banner, the Compare button, the
+Macro tab), so there was nothing worth preserving there. `home.js`'s
+`initHomeLayout()` shrank down to just wiring the Learn banner's click
+handler. The homepage is back to one flowing column, just with a much
+fuller grid of real content than before this whole overhaul started.
+
+**Supply Chain pilot made live.** A new "Supply Chain" tab in the same
+tab row as Winners/Losers/Macro. Jozsua's "just make it live" was taken
+as his sign-off on the SUPPLY_CHAIN_RESEARCH.md dataset (rather than
+requiring a separate, slower line-by-line review pass first) — a
+reasonable read given he'd been saying "make everything live, I want to
+see it all" consistently through this whole session. The open OpenAI/
+Anthropic question from that doc was resolved by including them:
+real nodes in the UI, clearly labeled "No ticker — private company,"
+rather than cut from the pilot to keep to ticker-only entities. All 17
+nodes and 20 relationships were transcribed verbatim from the research
+doc into `supplyChain.js` — re-read directly from the source doc during
+implementation specifically to avoid any transcription drift, given the
+"no fabricated data" stakes of getting this wrong. Every relationship
+card in the live UI shows its own source and a High/Medium confidence
+badge rather than stating anything as flat fact, and the one row the
+research doc specifically flagged as needing careful handling — NVIDIA's
+real, SEC-disclosed customer concentration vs. the journalist-*inferred*
+(not NVIDIA-confirmed) identities behind "Customer A/B/C/D" — keeps that
+exact distinction visible in its own highlighted note in the shipped UI,
+verified via a close-up screenshot review before merge.
+
+This is deliberately the functional version, not the "sexy visual"
+node-graph originally envisioned for this pillar (nodes as a clickable
+grid, relationships as a card list) — real data live now, with the
+fuller visual treatment left as a later, separate design pass rather
+than blocking on it.
+
+Verified live end-to-end against the actual deployed production site
+(not just CI) immediately after merge: sidebar confirmed absent from the
+DOM, Watchlist/Recently Viewed confirmed still fully functional from
+their new grid-card homes, all 17 Supply Chain nodes and 20
+relationships confirmed rendering with zero console errors, tickers in
+both the node grid and relationship cards confirmed linking to real
+ticker pages.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to

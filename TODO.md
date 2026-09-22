@@ -207,23 +207,33 @@ Five categories scoped (msv-web's `learn.js`, `LEARN_CATEGORIES`):
       research interest, confirmed 2026-09-22.
 - [x] **Company relationships researched, 2026-09-22** — see
       [SUPPLY_CHAIN_RESEARCH.md](SUPPLY_CHAIN_RESEARCH.md) for the full
-      sourced dataset (13 pilot nodes, ~19 relationships, each cited to
-      an SEC filing, official company statement, or corroborated
-      journalism, with a confidence rating). **Not yet reviewed/approved
-      by Jozsua** — explicitly not live-ready per the site's "no
-      fabricated data" standard until he's checked it himself, same as
-      the doc's own closing note says.
-- [ ] **Jozsua's review pass** — confirm the relationships look right,
-      flag anything off, and decide the open question flagged in that
-      doc: OpenAI and Anthropic are private with no ticker, but are
-      central to several of the most newsworthy relationships found —
-      show them as unlisted (no price data) nodes, or restrict the pilot
-      to ticker-only entities?
-- [ ] Decide the data format (static JSON shipped with the frontend is
-      the simplest starting point — no new backend needed).
-- [ ] Design the actual visualization (this is the "sexy visual" ask —
-      worth a dedicated design pass once the data shape is known, not
-      before).
+      sourced dataset, each cited to an SEC filing, official company
+      statement, or corroborated journalism, with a confidence rating.
+- [x] **Made live, 2026-09-22 — msv-web PR #26, new "Supply Chain" tab.**
+      Jozsua's instruction was direct: "just make the supply-chain
+      research data set live in the app please" — taken as his review/
+      sign-off on the research itself, rather than waiting for a separate
+      line-by-line check. The open OpenAI/Anthropic question was
+      resolved by including them: shown as real nodes, clearly labeled
+      "No ticker — private company", rather than cut from the pilot. All
+      17 nodes and 20 relationships transcribed verbatim from the
+      research doc (not re-paraphrased) — every relationship card in the
+      UI shows its own source and confidence rating rather than stating
+      anything as flat fact, and the one row the doc flagged as
+      needing careful handling (NVIDIA's real SEC-disclosed customer
+      concentration vs. the journalist-*inferred* identities behind
+      "Customer A/B/C/D") keeps that exact distinction visible in its
+      own highlighted note in the live UI.
+- [ ] **Visualization design** — the tab currently shows nodes as a grid
+      and relationships as a card list (functional, ships the real data
+      now), not the "sexy visual" node-graph originally envisioned for
+      this pillar. Worth a dedicated design pass later if Jozsua wants
+      the fuller visual treatment — not blocking, since the real data is
+      already live and usable.
+- [ ] Consider a JSON/data-file split if this pilot grows beyond one
+      static JS file (`supplyChain.js` currently holds the data inline —
+      fine at this size, worth revisiting if more industries/pilots get
+      added later).
 
 ## Pillar 4: multi-country macro dashboard
 
@@ -319,6 +329,14 @@ bugfix:
       only — Quick Search/Watchlist/Recently Viewed need real text to be
       useful, so they hide when collapsed), state remembered via
       `localStorage`.
+- [x] **Sidebar removed entirely, 2026-09-22 — msv-web PR #26.** Jozsua's
+      call after seeing it live: "it looks so bad." Watchlist and
+      Recently Viewed (real functionality) moved into the main grid as
+      their own cards; Quick Search and Quick Links dropped rather than
+      relocated, since they duplicated the header search box, the Learn
+      banner, the Compare button, and the Macro tab. The homepage is now
+      one flowing column again, just with a much fuller grid than before
+      the overhaul started.
 
 ## Home page enhancements (not tied to a big pillar, but real asks)
 
