@@ -354,6 +354,41 @@ element (unlike the marker layer, which is destroyed and rebuilt each
 render). Fixed by guarding the shape-hover attachment to run exactly
 once via a dataset flag.
 
+## Phase 16 — New Risk/Efficiency cards, deeper Profitability/Growth/Valuation (2026-09-22)
+
+Jozsua asked what other multi-asset indicator info could be surfaced
+(risk, performance, fund info, AUM). Answered by auditing Finnhub's
+`/stock/metric?metric=all` live — it returns 133 fields for a real stock,
+of which the app only used 31 (found by grepping `script.js` for every
+`metric.` field reference and diffing against the live response). Jozsua
+approved building all of the genuinely new fields found, same message
+("can the risk and efficiency cards be built now? if yes, please go
+ahead, as well as the rest").
+
+Shipped in msv-web PR #19:
+- New **Risk** card: Interest Coverage Ratio, Long-Term Debt/Equity,
+  Dividend Payout Ratio.
+- New **Efficiency** card: Asset Turnover, Inventory Turnover,
+  Receivables Turnover.
+- **Profitability** extended: ROA, ROI (neither shown before), plus
+  5-year average gross/operating/net margins.
+- **Growth** extended: quarter-over-quarter YoY growth, alongside the
+  existing annual and 5-year figures.
+- **Valuation** extended: Price/Sales, Price/Cash-Flow.
+
+Stocks only — the ETF metric response was already confirmed exhausted in
+the 2026-09-19/21 ETF audit (see Phase 12/13), so none of this applies
+to ETF or crypto pages; both new sections were added to
+`NON_STOCK_HIDDEN_SECTIONS` and confirmed live (mocked ETF instrument
+type) to correctly hide. Every new indicator got its own `definitions.js`
+tooltip entry, matching the existing plain-English format.
+
+Tested against real field values captured live from the production
+Finnhub proxy (not fabricated) across all 6 affected sections before
+shipping — zero console/page errors, tooltips confirmed working. Full
+CI (syntax check, Playwright smoke test, Cloudflare Workers Build) green
+on the PR before merge.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to

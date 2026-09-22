@@ -103,6 +103,46 @@ chosen later, not as a default "keep checking" background task.
       Also effectively parked alongside the above (same root cause: no
       free data exists).
 
+## Stock fundamentals: additional indicators — shipped 2026-09-22
+
+Prompted by Jozsua asking "what other information can we put as part of
+the multi asset indicator? can we put more information around risk,
+performance, fund information, AUM, etc.?" — audited Finnhub's
+`/stock/metric?metric=all` live (133 fields returned for a real stock)
+against what `script.js` actually uses (31 fields, found via
+`grep -oE "metric\.[a-zA-Z0-9/&]+..."`). **Stocks only** — the ETF metric
+response was already confirmed exhausted in the 2026-09-19/21 ETF audit
+above, so none of this applies there. Jozsua approved building all of it,
+2026-09-22 ("can the risk and efficiency cards be built now? if yes,
+please go ahead, as well as the rest") — shipped same day, msv-web PR #19.
+
+- [x] **New "Risk" card** — Interest Coverage Ratio
+      (`netInterestCoverageAnnual`), Long-Term Debt/Equity
+      (`longTermDebt/equityAnnual` — literal `/` in the field name, needs
+      bracket access), Dividend Payout Ratio (`payoutRatioAnnual`).
+- [x] **New "Efficiency" card** — Asset Turnover (`assetTurnoverTTM`),
+      Inventory Turnover (`inventoryTurnoverTTM`), Receivables Turnover
+      (`receivablesTurnoverTTM`).
+- [x] **Profitability card, extended** — added ROA (`roaTTM`, alongside
+      existing ROE), ROI (`roiTTM`, not shown at all before), and 5-year
+      margin trend (`netProfitMargin5Y`/`operatingMargin5Y`/
+      `grossMargin5Y`).
+- [x] **Growth card, extended** — added quarterly YoY growth
+      (`epsGrowthQuarterlyYoy`, `revenueGrowthQuarterlyYoy`) alongside the
+      existing annual growth figures.
+- [x] **Valuation card, extended** — added Price-to-Sales (`psTTM`) and
+      Price-to-Cash-Flow (`pcfShareTTM` — the operating-cash-flow-based
+      variant, not the free-cash-flow `pfcfShareTTM` alternative).
+- [x] New `definitions.js` tooltip entry for every new indicator (10
+      total), matching the existing `{what, formula, high, low, sector}`
+      shape.
+- [x] Risk and Efficiency sections added to `NON_STOCK_HIDDEN_SECTIONS` —
+      confirmed live (mocked ETF instrument type) that both correctly
+      hide, same as Growth/Profitability.
+- Verified against real field values captured live from the production
+  Finnhub proxy (not fabricated), across all 6 affected sections, before
+  shipping — see msv-web PR #19 for the full test trail.
+
 ## Embedded side-by-side comparison (scoped 2026-09-19)
 
 A Compare feature already exists as its own page (`compare.js`) — this
