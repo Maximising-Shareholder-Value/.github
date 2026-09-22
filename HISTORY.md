@@ -389,6 +389,40 @@ shipping — zero console/page errors, tooltips confirmed working. Full
 CI (syntax check, Playwright smoke test, Cloudflare Workers Build) green
 on the PR before merge.
 
+## Phase 17 — Learn hub started: Pillar 5, "The Basics" shipped (2026-09-22)
+
+Same day. Jozsua asked to start on Pillar 5 (the education layer),
+framing the goal directly: "people like me who want a load of nicely
+visualised information about everything and all aspects before making
+an informed decision — this information I'm providing them is the
+'informed' part." Apps like Seeking Alpha were cited as "a little
+complicated" — the bar here is simpler and more visual, not less
+thorough.
+
+Scoped as a dedicated **Learn hub** (not tooltip-style — `definitions.js`
+tooltips already exist and answer a narrower "what's this one number"
+question) with 5 categories: The Basics, Reading the Numbers, Macro &
+the Economy, Options 101, Putting It Together. Flagged upfront as a
+large content-generation task and deliberately staged — build and ship
+one category, get the format reviewed, then continue — rather than
+writing all 5 in one uninterrupted batch.
+
+Shipped in msv-web PR #20: **The Basics** (Stocks, ETFs, Bond ETFs,
+Crypto) — 4 topics, each with a plain-English explanation, a simple
+inline SVG/CSS visual (pie slice for stock ownership, a basket for
+ETFs, lend/borrow arrows for bonds, a centralized-vs-decentralized
+network comparison for crypto — no images, built from basic shapes so
+they're both easy to verify correct and theme-colored automatically),
+a grounded real-ticker example, and a "why it matters here" callout
+linking back to the actual dashboard sections that concept explains.
+The other 4 categories render as "Coming soon" cards in the live UI
+right now, so their existence and scope is visible today rather than
+being a surprise later.
+
+Verified live via Playwright in dark theme, light theme, and at mobile
+width (390px) — all render correctly, zero console/page errors. Full CI
+green before merge.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to

@@ -155,12 +155,43 @@ stocks? same `BROWSE_CATEGORIES` bucket for ETFs?) before building.
 
 ## Pillar 5: explain-the-concept education layer
 
-- [ ] Pick the first 3-5 concepts to cover (e.g. "what a rate hike means,
-      by sector" is the one already discussed) and draft the plain-English
-      copy before writing any code — this is mostly a writing task.
-- [ ] Decide where it lives in the UI (tooltip-style like existing
-      indicator definitions, or a dedicated "Learn" section) — small
-      product decision, worth a quick check-in rather than guessing.
+Scoped with Jozsua 2026-09-22: a dedicated **Learn hub** (not tooltip-
+style — tooltips already exist per-indicator via `definitions.js` and
+answer a narrower question). Target audience per Jozsua's own framing:
+"people like me who want a load of nicely visualised information about
+everything and all aspects before making an informed decision — this
+information I'm providing them is the 'informed' part." Explicitly
+flagged as a large content-generation task and agreed to ship in stages
+— one category built and reviewed at a time, not one giant batch.
+
+Five categories scoped (msv-web's `learn.js`, `LEARN_CATEGORIES`):
+- [x] **The Basics — shipped 2026-09-22, msv-web PR #20.** Stocks, ETFs,
+      Bond ETFs (bonds' stand-in, see the ETF section above), Crypto.
+      Each topic: a plain-English explanation, a simple inline SVG/CSS
+      visual (pie slice, basket, lend/borrow arrows, centralized-vs-
+      decentralized network — no images, theme-colored so both light/dark
+      work), a grounded real-ticker example, and a "why it matters here"
+      callout tying back to the rest of the dashboard. Verified live
+      (Playwright) in dark theme, light theme, and mobile width.
+- [ ] **Reading the Numbers** — valuation, growth, profitability, risk,
+      efficiency, explained in more depth than a tooltip allows (ties
+      directly into the cards shipped in the "Stock fundamentals" section
+      above).
+- [ ] **Macro & the Economy** — what a rate hike, inflation, or GDP growth
+      actually does, and why it hits sectors differently (ties into the
+      Macro dashboard/world map).
+- [ ] **Options 101** — calls, puts, strikes, expiration, bid/ask spread
+      (ties into the Options card; Jozsua flagged he's not familiar with
+      options himself).
+- [ ] **Putting It Together** — how to actually weigh all of the above:
+      diversification, risk tolerance, reading the AI Outlook. Arguably
+      the category that most directly answers Jozsua's stated goal for
+      this whole pillar — don't skip it in favor of only the numbers-
+      heavy categories.
+- [ ] All four remaining categories currently render as "Coming soon"
+      cards in the live UI (`LEARN_CATEGORIES` entries with an empty
+      `topics` array) — the full intended shape of the hub is visible to
+      users now, not a surprise addition later.
 
 ## Pillar 2+3: supply chain visualization pilot
 
