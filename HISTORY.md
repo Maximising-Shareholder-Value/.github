@@ -563,6 +563,80 @@ real customer concentration (high confidence), but the specific company
 not confirmed by NVIDIA — that distinction needs to survive into any
 final UI, not get flattened into a flat "confirmed fact" list.
 
+## Homepage overhaul complete: phase 2 + a same-day sidebar bugfix (2026-09-22)
+
+Same day, right after phases 1 and the supply-chain research. Jozsua
+looked at the shipped sidebar and flagged it looked broken when
+collapsed, then asked for phase 2 to ship in full: "do phase 2 and make
+it live, make everything live, i want to see it all."
+
+**Bugfix first — msv-web PR #24.** Two real bugs in the phase-1
+collapse implementation, found by actually looking closely at the
+collapsed state rather than assuming the earlier screenshot review was
+enough: `overflow: hidden` was clipping the toggle button (deliberately
+positioned half outside the sidebar's edge), and the collapse rule hid
+the Quick Links icons entirely instead of keeping them as a functional
+icon rail — collapsed showed nothing but an empty strip with a floating,
+half-cut-off toggle. Fixed: collapsed state now shows a clean, centered
+3-icon rail (Learn/Compare/Macro, with `title` hover labels), no
+clipping, and only the sections that genuinely need real text (Quick
+Search, Watchlist, Recently Viewed) hide when collapsed.
+
+**Phase 2 — msv-web PR #25**, all 5 items from the planned build order:
+- **Watchlist**: a real ☆/★ toggle on every ticker page next to the
+  company name, `localStorage`-backed (`stockDashboardWatchlist`,
+  mirroring the existing Recently Viewed key/pattern exactly), sidebar
+  list with a remove (×) per entry. No live price shown for watchlisted
+  symbols — same zero-cost, name/symbol-only design Recently Viewed
+  already uses.
+- **"Did you know" tip**: one Learn hub topic surfaced per day (seeded
+  by today's date, not random — stable all day, a new one tomorrow),
+  clicking "Read more" jumps to the Learn tab with that exact topic
+  pre-expanded and scrolled into view. A real technical constraint
+  surfaced while building this: `home.js` calls its own `initHome()`
+  immediately as soon as it finishes loading, which is BEFORE `learn.js`
+  loads (per the script tag order) — so the tip's render function had to
+  live in `learn.js` itself and self-initialize at that file's own
+  bottom, rather than being called from `initHome()`, to avoid a
+  "LEARN_CATEGORIES is not defined" error.
+- **Economic Calendar**: hand-maintained, genuinely real dates — FOMC
+  meeting dates confirmed live via web search against
+  federalreserve.gov's own published 2026 schedule, CPI release dates
+  against bls.gov's — not guessed or extrapolated from training data,
+  consistent with this app's sourcing discipline everywhere else.
+- **Earnings This Week** (a natural addition alongside the Economic
+  Calendar, not originally itemized separately): one Finnhub
+  `/calendar/earnings` call covering the whole upcoming week — confirmed
+  live that this endpoint returns literally every company reporting in
+  the range, including many unnamed micro-caps, so results are filtered
+  down to symbols this app already has a real company name for
+  (`RANKING_STOCK_SYMBOLS` + `BROWSE_CATEGORIES`) before rendering.
+- **Sector Performance heatmap**: all 11 SPDR Select Sector ETFs (the
+  ETFs browse category only had 7 of these, picked for general browsing
+  — the heatmap needed the complete standard set), staggered quote calls
+  40ms apart (same pattern already used for the ranking-tab loader),
+  fetched once and cached for the session.
+
+New `.home-grid` bento-style layout added to hold the three small cards
+plus the wide heatmap, between the world map and the existing browse
+tabs.
+
+Verified live via Playwright with realistic mocked data across all 5
+modules in one pass: Did You Know navigation/auto-expand confirmed
+working end-to-end, Earnings Calendar's known-symbol filter confirmed
+excluding a planted unknown test symbol while keeping real ones, Sector
+Heatmap rendering all 11 tiles colored by performance, Watchlist's full
+add → sidebar-shows-it → remove round trip confirmed. Also confirmed
+graceful degradation (a generic empty-array mock response correctly
+falls back to "couldn't load" messaging instead of erroring) and mobile
+width (390px, single-column, no horizontal scroll). Zero console/page
+errors across every check. Full CI green on both PRs before merge.
+
+**The homepage overhaul scoped earlier today is now fully shipped** —
+sidebar, Learn banner, and all 5 phase-2 modules are live in production,
+verified via a direct cache-busted fetch against the deployed site
+immediately after each merge (not just assumed from a green CI check).
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
