@@ -276,42 +276,49 @@ Five categories scoped (msv-web's `learn.js`, `LEARN_CATEGORIES`):
 - [ ] Only after that: decide a cost model (who pays per query, any usage
       caps) before wiring up real API calls.
 
-## Homepage overhaul (scoped 2026-09-22 — supersedes the old "Recently Viewed as a sidebar column" item below)
+## Homepage overhaul — shipped 2026-09-22 (supersedes the old "Recently Viewed as a sidebar column" item below)
 
 The 2026-09-19 ask to move Recently Viewed into a sidebar column got a
 full concrete scope on 2026-09-22, once Jozsua saw the Learn hub live
 and asked where it actually sits (buried in the same tab row as Winners/
-Losers/browse categories) and wanted a fuller overhaul. See HISTORY.md's
-"Homepage overhaul — scoped, not yet started" entry for the full
-back-and-forth. **Not started yet** — flagged as too large to bundle
-into the same session as the Learn content; this is its own dedicated
-piece of work. Planned build order:
+Losers/browse categories) and wanted a fuller overhaul, drawing on
+patterns from Seeking Alpha/Yahoo Finance/Google Finance/Webull/
+TradingView. See HISTORY.md for the full build log across all phases.
+**All 5 planned items shipped same day**, across 3 PRs plus one same-day
+bugfix:
 
-- [ ] **1. Sidebar shell + Learn banner** (do this first — most
-      structural, everything else layers on top). Collapsible left-hand
-      sidebar containing: quick ticker search, Recently Viewed (moved
-      from its current horizontal row into a vertical sidebar list), and
-      quick links to Learn/Compare/Macro. Plus: Learn promoted out of the
-      tab row entirely into a prominent banner card near the top of the
-      homepage (e.g. "New to investing? Start here").
-- [ ] **2. Watchlist.** New functionality (not just a repositioning) —
-      a manually-curated list of tracked tickers, add/remove UI, stored
-      in `localStorage` (same zero-backend pattern as theme/recently-
-      viewed), surfaced in the new sidebar.
-- [ ] **3. "Did you know" rotating tip.** Cheapest of the remaining
-      items — surfaces one bite-sized fact per visit, pulled directly
-      from `learn.js`'s `LEARN_CATEGORIES` content (Pillar 5, now
-      complete) rather than needing new copy written.
-- [ ] **4. Sector performance heatmap.** Per-sector (not per-stock) view,
-      reusing the sector ETFs already in the ETFs browse category —
-      cheap, no new data source needed.
-- [ ] **5. Economic calendar strip.** Next Fed meeting / CPI report date
-      — a small hand-maintained list (dates are known well in advance,
-      low maintenance), pairs with the Macro tab.
-- [ ] Design decision still open: exactly how the sidebar collapses/
-      expands (icon rail vs. fully hidden, remembered per-viewer via
-      `localStorage` or reset each visit) — worth confirming when this
-      is picked up rather than guessing mid-build.
+- [x] **1. Sidebar shell + Learn banner — msv-web PR #23.** Collapsible
+      left sidebar: quick ticker search, Recently Viewed (moved from its
+      old horizontal row into a vertical list), quick links to Learn/
+      Compare/Macro. Learn promoted out of the tab row into its own
+      banner card ("New to investing? Start here").
+- [x] **Same-day fix — msv-web PR #24.** Jozsua flagged the collapsed
+      sidebar "looked broken" — two real bugs found (the toggle button
+      was being clipped by `overflow: hidden`, and the Quick Links icons
+      were hidden entirely instead of staying visible as a proper icon
+      rail). Both fixed; collapsed state is now a clean 3-icon rail.
+- [x] **2. Watchlist — msv-web PR #25.** Real feature: a ☆/★ toggle on
+      every ticker page, `localStorage`-backed (mirrors the existing
+      Recently Viewed pattern exactly), sidebar list with remove (×) per
+      entry. Zero extra API cost — name/symbol only, no live price.
+- [x] **3. "Did you know" rotating tip — msv-web PR #25.** One Learn
+      topic per day (date-seeded, stable all day), "Read more" jumps to
+      Learn with that exact topic pre-expanded. Zero API cost.
+- [x] **4. Sector performance heatmap — msv-web PR #25.** All 11 SPDR
+      Select Sector ETFs (not just the 7 already in the ETFs browse
+      category — needed the complete set), staggered quote calls (same
+      40ms-apart pattern as the ranking-tab loader), cached per session.
+- [x] **5. Economic calendar strip — msv-web PR #25.** Hand-maintained,
+      real sourced dates — FOMC meetings from federalreserve.gov's
+      published 2026 schedule, CPI release dates from bls.gov. Paired
+      with a new **Earnings This Week** module (not originally scoped,
+      added because it was a natural complement): one Finnhub
+      `/calendar/earnings` call for the whole week, filtered to symbols
+      this app already has a real name for.
+- [x] Sidebar collapse design decision resolved: icon rail (Quick Links
+      only — Quick Search/Watchlist/Recently Viewed need real text to be
+      useful, so they hide when collapsed), state remembered via
+      `localStorage`.
 
 ## Home page enhancements (not tied to a big pillar, but real asks)
 
