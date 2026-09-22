@@ -173,10 +173,15 @@ Five categories scoped (msv-web's `learn.js`, `LEARN_CATEGORIES`):
       work), a grounded real-ticker example, and a "why it matters here"
       callout tying back to the rest of the dashboard. Verified live
       (Playwright) in dark theme, light theme, and mobile width.
-- [ ] **Reading the Numbers** — valuation, growth, profitability, risk,
-      efficiency, explained in more depth than a tooltip allows (ties
-      directly into the cards shipped in the "Stock fundamentals" section
-      above).
+- [x] **Reading the Numbers — shipped 2026-09-22, msv-web PR #21.** 5
+      topics: Valuation, Growth, Profitability & Efficiency, Financial
+      Health & Risk, Dividends. Each explains what the matching ticker-
+      page card actually measures (ties directly into the cards shipped
+      in the "Stock fundamentals" section above), with its own visual —
+      a two-bar comparison chart (reused for Valuation and Financial
+      Health), an ascending bar chart (Growth), a shrinking funnel
+      (margins), a turnover cycle diagram (Efficiency), and a growing
+      quarterly-payment timeline (Dividends).
 - [ ] **Macro & the Economy** — what a rate hike, inflation, or GDP growth
       actually does, and why it hits sectors differently (ties into the
       Macro dashboard/world map).

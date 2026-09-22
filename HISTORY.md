@@ -423,6 +423,29 @@ Verified live via Playwright in dark theme, light theme, and at mobile
 width (390px) — all render correctly, zero console/page errors. Full CI
 green before merge.
 
+## Phase 18 — Learn hub, "Reading the Numbers" shipped (2026-09-22)
+
+Same day, immediately after Phase 17 — Jozsua confirmed the Basics
+format and said to continue. Second of the 5 scoped Learn categories,
+shipped in msv-web PR #21: **Reading the Numbers**, 5 topics (Valuation,
+Growth, Profitability & Efficiency, Financial Health & Risk, Dividends),
+each explaining what the matching real ticker-page card actually
+measures, deeper than the `(?)` tooltips go, with its own visual — a
+reusable two-bar comparison chart (price-vs-earnings for Valuation,
+bills-vs-cash for Financial Health), an ascending bar chart (Growth), a
+shrinking funnel showing revenue narrowing down through gross/operating/
+net margin (Profitability), a turnover cycle diagram (Efficiency), and a
+growing quarterly-payment timeline (Dividends) — all built from basic
+SVG/CSS shapes, no images.
+
+One design pass during testing: the turnover cycle diagram's "Assets"/
+"Sales" labels initially sat too close to the connecting arcs in a
+close-up screenshot — tightened the spacing before merging rather than
+shipping it cramped.
+
+3 categories remain: Macro & the Economy, Options 101, Putting It
+Together (still visible as "Coming soon" in the live UI).
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
