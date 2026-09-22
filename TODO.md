@@ -182,21 +182,24 @@ Five categories scoped (msv-web's `learn.js`, `LEARN_CATEGORIES`):
       Health), an ascending bar chart (Growth), a shrinking funnel
       (margins), a turnover cycle diagram (Efficiency), and a growing
       quarterly-payment timeline (Dividends).
-- [ ] **Macro & the Economy** — what a rate hike, inflation, or GDP growth
-      actually does, and why it hits sectors differently (ties into the
-      Macro dashboard/world map).
-- [ ] **Options 101** — calls, puts, strikes, expiration, bid/ask spread
-      (ties into the Options card; Jozsua flagged he's not familiar with
-      options himself).
-- [ ] **Putting It Together** — how to actually weigh all of the above:
-      diversification, risk tolerance, reading the AI Outlook. Arguably
-      the category that most directly answers Jozsua's stated goal for
-      this whole pillar — don't skip it in favor of only the numbers-
-      heavy categories.
-- [ ] All four remaining categories currently render as "Coming soon"
-      cards in the live UI (`LEARN_CATEGORIES` entries with an empty
-      `topics` array) — the full intended shape of the hub is visible to
-      users now, not a surprise addition later.
+- [x] **Macro & the Economy — shipped 2026-09-22, msv-web PR #22.** 4
+      topics: Interest Rates, Inflation, GDP Growth, Unemployment — each
+      ties back to the real Macro tab/world map indicators.
+- [x] **Options 101 — shipped 2026-09-22, msv-web PR #22.** 4 topics:
+      Calls and Puts, Strike Price & Expiration, Premium/Bid/Ask, Why
+      People Use Options — kept deliberately basic and cautious per
+      Jozsua's own note that he's not familiar with options himself; the
+      last topic is explicit that this stops at vocabulary, not a full
+      trading education.
+- [x] **Putting It Together — shipped 2026-09-22, msv-web PR #22.** 4
+      topics: Diversification, Risk Tolerance, Reading the AI Outlook,
+      Red Flags. This is the category that most directly answers Jozsua's
+      stated goal for the whole pillar (helping someone actually decide,
+      not just define terms) — built, not skipped in favor of only the
+      numbers-heavy categories.
+- [x] **Pillar 5 complete.** All 5 scoped categories are live — no
+      "Coming soon" cards remain in `LEARN_CATEGORIES`. 21 topics total
+      across the hub (4 + 5 + 4 + 4 + 4).
 
 ## Pillar 2+3: supply chain visualization pilot
 
@@ -263,16 +266,45 @@ Five categories scoped (msv-web's `learn.js`, `LEARN_CATEGORIES`):
 - [ ] Only after that: decide a cost model (who pays per query, any usage
       caps) before wiring up real API calls.
 
+## Homepage overhaul (scoped 2026-09-22 — supersedes the old "Recently Viewed as a sidebar column" item below)
+
+The 2026-09-19 ask to move Recently Viewed into a sidebar column got a
+full concrete scope on 2026-09-22, once Jozsua saw the Learn hub live
+and asked where it actually sits (buried in the same tab row as Winners/
+Losers/browse categories) and wanted a fuller overhaul. See HISTORY.md's
+"Homepage overhaul — scoped, not yet started" entry for the full
+back-and-forth. **Not started yet** — flagged as too large to bundle
+into the same session as the Learn content; this is its own dedicated
+piece of work. Planned build order:
+
+- [ ] **1. Sidebar shell + Learn banner** (do this first — most
+      structural, everything else layers on top). Collapsible left-hand
+      sidebar containing: quick ticker search, Recently Viewed (moved
+      from its current horizontal row into a vertical sidebar list), and
+      quick links to Learn/Compare/Macro. Plus: Learn promoted out of the
+      tab row entirely into a prominent banner card near the top of the
+      homepage (e.g. "New to investing? Start here").
+- [ ] **2. Watchlist.** New functionality (not just a repositioning) —
+      a manually-curated list of tracked tickers, add/remove UI, stored
+      in `localStorage` (same zero-backend pattern as theme/recently-
+      viewed), surfaced in the new sidebar.
+- [ ] **3. "Did you know" rotating tip.** Cheapest of the remaining
+      items — surfaces one bite-sized fact per visit, pulled directly
+      from `learn.js`'s `LEARN_CATEGORIES` content (Pillar 5, now
+      complete) rather than needing new copy written.
+- [ ] **4. Sector performance heatmap.** Per-sector (not per-stock) view,
+      reusing the sector ETFs already in the ETFs browse category —
+      cheap, no new data source needed.
+- [ ] **5. Economic calendar strip.** Next Fed meeting / CPI report date
+      — a small hand-maintained list (dates are known well in advance,
+      low maintenance), pairs with the Macro tab.
+- [ ] Design decision still open: exactly how the sidebar collapses/
+      expands (icon rail vs. fully hidden, remembered per-viewer via
+      `localStorage` or reset each visit) — worth confirming when this
+      is picked up rather than guessing mid-build.
+
 ## Home page enhancements (not tied to a big pillar, but real asks)
 
-- [ ] **Recently Viewed as a sidebar column.** Currently a horizontal row
-      above the tabs (`renderRecentlyViewed()` in `home.js`) — Jozsua
-      wants this reworked into a left- or right-hand column, with the
-      ability to organize/categorize the entries rather than just a flat
-      recency list (2026-09-19 ask). Needs a design decision on what
-      "organize/categorize" means concretely (manual tags? auto-grouped
-      by asset type? a watchlist rather than just recently-viewed?)
-      before building — worth a quick check-in rather than guessing.
 - [ ] **Compare, extended.** A Compare feature already exists
       (`compare.js`, up to 4 tickers side by side, reuses the same
       sector/traffic-light logic as the deep-dive page) — Jozsua's

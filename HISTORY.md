@@ -446,6 +446,75 @@ shipping it cramped.
 3 categories remain: Macro & the Economy, Options 101, Putting It
 Together (still visible as "Coming soon" in the live UI).
 
+## Phase 19 — Pillar 5 complete: final 3 Learn categories shipped (2026-09-22)
+
+Same day. Jozsua said to go ahead with the remaining 3 categories in one
+message that also raised a much larger homepage-overhaul ask (see below)
+— explicitly sequenced: finished the self-contained Learn content first
+since it didn't depend on any of the overhaul's design decisions, and
+flagged the combined scope as too large for one uninterrupted batch per
+the standing "flag before heavy batches" instruction, rather than
+attempting everything at once.
+
+Shipped in msv-web PR #22:
+- **Macro & the Economy** (4 topics): Interest Rates, Inflation, GDP
+  Growth, Unemployment — each ties back to the real Macro tab/world map
+  indicators already live.
+- **Options 101** (4 topics): Calls and Puts, Strike Price & Expiration,
+  Premium/Bid/Ask, Why People Use Options — deliberately basic and
+  cautious (Jozsua flagged he isn't familiar with options himself); the
+  closing topic is explicit that this is vocabulary, not a full trading
+  education.
+- **Putting It Together** (4 topics): Diversification, Risk Tolerance,
+  Reading the AI Outlook, Red Flags — arguably the category that most
+  directly answers Jozsua's original framing for this whole pillar
+  ("this information I'm providing them is the 'informed' part"), built
+  rather than skipped in favor of only the numbers-heavy categories.
+
+**Pillar 5 is now complete** — all 5 scoped categories are live (21
+topics total), no "Coming soon" cards remain. New reusable visual
+primitives added along the way: a cause-and-effect chain, several-
+inputs-converging-to-one-output, a "4 out of 100" dot grid, a two-column
+icon comparison, a strike-price ladder, a two-pie diversification
+comparison, and a risk-tolerance spectrum bar — all basic SVG/CSS
+shapes, no images, verified live via Playwright with zero console
+errors before merge.
+
+## Homepage overhaul — scoped, not yet started (2026-09-22)
+
+Jozsua asked, in the same message as the above: where does the Learn
+tab even live right now (answer: buried in the same tab row as Winners/
+Losers/browse categories, which undersells it), and requested a fuller
+homepage overhaul — Learn should NOT sit as a peer of those other tabs,
+plus a new collapsible left-hand sidebar.
+
+Scoped via a check-in rather than guessing at a full layout blind (this
+touches navigation, the map, search, and every existing tab — expensive
+to redo if the direction is wrong). Jozsua's answers:
+- **Sidebar contents**: quick ticker search, Recently Viewed (moved from
+  its current horizontal row into the sidebar), quick links to Learn/
+  Compare/Macro, AND a Watchlist placeholder (new functionality — a
+  manually-curated, localStorage-based list of tracked tickers) — picked
+  all of the above, plus "anything else you recommend".
+- **Learn's new placement**: a prominent banner card near the top of the
+  homepage (e.g. "New to investing? Start here"), not inside the tab row
+  and not just a sidebar link.
+- **Extra features approved**: a "Did you know" rotating tip pulling
+  from Learn's own content, a sector performance heatmap (reusing sector
+  ETFs already in the app), and an economic calendar strip (hand-
+  maintained, pairs with the Macro tab). Explicitly declined: leaving it
+  at just the sidebar + Learn placement — Jozsua wants the extras too.
+
+**Not yet started.** This is a genuinely large, structural piece of work
+on top of everything shipped today — flagged to Jozsua as needing its
+own dedicated pass rather than being bundled into the same session as
+the Learn content. Planned build order once picked up: (1) the sidebar
+shell + Learn banner as one focused PR first, since that's the riskiest/
+most structural part and everything else layers on top of it, (2) the
+Watchlist feature, (3) the "Did you know" tip (cheapest — just surfaces
+existing Learn content), (4) the sector heatmap, (5) the economic
+calendar strip.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
