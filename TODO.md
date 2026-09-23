@@ -286,7 +286,7 @@ Five categories scoped (msv-web's `learn.js`, `LEARN_CATEGORIES`):
 - [ ] Only after that: decide a cost model (who pays per query, any usage
       caps) before wiring up real API calls.
 
-## Homepage overhaul v2: Seeking-Alpha-inspired persistent nav (scoped 2026-09-23)
+## Homepage overhaul v2: Seeking-Alpha-inspired persistent nav — shipped 2026-09-23 (msv-web PR #27)
 
 Jozsua came back a day after the first overhaul shipped and asked for a
 second pass, explicitly modeled on Seeking Alpha's structure (screenshots
@@ -309,8 +309,24 @@ heatmap).
 panel listing every destination in the app, including the Coming Soon
 ones below, clearly marked which is which.
 
-**New, genuinely not built yet — real "Coming Soon" placeholders, not
-fake-functional UI:**
+**Shipped, 2026-09-23 — msv-web PR #27:**
+- [x] Persistent `.app-shell` sidebar — visible on every page (ticker
+      deep-dive, Compare, everywhere), not just Home. Logo at top, 3
+      nav groups separated by dividers, 18 items total.
+- [x] Stock Analysis / Market Data / Sectors / Market Intelligence /
+      Watchlist / Market News all routed to their real content (existing
+      tabs + smooth-scroll, or existing always-visible home cards).
+- [x] Explore Products — a real directory of every destination, Coming
+      Soon ones clearly marked, built the same day (no new data needed).
+- [x] New `#placeholderView` — properly hides the rest of the app for
+      Coming Soon pages, rather than showing empty content next to a
+      live world map. Every existing view-toggle function (`goHome`,
+      `loadTicker`, `loadCryptoTicker`, `showCompareView`,
+      `goToHomeTab`) updated to hide it too, so nothing can get stuck
+      showing two views at once.
+
+**Real "Coming Soon" placeholders, not fake-functional UI — still
+genuinely not built, UI-only for now:**
 - [ ] Create Free Account — no auth/accounts system exists at all yet.
       This is a real, substantial future project (user accounts,
       sessions, a backend), not a quick add.
@@ -322,6 +338,14 @@ fake-functional UI:**
       vs. bonds vs. commodities vs. crypto returns over time), distinct
       from the Sectors heatmap. Doesn't depend on accounts — could be
       built standalone whenever it's prioritized.
+- [ ] **Still queued from Jozsua's original v2 spec, not part of this
+      PR**: hero section redesign (tagline + description + "Create
+      Account" CTA block, Seeking-Alpha-style), Market News made
+      compact and split into Trending/Latest columns, and a Winners/
+      Losers/Most Active table restyle inspired by the attached
+      screenshots (clean compact table, NOT copying Seeking Alpha's
+      proprietary Quant Rating column or fabricating a "trending"
+      signal this app doesn't have real data for).
 
 **Explicitly not copied from Seeking Alpha, and why**: their "Rating"
 column is a proprietary quant score with real analytical infrastructure

@@ -690,6 +690,81 @@ relationships confirmed rendering with zero console errors, tickers in
 both the node grid and relationship cards confirmed linking to real
 ticker pages.
 
+## Homepage overhaul v2: persistent sidebar, Seeking-Alpha-inspired (2026-09-23)
+
+Next day. Jozsua came back with a much more detailed spec than either
+prior homepage pass — three reference screenshots of Seeking Alpha's own
+layout attached, explicit instruction to "learn and adopt their best
+practices," and a full 18-item nav list with exact ordering and grouping
+(account actions / main sections / personal tools), each item marked
+whether it should be a genuinely new "Coming Soon" build.
+
+Before touching code, worked through every nav item against what this
+app actually has and proposed a concrete mapping — confirmed with
+Jozsua via a single check-in rather than guessing and risking a rebuild
+in the wrong direction a third time. Also answered a direct question
+along the way: of the six roadmap pillars, four are substantially
+shipped (options/multi-asset, macro dashboard, the Learn hub complete,
+and supply chain data now live though not yet the "sexy visual"
+treatment); Pillar 6 (AI research companion) hasn't been started at all.
+
+Shipped in msv-web PR #27:
+- **A genuinely persistent sidebar** — structurally different from
+  yesterday's (which lived inside `#homeView` and only showed on the
+  homepage). This one wraps the *entire app* in a new `.app-shell` flex
+  container, with the sidebar as a true sibling of the header and every
+  view — visible on the ticker deep-dive page, Compare, everywhere. The
+  24px page padding that used to sit on `body` moved to a new
+  `.app-body` wrapper so the sidebar itself can run flush to the
+  viewport edge and full height, matching how Seeking Alpha's own nav
+  behaves.
+- **Existing features repositioned, not rebuilt**: Learn, ETFs, Crypto,
+  Macro, and the Supply Chain tab (relabeled "Market Intelligence")
+  route through the existing tab system plus a smooth-scroll down to the
+  content card. Market Data, Market News, Sectors, and Watchlist point
+  at parts of the home page that were already always-visible — clicking
+  them just scrolls there. Stock Analysis absorbs the Winners/Losers/
+  Most Active/browse-category tabs that used to sit in a bare horizontal
+  row with no real heading of their own.
+- **Explore Products, built for real**: a directory listing every
+  destination in the app, Coming Soon ones clearly badged — not a
+  placeholder itself, since it needed no new data to build properly.
+- **Five real "Coming Soon" pages** (Create Free Account, Log In,
+  Performance, Portfolio Builder, Portfolio Health Check) — a new
+  `#placeholderView` section that genuinely hides the rest of the app,
+  rather than showing an empty "coming soon" box next to a live,
+  distracting world map. Every existing view-toggle function across the
+  codebase (`goHome`, `loadTicker`, `loadCryptoTicker`, `showCompareView`,
+  `goToHomeTab`) was updated to also hide this new view, closing off the
+  same "two views visible at once" bug class that had to be fixed twice
+  during yesterday's build.
+- Explicitly **not** copied from Seeking Alpha: their proprietary Quant
+  Rating column (would require fabricating a score this app has no real
+  data behind) and their "Trending" stock list (powered by real search
+  analytics this app doesn't have) — both would have broken the site's
+  no-fabricated-data standard just to look more similar.
+
+A real (if minor) investigation during testing: an Explore Products
+screenshot appeared to show "Coming Soon" badges on the wrong tiles
+(Macro, Compare) instead of their actual owners (Performance, Portfolio
+Builder). Rather than trusting the screenshot, pulled precise DOM
+bounding boxes for every tile and badge before concluding anything — the
+badges were correctly positioned entirely within their own tiles the
+whole time; the visual proximity to the neighboring tile's corner had
+just made the screenshot easy to misread. A good reminder to verify
+against the DOM, not just eyeball a render, before calling something a
+bug.
+
+Verified live against the actual deployed production site immediately
+after merge (not just CI): 18 nav items confirmed present, Market
+Intelligence confirmed still routing correctly to all 17 Supply Chain
+nodes, zero console errors.
+
+**Still queued, not part of this PR** (recorded in TODO.md): the hero
+section redesign (tagline + description + a "Create Account" CTA block),
+a compact Market News split into Trending/Latest columns, and a Winners/
+Losers/Most Active table restyle inspired by the reference screenshots.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
