@@ -765,6 +765,58 @@ section redesign (tagline + description + a "Create Account" CTA block),
 a compact Market News split into Trending/Latest columns, and a Winners/
 Losers/Most Active table restyle inspired by the reference screenshots.
 
+## Homepage v2 completed: icons, hero, compact news, movers table (2026-09-23)
+
+Same day, two more rounds. Jozsua looked at the freshly-shipped sidebar
+and gave quick, direct feedback: the emoji icons "not... nicer looking,
+simplified and aesthetic," and the logo needed to be smaller. Then, in
+the same breath, said to keep going with the rest of the queued v2 work.
+
+**Icons — msv-web PR #28.** All 18 emoji replaced with hand-drawn line-
+style SVG icons — simple geometric shapes (circles, rects, lines, basic
+paths), the same "basic shapes" approach already proven for the Learn
+hub's inline visuals earlier this session. No icon font or library
+pulled in; everything stays inline, consistent with this app's plain-
+HTML/no-build-step philosophy. All icons use `currentColor` so hover/
+active states apply automatically. Logo badge shrunk roughly 25% in
+font-size and padding.
+
+**Hero, news, movers table — msv-web PR #29**, the last 3 items from the
+original v2 spec:
+- **Hero**: rebuilt into two columns — headline and description on the
+  left (unchanged copy, new heading), a "Create a free account" panel on
+  the right (email input + button, routes to the Create Free Account
+  Coming Soon page). Deliberately no "Continue with Google/Apple"
+  buttons — those specifically imply real OAuth integration that
+  doesn't exist, which would have been a more misleading placeholder
+  than a plain, honestly-labeled CTA.
+- **Market News**: rebuilt as a compact two-column list, replacing the
+  old hero-card-plus-image-grid layout. Labeled "Top Headlines" and
+  "Latest News" — deliberately NOT "Trending", since this app has no
+  real trending/search-analytics signal the way Seeking Alpha's own
+  does; using that word would have implied a signal that doesn't exist.
+  "Top Headlines" is honestly just Finnhub's own returned order for the
+  first few items; "Latest News" is the same data re-sorted strictly by
+  timestamp.
+- **Movers table**: Winners/Losers/Most Active now render as a compact
+  table (Symbol/Price/Change) instead of a card-tile grid, matching the
+  density of the reference screenshots. No "Rating" column — Seeking
+  Alpha's is a proprietary quant score backed by real analytical
+  infrastructure; inventing one here just to look similar would have
+  broken this app's no-fabricated-data standard. The existing Heatmap
+  view-toggle option was left untouched.
+- Cleaned up now-dead code left behind by these replacements
+  (`buildNewsCard`, `buildGrid`, `NEWS_CATEGORY_COLORS`, unused chip CSS).
+
+Verified live against the actual deployed production site immediately
+after each merge: hero CTA confirmed routing to the Coming Soon page,
+both news columns confirmed present with correct content, all 18 SVG
+icons confirmed rendering, zero console errors throughout.
+
+**The full homepage overhaul v2 — every item from Jozsua's original
+Seeking-Alpha-inspired spec — is now complete and live**, across PRs
+#27, #28, and #29.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
