@@ -286,6 +286,52 @@ Five categories scoped (msv-web's `learn.js`, `LEARN_CATEGORIES`):
 - [ ] Only after that: decide a cost model (who pays per query, any usage
       caps) before wiring up real API calls.
 
+## Homepage overhaul v2: Seeking-Alpha-inspired persistent nav (scoped 2026-09-23)
+
+Jozsua came back a day after the first overhaul shipped and asked for a
+second pass, explicitly modeled on Seeking Alpha's structure (screenshots
+attached) — "learn and adopt their best practices," not a literal copy.
+Key asks: bring back a sidebar (this time persistent across every page,
+not just the homepage), logo at the top, sectioned by dividers, and a
+much longer nav list. Full mapping agreed with Jozsua before starting:
+
+**Maps to existing features** (icon + new sidebar slot only): Home,
+Market News, Learn, ETFs, Crypto, Macro, Watchlist, Compare, Market
+Intelligence (→ the Supply Chain tab).
+
+**Resolved using existing content, repositioned**: Stock Analysis (→ the
+Winners/Losers/Most Active + browse-category tabs, moved out of the old
+horizontal tab row into this nav item), Market Data (→ the Global
+Markets world map + index strip), Sectors (→ the Sector Performance
+heatmap).
+
+**Explore Products** — built for real (not a placeholder): a directory
+panel listing every destination in the app, including the Coming Soon
+ones below, clearly marked which is which.
+
+**New, genuinely not built yet — real "Coming Soon" placeholders, not
+fake-functional UI:**
+- [ ] Create Free Account — no auth/accounts system exists at all yet.
+      This is a real, substantial future project (user accounts,
+      sessions, a backend), not a quick add.
+- [ ] Log In — same, depends on the above.
+- [ ] Portfolio Builder — depends on accounts existing (a portfolio
+      needs to be tied to someone) — blocked on the above two.
+- [ ] Portfolio Health Check — same dependency.
+- [ ] Performance — a NEW asset-class performance comparison (stocks
+      vs. bonds vs. commodities vs. crypto returns over time), distinct
+      from the Sectors heatmap. Doesn't depend on accounts — could be
+      built standalone whenever it's prioritized.
+
+**Explicitly not copied from Seeking Alpha, and why**: their "Rating"
+column is a proprietary quant score with real analytical infrastructure
+behind it — inventing a fake rating just to visually match would break
+this app's "no fabricated data" standard, so it's dropped rather than
+faked. Same reasoning for their "Trending" stock list, which is powered
+by real search analytics this app doesn't have — any "trending"-style
+module here needs to be honestly labeled for what it actually is (e.g.
+curation order), not implied to be a real trending signal.
+
 ## Homepage overhaul — shipped 2026-09-22 (supersedes the old "Recently Viewed as a sidebar column" item below)
 
 The 2026-09-19 ask to move Recently Viewed into a sidebar column got a
