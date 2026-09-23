@@ -286,7 +286,7 @@ Five categories scoped (msv-web's `learn.js`, `LEARN_CATEGORIES`):
 - [ ] Only after that: decide a cost model (who pays per query, any usage
       caps) before wiring up real API calls.
 
-## Homepage overhaul v2: Seeking-Alpha-inspired persistent nav — shipped 2026-09-23 (msv-web PR #27)
+## Homepage overhaul v2: Seeking-Alpha-inspired persistent nav — complete 2026-09-23 (msv-web PRs #27, #28, #29)
 
 Jozsua came back a day after the first overhaul shipped and asked for a
 second pass, explicitly modeled on Seeking Alpha's structure (screenshots
@@ -338,14 +338,32 @@ genuinely not built, UI-only for now:**
       vs. bonds vs. commodities vs. crypto returns over time), distinct
       from the Sectors heatmap. Doesn't depend on accounts — could be
       built standalone whenever it's prioritized.
-- [ ] **Still queued from Jozsua's original v2 spec, not part of this
-      PR**: hero section redesign (tagline + description + "Create
-      Account" CTA block, Seeking-Alpha-style), Market News made
-      compact and split into Trending/Latest columns, and a Winners/
-      Losers/Most Active table restyle inspired by the attached
-      screenshots (clean compact table, NOT copying Seeking Alpha's
-      proprietary Quant Rating column or fabricating a "trending"
-      signal this app doesn't have real data for).
+- [x] **Rest of the original v2 spec — shipped 2026-09-23, msv-web PR
+      #29:**
+  - Hero redesign — two columns, headline/description on the left, a
+    real "Create a free account" panel on the right (email input +
+    button, routes to the Create Free Account page above). No fake
+    "Continue with Google/Apple" buttons — those would specifically
+    imply real OAuth that doesn't exist.
+  - Market News rebuilt as a compact two-column list — "Top Headlines"
+    / "Latest News", not "Trending" — this app has no real trending/
+    search-analytics signal the way Seeking Alpha's own does, so that
+    label would have implied a signal that doesn't exist. "Top
+    Headlines" is honestly just Finnhub's own returned order for the
+    first few items; "Latest News" is the same data re-sorted by
+    timestamp.
+  - Winners/Losers/Most Active now render as a compact table (Symbol/
+    Price/Change), matching the reference screenshots' dense list
+    style. No "Rating" column — Seeking Alpha's is a proprietary quant
+    score with real analytical infrastructure behind it; faking one
+    would have broken this app's no-fabricated-data standard. The
+    existing Heatmap view-toggle option is untouched.
+  - Also shipped, separately, same day: sidebar icons replaced with
+    hand-drawn line-style SVG (was emoji — Jozsua's feedback: "nicer
+    looking, simplified and aesthetic"), logo badge shrunk ~25%
+    (msv-web PR #28).
+
+**The full homepage overhaul v2 spec is now complete.**
 
 **Explicitly not copied from Seeking Alpha, and why**: their "Rating"
 column is a proprietary quant score with real analytical infrastructure
