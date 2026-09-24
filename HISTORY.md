@@ -914,6 +914,33 @@ Explore destinations click through correctly with the right URL and
 focused content; the official Playwright smoke test and a `node --check`
 syntax pass across every `.js` file both stayed green throughout.
 
+## Deploy incident: .git and node_modules briefly public (2026-09-24)
+
+Same-day follow-up to the phase above, discovered while deploying it.
+`msv-web/wrangler.jsonc`'s `assets.directory` is `"./"` (repo root) and
+no `.assetsignore` file existed yet — the first deploy of the day
+uploaded the entire repo as public static assets, including `.git/`
+(full history, refs, branch names) and
+`node_modules/.cache/wrangler/wrangler-account.json` (Cloudflare account
+ID + email, not an auth token). Confirmed live via a direct request to
+`/.git/config` returning real file content (HTTP 200) before the fix,
+and confirmed again after — this wasn't assumed, it was checked both
+ways. Fixed same-day with a tracked `.assetsignore` excluding `.git`,
+`.github`, `node_modules`, `.wrangler`, `test-results`,
+`playwright-report`, `config.js`, and `wrangler.jsonc` itself; verified
+fixed by checking the response **body** rather than status code (the
+`not_found_handling: single-page-application` setting added the same
+day makes every path return HTTP 200 regardless, so a status-code-only
+check can't distinguish "excluded" from "still exposed" — this tripped
+up the first verification attempt before the right check was used).
+Documented permanently in `msv-web/CLAUDE.md`'s new "Deploy safety"
+section so this can't be silently reintroduced.
+
+No evidence of an actual credential leak — the exposed wrangler-account
+file held only an account ID and email, not a token, and `config.js`
+(the file that would hold real API keys) is gitignored and was never
+committed, so it was never part of what got uploaded either way.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
