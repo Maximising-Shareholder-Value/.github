@@ -89,7 +89,7 @@ engineering decision.
 | 1 | **Multi-asset-class indicators** | Bonds, options, commodities, crypto, ETFs, index funds each get real indicators suited to *that* asset type, instead of inheriting stock-shaped sections that show N/A. Extends the existing `getInstrumentType()` / `applyInstrumentTypeUI()` pattern already used for stock/ETF/crypto. |
 | 2 | **Supply chain visualization** | A visual map of a company's upstream suppliers and downstream buyers — e.g. an AI data center operator depends on turbine manufacturers and transformer makers, who depend on electrical-grid suppliers and rare-earth/raw-material miners. No free live API provides this; it has to be curated per company/theme. |
 | 3 | **Education layer tied to the supply chain maps** | Plain-English explanations of *why* those dependencies exist — not just "here's the chart," but "here's why this matters and how to think about it." Bundled with #2, not separable from it. |
-| 4 | **Macro/political dashboard, multi-country** | Select or compare countries: elections, bills, monetary policy, rate cycles, "what this means for the average person." Today's Macro tab is US-only (FRED). World Bank and OECD both offer genuinely free, no-API-key, multi-country data — see [API_RESEARCH.md](API_RESEARCH.md). |
+| 4 | **Macro/political dashboard, multi-country** | Select or compare countries: elections, bills, monetary policy, rate cycles, "what this means for the average person." **Shipped 2026-09-24** — open ~217-country search, a 4-country comparison view, and a Governance dimension (World Bank's Worldwide Governance Indicators) on top of the core economic set. See [API_RESEARCH.md](API_RESEARCH.md) for the original sourcing and [DATA_EXPANSION_RECOMMENDATIONS.md](DATA_EXPANSION_RECOMMENDATIONS.md) for further data-breadth ideas. |
 | 5 | **General "explain the concept" layer** | E.g. "what does a Fed rate hike mean, split by category, for the average person" — for someone learning markets from scratch. Can mostly reuse the existing rule-based pattern in `analysis.js` (fixed thresholds → plain-English text) that already powers the Outlook section. |
 | 6 | **Embedded AI research companion** | A chat-style research assistant inside the app, modeled on how Jozsua already researches trades in Claude conversations (see the two conversations referenced when this was scoped, 2026-09-19). The only pillar that requires a live LLM API and breaks the current zero-cost architecture — needs a validation step and a cost model before committing to the full build. |
 
@@ -101,28 +101,25 @@ work is left, and what decisions are still needed before building
 further — so "build pillar N" can mean something concrete rather than a
 vague goal.
 
-### Pillar 1 — Multi-asset-class indicators — ~90% done
+### Pillar 1 — Multi-asset-class indicators — 100% done within free-tier limits (2026-09-24)
 
 - ✅ Stock/ETF/crypto/commodity-ETF/bond-ETF indicators — confirmed
   working via a live audit (2026-09-19).
-- ✅ Options **data**, on the backend — Alpaca proxy live (2026-09-21).
-- ⬜ Options **UI** on the ticker page — nothing on msv-web calls the
-  Alpaca endpoint yet. This is genuinely the only piece left. Concretely
-  needs: an `alpacaUrl()` helper (same pattern as `finnhubUrl()`), a
-  fetch for the searched ticker's options snapshots, a default
-  expiration + strike range to show (all of them would be overwhelming
-  — likely "nearest expiration, a handful of strikes around the current
-  price"), and a rendering function for a chain-style table or a
-  simplified card view.
+- ✅ Options **data + UI**, fully shipped 2026-09-24 — an expiration
+  picker, an expandable full strike table, and optional last-trade-
+  price/volume columns, all served from data already fetched (zero new
+  network cost). See [TODO.md](TODO.md) for the shipping detail.
+- 🚫 Options **Greeks / implied volatility** — confirmed, not deferred:
+  a live check of Alpaca's free "indicative" feed response (2026-09-24)
+  found no `greeks`/`impliedVolatility` field at all; this needs Alpaca's
+  paid OPRA feed. Permanent free-tier blocker, see
+  [BLOCKERS.md](BLOCKERS.md).
 - 🚫 Individual bonds — not a build task, a dead end. No free data
   source exists anywhere (confirmed across 4 vendors). "Browse bond ETFs
   instead" stays the permanent answer.
-- **Open decision:** full options chain table, or a simplified
-  "a few key strikes" view? A beginner-friendly app probably wants the
-  simplified version, but worth confirming before building either.
-- **Effort to finish:** medium — a self-contained UI feature, no new
-  data source needed, most of the hard part (getting real data flowing)
-  is already done.
+- **Status:** as complete as the free data tier allows. The only two
+  remaining gaps (Greeks/IV, individual bonds) are both confirmed
+  permanent blockers, not unfinished work — see BLOCKERS.md for both.
 
 ### Pillars 2+3 — Supply chain visualization + its education layer — 0% done
 
@@ -153,23 +150,41 @@ pulled from a live API — it has to be researched and curated by hand
   companies/themes get covered, this doesn't get "finished" so much as
   "expanded over time" once the pilot proves worth it.
 
-### Pillar 4 — Multi-country macro dashboard — backend done, frontend 0%
+### Pillar 4 — Multi-country macro dashboard — 100% done (2026-09-24)
+
+**This section was stale relative to TODO.md/HISTORY.md for a while —
+corrected 2026-09-24.** The UI shipped 2026-09-21, not "frontend 0%" as
+this used to read; see below for what shipped since.
 
 - ✅ World Bank data, on the backend — proxy live (2026-09-21), tested
-  with real Singapore/Indonesia data.
-- ⬜ A country selector in the UI (today's Macro tab has no way to pick
-  a country at all — it's hardcoded to US/FRED data).
-- ⬜ Fetching and displaying World Bank indicators for whichever country
-  gets picked.
-- ⬜ A comparison view — 2 (or more) countries side by side, which was
-  part of the original ask, not just a single-country swap.
-- **Open decisions:** which countries to default to/feature; which
-  indicators to prioritize (GDP, inflation, unemployment are the obvious
-  starting set — World Bank has 20,000+, far too many to show at once);
-  UI pattern for picking a country (dropdown? search box? a short list
-  of common ones plus "other"?).
-- **Effort:** medium — structurally similar to the existing US Macro
-  tab, just needs the country dimension added.
+  with real Singapore/Indonesia data. Confirmed a fully generic
+  passthrough (any indicator code, any country), so everything below was
+  frontend-only work, no further backend changes needed.
+- ✅ Country selector — shipped 2026-09-21 (5 featured quick-picks),
+  extended 2026-09-24 to a full free-text search over World Bank's
+  entire ~217-country list.
+- ✅ Comparison view — shipped 2026-09-24, up to 4 countries side by
+  side (same cap as the Compare feature).
+- ✅ Indicator breadth — the original 4 (GDP growth, inflation,
+  unemployment, current account) expanded 2026-09-24 with GDP per
+  Capita, Trade Balance, Government Debt, Total Reserves, and
+  Population, plus a genuinely new **Governance** dimension (World
+  Bank's Worldwide Governance Indicators — Voice & Accountability,
+  Political Stability, Government Effectiveness, Regulatory Quality,
+  Rule of Law, Control of Corruption). All live-tested against the real
+  API for all 5 default countries before shipping — zero nulls.
+- ✅ World map made "smarter" — a Color-by toggle (Market / GDP Growth /
+  Inflation) tints the map's real country landmasses by indicator
+  intensity, a genuine choropleth rather than just the existing hover
+  popup.
+- ✅ São Paulo's map dot, previously mispositioned in open ocean off
+  Brazil's coast, fixed via a hand-calibrated pixel offset (the
+  basemap's own Brazil polygon was itself drawn offset from where the
+  map's lon/lat formula expects it — a basemap data quality issue, not a
+  bad coordinate) — confirmed on-landmass via `isPointInFill()`.
+- ⬜ OECD/DBnomics as a supplemental source remains a real option for
+  later (not blocking — World Bank alone already covers virtually every
+  country), see [TODO.md](TODO.md).
 
 ### Pillar 5 — Explain-the-concept education layer — 0% done
 
@@ -210,10 +225,11 @@ data-sourcing and curation work, not just code):
 1. **Pillar 1 — multi-asset-class indicators.** High impact, low effort:
    reuses existing architecture and API keys you already have, fixes a
    visibly broken thing (N/A everywhere), zero new cost. **Do this
-   first.** — **Status: mostly done.** A live audit (2026-09-19) found
-   ETFs/commodities/crypto already render clean. Options data is now
-   live on the backend (Alpaca, 2026-09-21); the options UI on
-   msv-web is the one piece still open. See [TODO.md](TODO.md).
+   first.** — **Status: 100% done (2026-09-24).** A live audit
+   (2026-09-19) found ETFs/commodities/crypto already render clean.
+   Options data and UI both shipped (Alpaca, 2026-09-21 and 2026-09-24);
+   Greeks/IV and individual bonds are the only gaps, both confirmed
+   permanent free-tier blockers, not open work. See [TODO.md](TODO.md).
 2. **Pillar 5 — explain-the-concept layer.** High impact, low-to-medium
    effort: mostly writing, reusing the existing Outlook pattern. This is
    the connective tissue that makes every later data-heavy feature
@@ -227,9 +243,10 @@ data-sourcing and curation work, not just code):
 4. **Pillar 4 — multi-country macro.** Medium impact, high effort: same
    *kind* of work as the US Macro tab, at higher effort (new data
    sources, comparison UI). Do after the education layer exists, so the
-   numbers this tab shows aren't just numbers. — **Status: backend
-   done.** World Bank proxy is live (2026-09-21, no key needed). The
-   country-selectable dashboard UI on msv-web is still unbuilt.
+   numbers this tab shows aren't just numbers. — **Status: 100% done
+   (2026-09-24).** World Bank proxy live since 2026-09-21; the full
+   country-selectable, comparison-capable, governance-inclusive dashboard
+   UI shipped 2026-09-24 — see [TODO.md](TODO.md).
 5. **Pillar 6 — AI research companion.** High impact, but impact is
    **uncertain** and effort is high, plus it's the only pillar with a
    real ongoing dollar cost. Validate cheaply first — e.g. ship a few

@@ -19,6 +19,19 @@ instead (already built, see the "Bond ETFs" home page category) — this
 is the permanent answer unless the project ever pays for EODHD's bond
 bundle (~$100/month).
 
+### Options Greeks / Implied Volatility
+**Blocked since:** 2026-09-24, confirmed via a live request to msv-api's
+`/api/alpaca` options-snapshots endpoint (a real AAPL options chain). The
+response contains `dailyBar`, `latestQuote`, `latestTrade`, `minuteBar`,
+`prevDailyBar` — no `greeks` field and no `impliedVolatility` field
+anywhere. This requires Alpaca's paid OPRA/real-time options feed, not
+available on the free "indicative" feed this app uses. **Current
+answer:** none — a permanent free-tier blocker, same category as the
+bonds/bid-ask/volume entries above. Everything else free in that same
+response (last trade price, today's volume) was previously unused and
+has since been surfaced in the Options card UI (msv-web PR, 2026-09-24) —
+see [HISTORY.md](HISTORY.md).
+
 ### Bid / Ask price, on anything
 **Blocked since:** project start (documented in the root `CLAUDE.md`
 from early on). Finnhub's free `/quote` endpoint has never included

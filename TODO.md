@@ -64,6 +64,20 @@ finished item is ever fully lost, just moved to where it belongs.
       **Deliberately left for later:** Greeks, implied volatility, more
       strikes/expirations — see [ROADMAP.md](ROADMAP.md)'s pillar
       breakdown for the "next up" note.
+- [x] **Options UI expanded to the free-tier ceiling, 2026-09-24.** Jozsua
+      asked to take Pillar 1 to 100% done. An expiration picker (pill
+      row) now lets a visitor switch between every expiration the initial
+      fetch already returned, instead of only the nearest one — no
+      re-fetch, that data was already being thrown away. Default view
+      stays the same light 9 strikes; a "Show all strikes" toggle reveals
+      the full already-fetched ±15% band. A new "Show last trade & volume"
+      toggle surfaces `latestTrade.p`/`dailyBar.v` — both already present
+      in every Alpaca snapshot response and simply unused before this.
+      Zero new network calls per page view. **Greeks/implied volatility
+      confirmed genuinely blocked** (not just deferred) — see the new
+      [BLOCKERS.md](BLOCKERS.md) entry, dated the same day. With that
+      confirmed, Pillar 1 is now as complete as the free data tier
+      allows — individual bonds remain the one other permanent gap.
 
 ## ETF/index fund page enhancements (scoped 2026-09-19, partially shipped 2026-09-21)
 
@@ -277,6 +291,52 @@ Five categories scoped (msv-web's `learn.js`, `LEARN_CATEGORIES`):
       needed) remain an option to add later for countries/indicators
       World Bank doesn't cover well — not blocking, since World Bank
       alone already covers virtually every country.
+- [x] **Pillar 4 taken to 100%, 2026-09-24** — Jozsua asked for the
+      remaining gaps closed, plus a "more country-related, macro and
+      geopolitical" data push. `/api/worldbank` was already confirmed a
+      fully generic passthrough proxy (msv-api), so all of this was
+      frontend-only, no backend deploy:
+      - **Open country picker** — a debounced free-text search over
+        World Bank's full ~217-country list (fetched once, cached),
+        alongside the 5 "Featured" quick-picks (kept, not replaced).
+      - **2+ country comparison view** — a toggle lets up to 4 countries
+        (same cap as the Compare feature) be selected and shown side by
+        side in a table, reusing the same World Bank fetch logic.
+      - **Expanded indicator breadth** — the Macro tab (not the map
+        popup, which stays small on purpose) now also shows GDP per
+        Capita, Trade Balance, Government Debt, Total Reserves, and
+        Population, live-tested against all 5 default countries before
+        shipping (confirmed non-null for every one).
+      - **Geopolitical dimension, genuinely new territory** — World
+        Bank's Worldwide Governance Indicators (source database 3, not
+        the default WDI database) added as a "Governance" sub-section:
+        Voice & Accountability, Political Stability, Government
+        Effectiveness, Regulatory Quality, Rule of Law, Control of
+        Corruption. **Important gotcha found and confirmed live:** the
+        real indicator codes are prefixed `GOV_WGI_` (e.g.
+        `GOV_WGI_CC.EST`) — the bare `CC.EST`/`PV.EST`-style codes
+        sometimes seen referenced elsewhere don't exist in World Bank's
+        default catalog and return a real "not found" error if queried
+        as-is; this was live-tested (all 6 indicators × all 5 default
+        countries, zero nulls) before shipping, not assumed. One added
+        Political Stability line also now appears in the map's hover
+        popup, alongside the existing 4 economic indicators.
+      - **Smarter world map** — a "Color by: Market / GDP Growth /
+        Inflation" toggle now tints each of the 13 tracked countries'
+        real landmass paths by indicator intensity (a genuine
+        choropleth), reusing the same `color-mix()` technique already
+        used for the sector heatmap tiles — not just the existing hover
+        popup.
+      - **São Paulo map dot fixed** — Jozsua reported it was mispositioned.
+        Confirmed directly (via `getBBox()`/`isPointInFill()` on the
+        live SVG) that the lat/lon value was correct but this specific
+        basemap's own Brazil landmass polygon is itself drawn offset from
+        where the map's lon/lat formula expects it — a basemap
+        data-quality quirk, not a bad coordinate. Fixed with a manual
+        pixel-offset correction on just the dot (`dotDx`/`dotDy`),
+        verified visually against the live map (the dot now lands
+        directly on Brazil's coastline, confirmed via `isPointInFill`),
+        rather than touching the 1.3MB hand-authored basemap SVG itself.
 
 ## Pillar 6: AI research companion — validation step only, for now
 
@@ -374,6 +434,79 @@ by real search analytics this app doesn't have — any "trending"-style
 module here needs to be honestly labeled for what it actually is (e.g.
 curation order), not implied to be a real trending signal.
 
+## Homepage v3: routed pages, Market Intelligence showcase, one logo, Explore Products retaxonomy — shipped 2026-09-24
+
+Jozsua came back after reviewing the live v2 homepage in person with a
+large batch of asks: sidebar clicks should feel like leaving the page,
+not scrolling down it ("I'm just prepping the structure, I don't want
+everything on the homepage"); Watchlist should come off the homepage
+since it's already in the sidebar; Market Intelligence needed a real
+visual showcase; the header had a redundant second `$MSV` logo that also
+looked wrong in light mode; and Explore Products needed real icons and a
+much richer category structure with a new "Premium" line item.
+
+- [x] **Router (`ROUTES`/`navigateTo`, home.js)** — replaced the old
+      `NAV_ACTIONS` scroll-to-section map with a real router: every one
+      of the 18+ sidebar/Explore destinations now shows a focused view
+      (`showHomeFocused(sectionKey)`, driven by `data-home-section` tags
+      on homepage cards in index.html) and updates the URL via the
+      History API (`pushState`/`popstate`), so back/forward and
+      refresh-to-a-specific-page work. Deliberately stayed one
+      `index.html` (no build step, no per-page markup duplication) rather
+      than real separate HTML files — same technique already used for
+      the ticker/Coming-Soon views, just generalized. **Production note:**
+      `msv-web/wrangler.jsonc` needed `assets.not_found_handling:
+      "single-page-application"` added so a hard refresh on e.g. `/macro`
+      doesn't 404 at the edge — confirmed against Cloudflare's current
+      Workers static-assets docs before adding, since this is the one
+      real deploy-risk item in this whole batch.
+- [x] **Watchlist off the homepage** — moved out of `.home-grid` into its
+      own card, only shown when the sidebar's Watchlist item is focused
+      (not in the default "full homepage" view). Zero JS change to
+      `renderWatchlist()` itself.
+- [x] **Market Intelligence showcase + rename** — the tab itself was
+      still internally labeled "Supply Chain" even though the sidebar
+      already said "Market Intelligence" (a naming mismatch from the
+      2026-09-23 sidebar build) — the tab title is now "Market
+      Intelligence" everywhere user-facing (internal id/CSS class names
+      kept as `supply-chain`, renaming those would be pure churn). A new
+      homepage teaser card (below the category tabs, standalone, per
+      Jozsua's explicit layout ask) shows 5 real company logos (NVDA,
+      TSM, AMD, MSFT, GOOGL) via Finnhub's `/stock/profile2` `logo`
+      field — the exact same field already used for the ticker
+      deep-dive page's own logo, so zero new API integration. A "See the
+      full picture →" button and the sidebar item both lead to the full
+      17-node/20-relationship page.
+- [x] **Single $MSV logo** — the header's separate `.brand-lockup` copy
+      (fixed `#06120d` dark chip, "looks the same in both themes" by
+      design) is removed entirely; only the sidebar badge remains,
+      click-to-home wiring moved onto it. That badge's own hardcoded
+      colors were the actual root cause of "looks weird in light mode" —
+      swapped to the theme's own `--accent`/`--accent-contrast` tokens
+      (the same pairing `#searchBtn` already uses) so it's still a solid
+      brand-colored badge, just one that correctly follows the active
+      theme instead of staying fixed.
+- [x] **Explore Products retaxonomy** — icons switched from emoji to the
+      sidebar's own inline SVGs (cloned at render time, zero duplicated
+      markup, guaranteed pixel-identical); the flat 17-tile grid became 6
+      named categories (Get Started / Stock Analysis / Market Outlook /
+      Market Intelligence & Data / Portfolio Tools / Learn & Premium) per
+      Jozsua's explicit request for more categories/subcategories, with
+      genuinely new Coming Soon destinations added to fill it out (Stock
+      Ideas, Stock Sentiment, Analyst Upgrades & Downgrades, Stock
+      Screener, Precious Metals, Forex) rather than just regrouping the
+      existing 17 tiles.
+- [x] **"Premium" added to the sidebar** — a new Coming Soon destination
+      (Group 1, right after Explore Products), no pricing/scope decided
+      yet.
+
+**Verified live against a local build** (real click-through of all 19
+sidebar/Explore destinations, URL-per-destination, back/forward, and a
+homepage-focus visibility check) before considering this done — see the
+session's own testing notes; a follow-up production smoke check (hard
+refresh on a non-home path) is still needed after the next `msv-web`
+deploy to confirm the `wrangler.jsonc` change works end-to-end.
+
 ## Homepage overhaul — shipped 2026-09-22 (supersedes the old "Recently Viewed as a sidebar column" item below)
 
 The 2026-09-19 ask to move Recently Viewed into a sidebar column got a
@@ -461,14 +594,26 @@ each would be given the app's existing zero-cost architecture:
 - **"Did you know" rotating fact** tied to Pillar 5 (the education
   layer) — a small, free way to surface bite-sized learning content on
   every visit once that content exists.
-- **Currency/FX strip** (USD/SGD, USD/AUD, etc.) — Twelve Data supports
-  forex; would need to confirm free-tier forex coverage before building
-  (Finnhub's free tier explicitly does NOT cover forex — see the root
-  `CLAUDE.md` — so this would lean on Twelve Data or a new source).
+- **Currency/FX strip** (USD/SGD, USD/AUD, etc.) — **confirmed 2026-09-24**
+  (live request to Twelve Data's `/quote` endpoint for EUR/USD, real data
+  came back) that Twelve Data's free tier DOES support forex quotes,
+  resolving the open question this bullet used to pose. Finnhub's free
+  tier still has zero forex coverage (unchanged, see the root
+  `CLAUDE.md`). A genuine candidate to build, not researched further than
+  this one confirmation — a placeholder "Forex" tile now exists in
+  Explore Products' Market Outlook section reflecting this.
 - **Trending/most-searched tickers this week** — needs some form of
   shared counter across visitors, which the current architecture doesn't
   have (everything today is per-browser, no shared backend state) — the
   one item here that's a real architecture addition, not just more UI.
+- **Investor-style line/bar graphs directly on the homepage** — flagged
+  2026-09-24 (Jozsua: "I want to see a bit more graphs on the homepage").
+  Recorded as a future intent, not scoped or built yet — the homepage
+  doesn't have much of its own time-series data to chart today (most
+  numeric data lives on the per-ticker deep-dive page, not the
+  homepage itself). Worth revisiting once there's more homepage-native
+  data to visualize (e.g. once the [DATA_EXPANSION_RECOMMENDATIONS.md](DATA_EXPANSION_RECOMMENDATIONS.md)
+  ideas below start landing).
 
 ## Standalone items
 

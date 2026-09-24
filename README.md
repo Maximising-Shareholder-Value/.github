@@ -38,6 +38,7 @@ numbers are genuinely real.)
 | **"What's already happened?"** | [HISTORY.md](HISTORY.md) — a dated, chronological story of the project from its first commit onward. |
 | **"What's blocked right now, and why?"** | [BLOCKERS.md](BLOCKERS.md) — things that genuinely can't be built yet (no free data source, a missing permission), so it never has to be re-explained. |
 | **"What free data sources exist for feature X?"** | [API_RESEARCH.md](API_RESEARCH.md) — researched APIs, free tiers, rate limits, confirmed live rather than guessed. |
+| **"How do we get more free data/detail into the app?"** | [DATA_EXPANSION_RECOMMENDATIONS.md](DATA_EXPANSION_RECOMMENDATIONS.md) — concrete, sourced ideas for using more of what's already free, not a paid-upgrade wishlist. |
 
 Each repo's own `CLAUDE.md`/`README.md` stays the *technical* reference
 (how the code actually works, data-source quirks, config/secrets setup)

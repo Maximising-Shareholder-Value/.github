@@ -817,6 +817,103 @@ icons confirmed rendering, zero console errors throughout.
 Seeking-Alpha-inspired spec — is now complete and live**, across PRs
 #27, #28, and #29.
 
+## Homepage v3, Pillars 1 & 4 to 100%, Explore Products retaxonomy (2026-09-24)
+
+Jozsua reviewed the live v2 homepage in person and came back with a large
+batch of asks in one sitting — a genuine architecture change (sidebar
+navigation) alongside several feature/polish requests and two
+pillar-completion pushes. All frontend-only (`msv-web` +
+`msv-org-github`); confirmed zero `msv-api` changes were needed anywhere
+in this batch, since `/api/worldbank` and `/api/alpaca` were already
+generic passthrough proxies.
+
+**Routed navigation (`home.js` `ROUTES`/`navigateTo`).** Sidebar/Explore
+clicks used to scroll to a homepage section; Jozsua explicitly wanted
+them to feel like leaving the page instead ("I don't want everything on
+the homepage"). Replaced the old scroll-based `NAV_ACTIONS` with a real
+router — every destination shows a focused view (`showHomeFocused`,
+driven by new `data-home-section` tags) and updates the URL via the
+History API, so back/forward and refresh-to-a-page work, without
+splitting into real separate HTML files (stayed one `index.html`, no
+build step, reusing the same full-view-swap technique the ticker/Coming
+Soon pages already used). `msv-web/wrangler.jsonc` gained
+`assets.not_found_handling: "single-page-application"` so a hard refresh
+on a non-home path doesn't 404 once deployed — confirmed against
+Cloudflare's current docs before adding.
+
+**Homepage content.** Watchlist moved off the always-visible homepage
+grid (already reachable via the sidebar). A new Market Intelligence
+teaser card — 5 real company logos via Finnhub's `/stock/profile2`
+(zero new API integration, same field the ticker page's own logo
+already uses) — now sits standalone below the category tabs, linking to
+the full 17-node/20-relationship page. The tab itself, previously
+mislabeled "Supply Chain" even though the sidebar already said "Market
+Intelligence," is now consistently named everywhere user-facing.
+
+**One $MSV logo.** The header's separate fixed-color logo copy is gone;
+only the sidebar badge remains. Its own hardcoded near-black colors
+turned out to be the actual cause of "looks weird in light mode" (a
+fixed dark chip on a now-white page) — fixed by switching it to the
+theme's own `--accent`/`--accent-contrast` tokens, the same pairing
+`#searchBtn` already used, so it now correctly follows the active theme.
+
+**Explore Products.** Emoji icons replaced with the sidebar's own inline
+SVGs, cloned at render time for pixel-identical icons with zero
+duplicated markup. The flat 17-tile grid became 6 named categories (Get
+Started / Stock Analysis / Market Outlook / Market Intelligence & Data /
+Portfolio Tools / Learn & Premium), with genuinely new Coming Soon
+destinations added to fill it out rather than just regrouping existing
+tiles (Stock Ideas, Stock Sentiment, Analyst Upgrades & Downgrades,
+Stock Screener, Precious Metals, Forex). A new "Premium" item was added
+to the sidebar itself.
+
+**Pillar 1 → 100% within free-tier limits.** The Options card gained an
+expiration picker and an expandable full-strike table (both reslicing
+data the original fetch already pulled — zero new network cost) plus an
+optional last-trade-price/volume view (fields already present in every
+Alpaca snapshot, simply unused before). A live check of Alpaca's free
+feed confirmed no `greeks`/`impliedVolatility` field exists at all —
+recorded as a permanent blocker (BLOCKERS.md) rather than left an open
+question, closing out the pillar's only remaining ambiguity.
+
+**Pillar 4 → 100%.** Indicator breadth expanded (GDP per Capita, Trade
+Balance, Government Debt, Total Reserves, Population) plus a new
+Governance dimension — World Bank's Worldwide Governance Indicators,
+never referenced anywhere in this codebase before. A real gotcha found
+and confirmed live: the actual indicator codes are prefixed `GOV_WGI_`
+(e.g. `GOV_WGI_CC.EST`), not the bare `CC.EST`-style codes that don't
+exist in World Bank's default catalog. All 6 governance indicators
+live-tested against all 5 default countries before shipping (zero
+nulls). Also shipped: an open ~217-country search picker, a 4-country
+comparison view, and a "smarter" world map — a Color-by toggle
+(Market/GDP Growth/Inflation) that tints real country landmasses by
+indicator intensity, a genuine choropleth reusing the sector heatmap's
+own `color-mix()` technique. Separately, the São Paulo map dot — reported
+mispositioned — was traced to this basemap's own Brazil landmass polygon
+being drawn offset from where the map's lon/lat formula expects it (not
+a bad coordinate); fixed with a hand-calibrated pixel offset, confirmed
+landing directly on Brazil's coastline via `isPointInFill()`.
+
+**Data-expansion research.** A new [DATA_EXPANSION_RECOMMENDATIONS.md](DATA_EXPANSION_RECOMMENDATIONS.md)
+answers Jozsua's "how do we flood this app with data on free tiers"
+ask — the single highest-value confirmed gap found: CoinGecko's
+`/coins/{id}/market_chart` (confirmed live, no key needed) would give
+crypto tickers a real historical price chart, which they currently have
+none of at all. Also confirmed live: Twelve Data's free tier does
+support forex quotes (resolving a question TODO.md's homepage-brainstorm
+list had left open) — Finnhub's own forex coverage remains zero.
+Finnhub's own field-usage gap and candidate new FRED series are flagged
+as needing a fresh live check with a real API key, which this session
+didn't have access to (the local `config.js` holding real keys is
+gitignored and wasn't populated here) — the methodology is documented so
+it's independently re-runnable rather than asserting stale numbers as
+current fact.
+
+Verified via a local build before considering this done: all 19 sidebar/
+Explore destinations click through correctly with the right URL and
+focused content; the official Playwright smoke test and a `node --check`
+syntax pass across every `.js` file both stayed green throughout.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
