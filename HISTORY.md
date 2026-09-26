@@ -941,6 +941,34 @@ file held only an account ID and email, not a token, and `config.js`
 (the file that would hold real API keys) is gitignored and was never
 committed, so it was never part of what got uploaded either way.
 
+## Homepage v4: dependency diagram, dense tables + heatmaps, sidebar fixes (2026-09-26)
+
+Another in-person review round. **Sidebar bug root cause:** the earlier
+"10% bigger" `body { zoom: 1.1 }` made the sidebar's `100vh` height render
+10% taller than the screen, cutting off its bottom (the API usage panel).
+Fixed by dividing the zoom back out (`--page-zoom`) and splitting the
+sidebar into a scrolling nav plus a pinned footer (API usage + a short
+educational-use disclaimer). Logo lockup enlarged with the full name
+beside it. **Market Intelligence** left the tab row and became its own
+container: a left-to-right SVG dependency web (AI labs → cloud →
+AI infrastructure → chips & power gear → foundry & memory → tools & raw
+materials) with arrows pointing at what each company depends on; click a
+bubble for details, click again for its stock page. The 20 researched
+relationships stay as solid "sourced" links; the power/cooling and
+raw-material layers plus a few well-known chip-design ties are the app's
+own structural reasoning, drawn dashed and labelled "Inferred" (not part
+of the SUPPLY_CHAIN_RESEARCH.md pass — no specific contracts or figures
+claimed). **Stock tabs:** Winners/Losers/Most Active and every browse
+category now use one dense sortable table (crypto-style) plus a detailed
+heatmap; browse categories now fetch live quotes on demand instead of
+being name-only chips. Home defaults to Trending Tech. **Calendars:**
+economic calendar expanded to 25 upcoming Fed/CPI/PPI/jobs/JOLTS/GDP/PCE
+dates read directly off the FOMC, BLS and BEA schedule pages, each row
+linking to its source; earnings widened to notable reporters with
+estimates and Nasdaq links. Explore Products compacted and expanded to 52
+products/sub-products.
+
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
