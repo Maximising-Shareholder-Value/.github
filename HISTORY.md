@@ -969,6 +969,81 @@ estimates and Nasdaq links. Explore Products compacted and expanded to 52
 products/sub-products.
 
 
+## Homepage v5: Market Data, Sectors, ETFs and Crypto become real research pages (2026-09-27)
+
+Jozsua's review of v4 asked for the site to be "extremely detailed" and
+more engineer-friendly. Shipped locally (frontend only — `msv-api` needed
+no change):
+
+- **Market Data:** 13 → 42 countries (all BRICS members, Indonesia,
+  emerging and frontier markets), each tagged with its group and a
+  live-verified country ETF where one exists. Richer hover card; clicking
+  a country (map or list) opens a country profile below the map (KPIs vs
+  peer group, history charts, governance scores, similar economies, live
+  market data). New global risk dashboard (VIX, rates, inflation, credit,
+  country risk) from free FRED/World Bank series, using stated rule-of-
+  thumb bands. Map "colour by" modes. Mumbai/Johannesburg dots fixed by
+  re-deriving the map projection from country bounding boxes instead of
+  assuming a standard one.
+- **Sectors:** 11 sectors + 52 industries/themes, equal-size heatmap
+  tiles, a sortable all-data table, and a per-sector/industry detail panel
+  (price, performance vs the S&P 500, drivers, curated representative
+  companies — labelled as not live holdings).
+- **ETFs:** 42 categories (~290 ETFs, all live-checked) across US,
+  sectors, themes, income, global, bonds, commodities/mining, and
+  crypto/volatility/leveraged; search box; the old top pills removed.
+- **Crypto:** market overview, Fear & Greed gauge, trending, sortable
+  top-100 with sparklines, coin profile with price chart, categories,
+  DeFi TVL, stablecoins, crypto ETFs/stocks, Crypto 101.
+- **Market Intelligence:** chain/ripple view, industry category chips
+  (AI live, others placeholders with illustrative names only), the 20
+  researched relationships redesigned as a scannable table.
+- **Fixes:** sidebar is one continuous scroll; the stock category pills
+  now show only on stock tabs; homepage/hero type slightly smaller.
+- Free-tier lessons: the World Bank throttles bursts (fixed with a
+  4-at-a-time limiter + retry); CoinGecko's free plan returns empty
+  community/developer data; ~20 curated company tickers had been
+  delisted/acquired and were pruned or renamed (SQ→XYZ, FI→FISV).
+
+## Homepage v5 deployed; React proof-of-concept built and grown (2026-09-27)
+
+Jozsua asked to review the above before deploying ("go through the nitty
+gritty details"), then approved it later the same day, along with a
+second, separate ask: try rebuilding one page in React as a first step
+towards migrating the whole frontend.
+
+- **React + TypeScript proof of concept** (`msv-web/react-poc/`, Vite —
+  own `package.json`, not deployed, listed in `.assetsignore`): the Crypto
+  page rebuilt as components. Jozsua liked it and asked for it to be
+  "flooded with more data," so it grew from a straight rebuild into 8
+  tabs: Overview (market breadth, Altcoin Season Index, a market-cap
+  dominance donut, and a "today's movers" panel that explains *why* a
+  coin moved — either a genuinely matched real news article or a plainly
+  labelled data signal, never a guess), Markets, Exchanges, DeFi,
+  Stablecoins (with live peg-deviation tracking), a new **Bitcoin Cycles**
+  tab (a Bitcoin Rainbow Chart and a Stock-to-Flow model, both heavily
+  caveated as informal community models, not predictions), a new **News**
+  tab (a live Finnhub crypto feed plus a hand-checked, dated Regulation &
+  Adoption tracker — CLARITY Act, GENIUS Act, MiCA, UAE/Hong Kong — every
+  fact re-verified live via web search rather than pulled from memory,
+  since crypto policy moves too fast to trust a training cutoff), and
+  Learn. Caught and fixed a real bug along the way: the news-matching
+  logic first used a plain substring search, which wrongly matched a coin
+  named "Quant" to an unrelated article about "quantum" cryptography —
+  fixed with word-boundary regex matching before it shipped.
+- **Sidebar:** Crypto grouped into its own section (Crypto, plus two new
+  "Soon" placeholders — Bitcoin Cycles, Crypto News) between Macro and
+  Portfolio Builder, previewing where the POC's richer content is headed
+  once it's ported into the real site.
+- **Deployed to production** the same day (`msv-web` commit `f33dea5`),
+  after Jozsua's review. Re-verified live: Sectors, ETFs, Crypto, and the
+  new sidebar section all render with real data. One small pre-existing
+  issue was found during this check (not caused by this batch) — see
+  TODO.md's "Deploy: config.js 404 becomes a console error."
+- Still open: which page migrates to React next, and giving the site a
+  real build step so a React page can actually ship to production (today
+  proved the pattern locally, not in production).
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to

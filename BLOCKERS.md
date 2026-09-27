@@ -115,6 +115,19 @@ looked up and verified. Anything outside that curated list still shows
 generic info only. This is a real, permanent gap for the long tail —
 fixing it properly needs the same FMP confirmation as the item above.
 
+### Added 2026-09-27
+
+- **ETF expense ratios, holdings and assets under management** — not
+  available on any free source checked (Finnhub free `/etf/*` endpoints are
+  paywalled). The ETFs page shows price, change and range only. This also
+  means sector "representative companies" are a curated list, not the
+  tracking ETF's real holdings.
+- **CoinGecko community & developer stats** — the free plan returns
+  `community_data: null` and an empty `developer_data` (verified live
+  2026-09-27), so no GitHub-activity / social "project health" panel.
+- **World Bank has no Taiwan data** — Taiwan appears on the map with
+  market data only, no macro/governance figures.
+
 ## Permission / access blockers
 
 ### Cloudflare notification settings

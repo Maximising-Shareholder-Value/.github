@@ -123,6 +123,18 @@ shipping, matching this app's own "confirmed, not assumed" standard.
   app (e.g. does "Governance" in the new Macro tab section have a Learn
   entry explaining what a WGI score means beyond the inline one-liner?).
 
+## Update 2026-09-27 — what has since been built from this list
+
+Built and live-verified: CoinGecko `market_chart` + `/coins/{id}` +
+`/global` + categories + trending (Crypto page); alternative.me Fear &
+Greed and DefiLlama chain TVL / stablecoins (both keyless, CORS-open);
+FRED risk series and World Bank indicators for the risk dashboard and
+country profiles; Finnhub `/stock/metric` performance periods for the
+Sectors page. Confirmed **not** available free: CoinGecko developer/
+community data, ETF holdings/expense ratios. Next candidates: DefiLlama
+yields and DEX volume, CoinGecko exchanges list, FRED yield-curve history
+charts on the Macro tab.
+
 ## What this doc is not
 
 Not a commitment list — everything here is "worth investigating/

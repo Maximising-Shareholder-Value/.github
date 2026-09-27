@@ -507,6 +507,86 @@ session's own testing notes; a follow-up production smoke check (hard
 refresh on a non-home path) is still needed after the next `msv-web`
 deploy to confirm the `wrangler.jsonc` change works end-to-end.
 
+## Homepage v5: Market Data / Sectors / ETFs / Crypto pages — shipped and deployed 2026-09-27
+
+- [x] Market Data: 42 countries, hover card, country profile, global risk
+      dashboard, "colour by" map, dot fixes.
+- [x] Sectors: 11 sectors + 52 industries, equal tiles, data table, detail panel.
+- [x] ETFs: 42 categories, ~290 live-checked ETFs, search.
+- [x] Crypto: full dashboard (see HISTORY.md).
+- [x] Market Intelligence: ripple view, industry chips, research table.
+- [x] Sidebar: Crypto grouped into its own section between Macro and
+      Portfolio Builder, with two "Soon" placeholders (Bitcoin Cycles,
+      Crypto News) previewing what the React POC already has.
+- [x] **Deployed to production 2026-09-27** (`msv-web` commit `f33dea5`) —
+      re-verified live: nav order, Sectors tiles, Crypto table, ETF chips
+      all render with real data. **Known minor issue found during this
+      check**, not a regression from this batch — see "Deploy: config.js
+      404 becomes a console error" below.
+- [ ] Re-verify the curated ticker lists every few months — companies get
+      acquired/renamed (`sectors.js` reps, `etfs.js`, `crypto.js` ETF/stock lists).
+- [ ] Placeholder industries in Market Intelligence (semiconductors, EV &
+      batteries, energy, defence, pharma…) need real researched relationships
+      before they're shown as anything but illustrative.
+- [ ] Macro tab: differentiate from Market Data (see recommendations given
+      2026-09-27: Macro = one country's economy over time, indicators as
+      charts, policy/rates/inflation narrative; Market Data = cross-country
+      and market-risk snapshot).
+
+## React proof-of-concept — approved and built 2026-09-27, growing, not deployed
+
+Jozsua approved rebuilding the Crypto page in React + TypeScript (Vite) as
+a proof of concept on 2026-09-27, then liked it and asked for it to be
+"flooded with more data." Lives in `msv-web/react-poc/` — own
+`package.json`/`node_modules` (gitignored), listed in `msv-web/.assetsignore`
+so it never deploys. Committed to git for a real history, but the site
+itself still ships as the plain HTML/JS it always has.
+
+- [x] 8 tabs: Overview (market strip, Fear & Greed, trending, market
+      breadth, Altcoin Season Index, market-cap dominance donut, movers
+      with matched-news-or-data-signal "why"), Markets (table + coin
+      profile + futures/derivatives), Exchanges, DeFi (categories, chain
+      TVL, top protocols, top yield pools), Stablecoins (with live peg
+      tracking), **Bitcoin Cycles** (Rainbow Chart, Stock-to-Flow model,
+      halving schedule), **News** (live Finnhub crypto feed + a curated,
+      dated Regulation & Adoption tracker — CLARITY Act, GENIUS Act, MiCA,
+      UAE/Hong Kong — each fact re-verified live via web search before
+      writing, not from memory), Learn.
+- [x] Favourites, auto-refresh, shareable `?coin=`/`?tab=` URLs, dark/light
+      toggle, a hover crosshair on the price chart.
+- [x] Found and fixed a real honesty bug while building: the "why did this
+      coin move" news-matching first used a plain substring search, which
+      matched a coin named "Quant" to an unrelated article about
+      "quantum" cryptography. Fixed with word-boundary regex matching.
+- [ ] **Decision needed before going further:** which page migrates to
+      React next, and when the vanilla site gets a real build step to
+      actually ship a React page in production (today's POC only proves
+      the pattern locally — see msv-web/react-poc/README.md).
+- [ ] Port Bitcoin Cycles and Crypto News into the vanilla site (the two
+      sidebar placeholders added 2026-09-27) once the migration approach
+      is decided.
+
+## Deploy: config.js 404 becomes a console error (found 2026-09-27, not fixed)
+
+Production re-verification after the Homepage v5 deploy found `index.html`'s
+always-present `<script src="config.js">` tag (empty/absent on purpose in
+production — see msv-web/CLAUDE.md's "Config / secrets") now throws a real
+`Uncaught SyntaxError: Unexpected token '<'` in the browser console. This
+predates today's batch: it's a side effect of `wrangler.jsonc`'s
+`not_found_handling: "single-page-application"` (added 2026-09-24), which
+makes a missing `config.js` return the full HTML app shell with a 200
+instead of a plain 404 — and a `<script>` tag that receives HTML instead
+of JS throws a parse error instead of silently failing. **Functionally
+still harmless** (nothing in production ever reads `FINNHUB_API_KEY`, and
+each `<script>` tag fails independently without stopping the rest), but it
+is a real, visible console error on every production page load now, which
+it wasn't before the SPA fallback existed. Not fixed yet because the
+obvious fixes both touch deploy-safety-sensitive files (`.assetsignore`
+excludes `config.js` specifically so a real key can never be deployed by
+accident) — needs a real decision, not a quick edit. Candidate fix: load
+config via a `fetch().catch()` in script.js instead of a `<script src>`
+tag, so a missing file fails silently instead of as a parse error.
+
 ## Homepage overhaul — shipped 2026-09-22 (supersedes the old "Recently Viewed as a sidebar column" item below)
 
 The 2026-09-19 ask to move Recently Viewed into a sidebar column got a
