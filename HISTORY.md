@@ -1038,8 +1038,11 @@ towards migrating the whole frontend.
 - **Deployed to production** the same day (`msv-web` commit `f33dea5`),
   after Jozsua's review. Re-verified live: Sectors, ETFs, Crypto, and the
   new sidebar section all render with real data. One small pre-existing
-  issue was found during this check (not caused by this batch) — see
-  TODO.md's "Deploy: config.js 404 becomes a console error."
+  console error was found during this check (not caused by this batch,
+  see TODO.md) and **fixed and redeployed the same day** (`d12c217`):
+  `index.html` now only requests the local-dev-only `config.js` on
+  `localhost`/`127.0.0.1`, so production never triggers the SPA
+  fallback's HTML-served-as-JS parse error in the first place.
 - Still open: which page migrates to React next, and giving the site a
   real build step so a React page can actually ship to production (today
   proved the pattern locally, not in production).

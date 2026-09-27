@@ -566,26 +566,30 @@ itself still ships as the plain HTML/JS it always has.
       sidebar placeholders added 2026-09-27) once the migration approach
       is decided.
 
-## Deploy: config.js 404 becomes a console error (found 2026-09-27, not fixed)
+## Deploy: config.js 404 becomes a console error — found and fixed same day (2026-09-27)
 
 Production re-verification after the Homepage v5 deploy found `index.html`'s
 always-present `<script src="config.js">` tag (empty/absent on purpose in
 production — see msv-web/CLAUDE.md's "Config / secrets") now throws a real
 `Uncaught SyntaxError: Unexpected token '<'` in the browser console. This
-predates today's batch: it's a side effect of `wrangler.jsonc`'s
+predated today's batch: it's a side effect of `wrangler.jsonc`'s
 `not_found_handling: "single-page-application"` (added 2026-09-24), which
 makes a missing `config.js` return the full HTML app shell with a 200
 instead of a plain 404 — and a `<script>` tag that receives HTML instead
-of JS throws a parse error instead of silently failing. **Functionally
-still harmless** (nothing in production ever reads `FINNHUB_API_KEY`, and
-each `<script>` tag fails independently without stopping the rest), but it
-is a real, visible console error on every production page load now, which
-it wasn't before the SPA fallback existed. Not fixed yet because the
-obvious fixes both touch deploy-safety-sensitive files (`.assetsignore`
-excludes `config.js` specifically so a real key can never be deployed by
-accident) — needs a real decision, not a quick edit. Candidate fix: load
-config via a `fetch().catch()` in script.js instead of a `<script src>`
-tag, so a missing file fails silently instead of as a parse error.
+of JS throws a parse error instead of silently failing.
+
+**Fixed** (`msv-web` commit `d12c217`, deployed same day): `index.html`
+now only requests `config.js` when `location.hostname` is
+`localhost`/`127.0.0.1`/empty (same check as `IS_LOCAL_DEV`), via
+`document.write` from a tiny inline script placed where the old
+`<script src="config.js">` tag was. Production never needed the file's
+variables at all — every reference to them turned out to be either
+`typeof`-guarded or sitting behind an `IS_LOCAL_DEV &&` short-circuit
+that's `false` in production — so the fix doesn't touch `.assetsignore`
+or the SPA fallback. Verified: local dev still loads `config.js`
+unchanged, the Playwright smoke test still passes, and a real check
+against the live production URL confirms `config.js` is no longer
+requested and there are zero console errors.
 
 ## Homepage overhaul — shipped 2026-09-22 (supersedes the old "Recently Viewed as a sidebar column" item below)
 
