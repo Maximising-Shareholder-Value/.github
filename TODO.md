@@ -531,7 +531,17 @@ deploy to confirm the `wrangler.jsonc` change works end-to-end.
 - [ ] Macro tab: differentiate from Market Data (see recommendations given
       2026-09-27: Macro = one country's economy over time, indicators as
       charts, policy/rates/inflation narrative; Market Data = cross-country
-      and market-risk snapshot).
+      and market-risk snapshot). Jozsua confirmed 2026-09-30 he's happy to
+      go ahead — needs a scoping pass (does the Macro tab's own multi-
+      country compare mode get trimmed in favour of Market Data's, and
+      real time-series charts added?) before building, since it changes
+      existing UI, not just a label.
+- [x] **Market Intelligence company panel simplified — 2026-09-30.** The
+      "click a company, see it below" panel had every relationship row
+      showing name, badge, figure, description and source all at once.
+      Now collapsed behind a "Why? ▾" toggle per row, same pattern as the
+      Researched Relationships table below it. Not yet deployed — see
+      HISTORY.md.
 
 ## React proof-of-concept — approved and built 2026-09-27, growing, not deployed
 
@@ -562,8 +572,10 @@ itself still ships as the plain HTML/JS it always has.
       React next, and when the vanilla site gets a real build step to
       actually ship a React page in production (today's POC only proves
       the pattern locally — see msv-web/react-poc/README.md).
-- [ ] Port Bitcoin Cycles and Crypto News into the vanilla site (the two
-      sidebar placeholders added 2026-09-27) once the migration approach
+- [ ] Port Crypto Cycles (renamed 2026-09-30 from "Bitcoin Cycles" — same
+      feature, Jozsua's call to avoid confusion with the separate Macro
+      tab) and Crypto News into the vanilla site (the two sidebar
+      placeholders added 2026-09-27) once the migration approach
       is decided.
 
 ## Deploy: config.js 404 becomes a console error — found and fixed same day (2026-09-27)
@@ -741,8 +753,13 @@ each would be given the app's existing zero-cost architecture:
       before changing anything — possibly a custom domain not set up
       yet, or a different Cloudflare account than the one currently
       deployed to.
-- [ ] Custom domain for $MSV (optional, cosmetic — from the original
-      "Moving forward with $MSV" list, not urgent).
+- [ ] **Custom domain for $MSV — bumped up in priority, 2026-09-30.**
+      Still cosmetic (not blocking anything), but Jozsua asked to keep
+      this high on the list rather than indefinitely parked. Needs: (1)
+      a domain name — Jozsua doesn't have one yet and hasn't decided
+      where to buy one, (2) Cloudflare dashboard → Workers & Pages →
+      msv-web → Settings → Domains & Routes → Add Custom Domain. Steps
+      are ready; just waiting on a domain being picked/bought.
 - [ ] Cloudflare Workers Builds email notifications — Jozsua decided
       2026-09-21 to limit these to failures only (was getting one per
       PR, mostly "succeeded" noise). Can't be changed via the API token

@@ -1047,6 +1047,26 @@ towards migrating the whole frontend.
   real build step so a React page can actually ship to production (today
   proved the pattern locally, not in production).
 
+## Market Intelligence company panel simplified — 2026-09-30, not yet deployed
+
+Jozsua reviewed the "click a company, see it visualised below" panel
+(`renderMiPanel()` in `msv-web/supplyChain.js`) and asked for it to be
+easier to read. Each relationship row (`miEdgeRowHtml()`) used to show
+the company name, a "Sourced · [confidence]" or "Inferred" badge, a
+figure, the full description paragraph, and the source citation all at
+once — dense on first glance, especially with several rows per column.
+
+**Fix:** each row now shows just the company name and a plain
+"Sourced"/"Inferred" tag by default, with a "Why? ▾" toggle that reveals
+the figure, description, confidence level, and source underneath — same
+expand-on-click pattern already used by the Researched Relationships
+table lower on the page (`renderMiResearch()`), so the interaction is
+consistent across the tab rather than a new pattern. No data or research
+content removed, just tucked behind one click. Verified `node --check`
+passes; not yet deployed — needs a local look via `npx http-server -p
+8917` (or Live Server) before shipping, per the usual preview-before-
+deploy step.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
