@@ -128,6 +128,20 @@ fixing it properly needs the same FMP confirmation as the item above.
 - **World Bank has no Taiwan data** — Taiwan appears on the map with
   market data only, no macro/governance figures.
 
+## Standing watch-items (not blockers today, but a real constraint later)
+
+### TradingView widget — free tier is non-commercial only
+**Added:** 2026-09-30. The free "Advanced Real-Time Chart" widget
+(`msv-web/tradingview.js`) is embedded as an optional chart source.
+Confirmed directly from TradingView's own terms of service: free-widget
+use is restricted to non-commercial sites — "we do not permit commercial
+usage of any of our services or APIs [without] separate agreement." Fine
+today (no subscriptions/ads on $MSV). **The moment $MSV starts charging
+money or running ads, this needs either a paid TradingView agreement or
+removal in favor of the in-house chart.js chart** (already built, zero
+licensing risk). Revisit this specific item before any monetization
+launch — don't let it slip through as a "we'll deal with it later."
+
 ## Permission / access blockers
 
 ### Cloudflare notification settings

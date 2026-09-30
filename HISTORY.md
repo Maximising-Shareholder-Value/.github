@@ -1067,6 +1067,33 @@ passes; not yet deployed — needs a local look via `npx http-server -p
 8917` (or Live Server) before shipping, per the usual preview-before-
 deploy step.
 
+## TradingView chart widget added — 2026-09-30, deployed (`msv-web` c6e541c)
+
+Jozsua asked for "powerful chart capability like TradingView." Rather than
+try to rebuild TradingView's feature set in `chart.js`, embedded their
+free "Advanced Real-Time Chart" widget (`tradingview.js`, new file) as a
+second chart source on the ticker deep-dive page, toggled via a "MSV
+Chart / TradingView" switch above the Price Chart card. No API key or
+signup needed — TradingView supplies its own data feed, so it's zero cost
+against Finnhub/Twelve Data quotas. As a side benefit, crypto tickers
+(Finnhub format `BINANCE:BTCUSDT`, which matches TradingView's own
+`EXCHANGE:PAIR` syntax) now get a working chart for the first time — the
+custom chart.js chart has never supported crypto candles.
+
+**License constraint, important if $MSV ever monetizes:** confirmed via
+TradingView's own terms of service — the free widget requires its
+attribution bar to stay visible (enforced with bans/legal action) AND
+restricts free use to **non-commercial** sites: "we do not permit
+commercial usage of any of our services or APIs [without] separate
+agreement." Fine today since $MSV has no subscriptions/ads. If that
+changes, this needs either a paid TradingView agreement or falling back
+to the in-house chart.js chart (zero licensing risk, already built).
+Documented in `tradingview.js`'s file header and the UI's own disclosure
+text so this isn't forgotten later.
+
+Verified before deploying: `node --check`, the existing Playwright smoke
+test (passes), and a manual screenshot check of both toggle states.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to

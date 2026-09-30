@@ -540,8 +540,37 @@ deploy to confirm the `wrangler.jsonc` change works end-to-end.
       "click a company, see it below" panel had every relationship row
       showing name, badge, figure, description and source all at once.
       Now collapsed behind a "Why? ▾" toggle per row, same pattern as the
-      Researched Relationships table below it. Not yet deployed — see
-      HISTORY.md.
+      Researched Relationships table below it. Deployed same day.
+- [x] **TradingView chart widget added and deployed — 2026-09-30.** New
+      "MSV Chart / TradingView" toggle on the ticker page. See BLOCKERS.md
+      "Standing watch-items" for the non-commercial licensing constraint —
+      revisit before any monetization.
+
+## Stock screener — MVP scoped 2026-09-30, building with free-tier data only
+
+Jozsua wants a comprehensive Webull-style screener as part of making the
+app "a complete package." A screener was explicitly ruled out at project
+start (Finnhub free tier's 60/min cap can't support per-ticker calls
+across a large universe) — that constraint is still real, so this MVP
+works within it rather than waiting on a paid data source:
+
+- [ ] **v1 (building now):** reuse the tickers already curated and
+      live-checked elsewhere in this app (`RANKING_STOCK_SYMBOLS` +
+      `sectors.js` reps) as the screener's universe, fetched through the
+      existing throttled+cached `dataUtils.js` layer (same pattern as
+      Winners/Losers/Most Active, just a bigger table). Filters: sector,
+      market cap bucket, price range, today's % change, P/E range. Sortable
+      columns, click a row to open its ticker page. Labelled clearly as
+      covering this app's curated universe, not the whole market.
+- [ ] **v2, pending a live test:** Financial Modeling Prep has a real
+      Stock Screener endpoint (market cap, price, volume, sector, beta,
+      country, exchange — genuinely Webull-shaped filters) that looks
+      free-tier eligible in their docs. This project has been burned by
+      FMP docs before (the ETF endpoints looked free too, confirmed
+      paywalled via a live 402) — needs a fresh free FMP key from Jozsua
+      and one live test request before it's trusted for anything. If it
+      works, this is the upgrade path to a genuinely broad-market screener
+      instead of the curated-universe v1.
 
 ## React proof-of-concept — approved and built 2026-09-27, growing, not deployed
 
