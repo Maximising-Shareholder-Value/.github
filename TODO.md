@@ -561,15 +561,32 @@ works within it rather than waiting on a paid data source:
       deduped stocks). Filters: category, market cap bucket, price range,
       today's up/down, max P/E. Sortable columns, click a row to open its
       ticker page. See HISTORY.md for the full build/verification notes.
-- [ ] **v2, pending a live test:** Financial Modeling Prep has a real
-      Stock Screener endpoint (market cap, price, volume, sector, beta,
-      country, exchange — genuinely Webull-shaped filters) that looks
-      free-tier eligible in their docs. This project has been burned by
-      FMP docs before (the ETF endpoints looked free too, confirmed
-      paywalled via a live 402) — needs a fresh free FMP key from Jozsua
-      and one live test request before it's trusted for anything. If it
-      works, this is the upgrade path to a genuinely broad-market screener
-      instead of the curated-universe v1.
+- [x] **v2 — tested live 2026-09-30, confirmed blocked, not pursuing.**
+      Jozsua provided a fresh FMP key; `/stable/company-screener` returns
+      the same "Restricted Endpoint" error as the ETF holdings/info
+      endpoints (see BLOCKERS.md). No free path to a broader-market
+      screener via FMP. **Went a different direction instead, same day:**
+      embedded TradingView's free Screener widget (real whole-market US
+      stock coverage) as a second tab alongside the MSV Screener MVP —
+      see "TradingView widgets" below.
+- [x] **FMP's `/profile` endpoint IS genuinely free and useful, unlike
+      the screener/holdings endpoints — shipped 2026-09-30.** Real ETF
+      fund name/description/website/ISIN/beta for any ticker, wired into
+      the ticker page (not the Screener). See BLOCKERS.md's "Full
+      official fund name + issuer" item (now resolved) and HISTORY.md.
+
+## TradingView widgets — both shipped 2026-09-30
+
+- [x] **Chart widget** (ticker page) — "MSV Chart / TradingView" toggle,
+      also gives crypto tickers a working chart for the first time.
+- [x] **Screener widget** — "MSV Screener / TradingView" toggle on the
+      Screener page, real whole-market US stock coverage (`market:
+      "america"`), the practical answer once FMP's screener endpoint was
+      confirmed blocked (see above).
+- [ ] **Standing reminder:** both are free/non-commercial-only per
+      TradingView's terms — see BLOCKERS.md's "Standing watch-items,"
+      revisit before any monetization. Not an open task, just don't
+      forget it exists.
 
 ## React proof-of-concept — approved and built 2026-09-27; Phase 1 (build pipeline) deployed 2026-09-30
 

@@ -94,26 +94,40 @@ forward is a paid plan (FMP Ultimate or Twelve Data Pro+, cost not
 precisely confirmed but clearly a real recurring expense, not a few
 dollars) — a genuine build-vs-spend decision, not an engineering one.
 **Until/unless that's decided, this specific data stays unavailable.**
-The FMP key Jozsua provided was tested live and **not stored anywhere**
-(no current free-tier use for it, so no reason to hold onto a credential
-with nothing to do) — if a paid FMP plan is ever chosen, or another use
-for the key comes up, ask for it again.
+
+**Re-confirmed 2026-09-30 with a brand new FMP key** (Jozsua provided a
+fresh one): identical result — `/stable/etf/holdings` and `/stable/etf/
+info` still return "Restricted Endpoint", `/stable/etf/sector-weighting`
+returns an empty array even for SPY/QQQ. **Also newly tested and also
+blocked: `/stable/company-screener`** (the Stock Screener endpoint) —
+same "Restricted Endpoint" response, so the hoped-for broader-market
+screener upgrade path (see TODO.md) is confirmed not available on free
+either. Unlike the 2026-09-21 test, **this key WAS kept and IS in active
+use** — `/stable/profile` (also confirmed working both times) turned out
+genuinely useful for real ETF fund names/descriptions (see the resolved
+item above), so this key is now stored as a Cloudflare secret
+(`FMP_API_KEY`) on `msv-api`, not discarded. If a paid FMP plan is ever
+chosen to unlock the items below, no new key exchange is needed.
 
 ### ETF/fund top holdings, sector weightings, portfolio composition
-**Same blocker as above** — same FMP endpoints, same missing key.
+**Same blocker as above** — same FMP endpoints, same key, re-confirmed
+still restricted 2026-09-30.
 
 ### Full official fund name + issuer, for any arbitrary searched ETF
-**Partially blocked.** Finnhub's `profile2` returns empty `{}` for
-ETFs (confirmed — this is literally how the app detects "this is an
-ETF" today), so there's no live source for "Vanguard Total World Stock
-ETF" as a proper name, or "Vanguard"/"iShares"/etc. as an issuer, for
-an arbitrary ticker typed into search. **Workaround shipped
-2026-09-21:** a small hand-curated lookup table
-(`ETF_FUND_INFO` in `script.js`) covering the ~60 tickers already
-featured in the home page's browse categories, with real names/issuers
-looked up and verified. Anything outside that curated list still shows
-generic info only. This is a real, permanent gap for the long tail —
-fixing it properly needs the same FMP confirmation as the item above.
+**RESOLVED 2026-09-30 — a fresh FMP key was tested live and its
+`/stable/profile` endpoint genuinely works** (unlike `/stock-screener`,
+`/etf/holdings`, and `/etf/info`, which returned the same "Restricted
+Endpoint" error as 2026-09-21's test — confirmed again on the same fresh
+key, not assumed carried over). `/profile` returns a real fund name,
+issuer-agnostic fund-specific description, website, ISIN/CUSIP, and beta
+for ANY ticker — not just the curated list. Wired in as
+`fetchFmpEtfProfile()` (msv-web's `script.js`), proxied via `msv-api`'s
+new `/api/fmp` route, 24h-cached given FMP's tight 250/day free budget.
+The old 2026-09-21 workaround (`ETF_FUND_INFO`, a ~60-ticker curated
+lookup) stays in place as the fallback when FMP has no key configured or
+fails for a given ticker — not removed, just no longer the only source.
+**Still does NOT cover:** NAV, AUM, expense ratio, holdings, sector
+weighting — see below, unchanged.
 
 ### Added 2026-09-27
 

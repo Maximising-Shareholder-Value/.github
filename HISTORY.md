@@ -1163,6 +1163,57 @@ Full page-by-page order after that: Sectors → ETFs → Screener → Market
 Data → Market Intelligence → Learn → Home → the ticker deep-dive page
 (biggest/riskiest, last) → finally the sidebar/router shell itself.
 
+## TradingView Screener + FMP ETF profiles + FMP usage bar — 2026-09-30, deployed
+
+Jozsua provided a fresh FMP API key and asked for three things: embed the
+TradingView Screener widget, use FMP to build out more ETF data if
+possible, and add an FMP usage bar to the sidebar alongside the others.
+
+**Live-tested the fresh key first** (`msv-api` cdddf72 for the backend
+route, `msv-web` 3098ccf for the frontend): `/stable/company-screener`,
+`/stable/etf/holdings`, and `/stable/etf/info` all still return
+"Restricted Endpoint" — same paywall as the 2026-09-21 test, confirmed
+again rather than assumed carried over. `/stable/profile`, however,
+genuinely works for any ticker (also true back on 2026-09-21, per
+BLOCKERS.md, just never acted on) — real fund name, a genuinely fund-
+specific description, website, ISIN/CUSIP, beta.
+
+- **TradingView Screener widget** — a "MSV Screener / TradingView" toggle
+  on the Screener page, same pattern as the chart toggle but a different
+  embed mechanism (TradingView's newer self-initializing `embed-widget-
+  screener.js`, config as a `<script>` tag's JSON text content, not a
+  constructor call — config keys confirmed from the widget's own loader
+  script before using them). `market: "america"` gives real whole-market
+  US stock coverage, the practical answer once FMP's screener endpoint
+  was confirmed blocked.
+- **FMP ETF profiles** — `fetchFmpEtfProfile()` (`msv-web/script.js`)
+  calls the new `/api/fmp` proxy route (`msv-api/worker.js`, `FMP_API_KEY`
+  Cloudflare secret, 24h cache given FMP's tight 250/day free budget) for
+  ANY ETF ticker, not just the ~60 in the curated `ETF_FUND_INFO` list.
+  Real description takes priority over the Wikipedia-issuer-fallback
+  (skips that fetch entirely when FMP succeeds); real website/ISIN shown
+  as new facts. The curated list + Wikipedia fallback stays in place for
+  when FMP has no key or fails for a given ticker — not replaced, just no
+  longer the only source. Does NOT unlock NAV/AUM/expense ratio/holdings/
+  sector weighting — those stay exactly where they were (parked).
+- **FMP usage bar** — a new "FMP (daily) x / 250 per day" row in the
+  sidebar's API usage panel, reusing the existing generic table-driven
+  renderer and the daily-count `localStorage` pattern already built for
+  Twelve Data's 800/day cap — no new UI code needed beyond one config row.
+
+**Verified before deploying:** `node --check` on every changed file, the
+existing Playwright smoke test, two manual functional tests with mocked
+Finnhub/FMP responses (confirmed the ETF page renders FMP's real
+description/ISIN/website, and the sidebar usage panel shows the new FMP
+row), and — since this sandbox can't reach TradingView's real CDN to
+render a full visual proof locally — a direct DOM check confirming the
+Screener widget's script tag is constructed exactly right (correct `src`,
+correct JSON config keys). Both pieces then re-verified against the real
+deployed production site with a live browser: the ETF page shows a real
+FMP-sourced description/ISIN for QQQ, and the TradingView Screener
+widget's toolbar (Overview/Filters/General dropdowns) renders live —
+zero console errors either way.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
