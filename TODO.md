@@ -554,14 +554,13 @@ start (Finnhub free tier's 60/min cap can't support per-ticker calls
 across a large universe) — that constraint is still real, so this MVP
 works within it rather than waiting on a paid data source:
 
-- [ ] **v1 (building now):** reuse the tickers already curated and
-      live-checked elsewhere in this app (`RANKING_STOCK_SYMBOLS` +
-      `sectors.js` reps) as the screener's universe, fetched through the
-      existing throttled+cached `dataUtils.js` layer (same pattern as
-      Winners/Losers/Most Active, just a bigger table). Filters: sector,
-      market cap bucket, price range, today's % change, P/E range. Sortable
-      columns, click a row to open its ticker page. Labelled clearly as
-      covering this app's curated universe, not the whole market.
+- [x] **v1 — shipped and deployed 2026-09-30** (`msv-web` e52483f). Ended
+      up using `BROWSE_CATEGORIES`' four stock categories (not
+      `RANKING_STOCK_SYMBOLS` + `sectors.js` reps as originally sketched
+      above — simpler, and those four categories alone already give ~70
+      deduped stocks). Filters: category, market cap bucket, price range,
+      today's up/down, max P/E. Sortable columns, click a row to open its
+      ticker page. See HISTORY.md for the full build/verification notes.
 - [ ] **v2, pending a live test:** Financial Modeling Prep has a real
       Stock Screener endpoint (market cap, price, volume, sector, beta,
       country, exchange — genuinely Webull-shaped filters) that looks

@@ -1094,6 +1094,37 @@ text so this isn't forgotten later.
 Verified before deploying: `node --check`, the existing Playwright smoke
 test (passes), and a manual screenshot check of both toggle states.
 
+## Stock Screener MVP shipped — 2026-09-30, deployed (`msv-web` e52483f)
+
+Jozsua asked for a comprehensive, Webull-style screener as part of making
+$MSV "a complete package." Built the MVP version scoped in TODO.md the
+same day: a new Screener page/nav item (`screener.js`) with filters for
+category, market cap bucket, price range, today's up/down, and max P/E,
+sortable columns, click a row to open the real ticker page. This flips
+the existing "Stock Screener" Coming Soon placeholder to live.
+
+**Deliberately not a whole-market screener** — reuses the app's existing
+curated ~70-stock universe (`BROWSE_CATEGORIES`' four stock categories,
+deduped), same constraint noted in root `CLAUDE.md` since project start:
+Finnhub's free tier has no bulk screener endpoint and caps at 60 calls/
+min shared across every visitor. Each ticker needs 3 calls (quote,
+metric, profile2 for market cap — added `fetchProfileCached` to
+`dataUtils.js`, 24h TTL). Queued as individual jobs rather than bundled
+per-ticker behind `Promise.all`, so the throttle (concurrency 2, 1.2s
+gap) governs the real call rate directly instead of tripling it. Renders
+progressively (skeleton with "--" appears immediately, rows fill in as
+data lands) rather than blocking on a spinner — verified this actually
+works via a manual functional test with mocked Finnhub responses,
+including confirming the P/E and market-cap filters correctly narrow
+results against realistic data shapes before deploying.
+
+**Upgrade path, not yet built:** a broader, real whole-market version is
+possible if Financial Modeling Prep's Stock Screener endpoint turns out
+to be genuinely free-tier accessible — this project has been burned by
+FMP's docs overstating free access before (the ETF endpoints), so that
+needs a live test with a fresh key before it's trusted. Tracked in
+TODO.md, waiting on Jozsua to provide a key.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
