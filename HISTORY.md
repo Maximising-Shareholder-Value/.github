@@ -1125,6 +1125,44 @@ FMP's docs overstating free access before (the ETF endpoints), so that
 needs a live test with a fresh key before it's trusted. Tracked in
 TODO.md, waiting on Jozsua to provide a key.
 
+## React migration Phase 1 shipped — 2026-09-30, deployed (`msv-web` 39ce4c3)
+
+Jozsua approved starting the React/TypeScript migration plan and asked to
+begin with Phase 1: prove a React page can actually ship to production,
+before migrating any real page's functionality. Done — live at
+[msv-web.jozsua-heng.workers.dev/react-crypto/](https://msv-web.jozsua-heng.workers.dev/react-crypto/),
+linked from the real Crypto page as a clearly labelled beta.
+
+**How it works:** `react-poc/`'s `npm run build` now outputs to a new
+sibling folder `msv-web/react-crypto/` (`vite.config.ts`'s `outDir`),
+instead of the default `react-poc/dist/` which `.assetsignore` excludes
+wholesale (source, `node_modules`, config — none of that should ever be
+public). `base: "/react-crypto/"` makes the built `index.html`'s asset
+URLs resolve correctly from that path. `react-crypto/` is gitignored, a
+build artifact like any other — **there's no CI/CD auto-build**, `npm run
+build` must be run by hand before `npx wrangler deploy` any time
+`react-poc/` changes and the live beta should reflect it (documented in
+`react-poc/README.md`'s new "Deploying it" section).
+
+**Verified before calling this done** (same discipline as every other
+deploy-safety check in this project): a real browser check confirmed live
+data renders with zero console errors, AND `react-poc/`'s actual source/
+config/`node_modules` were confirmed still NOT publicly fetchable
+afterward — checked the response *body*, not just status code, since the
+SPA fallback returns 200 for literally any unmatched path.
+
+Also added: a `react-build` CI job (typecheck + `vite build` on every PR,
+build-only so no live API key is needed) alongside the existing
+`syntax-check`/`smoke-test` jobs, so a broken React build fails before
+merge instead of only being discovered at deploy time.
+
+**Next: Phase 3, page 1 — port real Crypto functionality into this
+pipeline.** The POC already exists; the work here is making it the *real*
+Crypto page (not just a linked beta) and retiring `crypto.js`. Not started.
+Full page-by-page order after that: Sectors → ETFs → Screener → Market
+Data → Market Intelligence → Learn → Home → the ticker deep-dive page
+(biggest/riskiest, last) → finally the sidebar/router shell itself.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to

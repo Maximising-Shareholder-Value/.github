@@ -571,7 +571,7 @@ works within it rather than waiting on a paid data source:
       works, this is the upgrade path to a genuinely broad-market screener
       instead of the curated-universe v1.
 
-## React proof-of-concept — approved and built 2026-09-27, growing, not deployed
+## React proof-of-concept — approved and built 2026-09-27; Phase 1 (build pipeline) deployed 2026-09-30
 
 Jozsua approved rebuilding the Crypto page in React + TypeScript (Vite) as
 a proof of concept on 2026-09-27, then liked it and asked for it to be
@@ -596,10 +596,18 @@ itself still ships as the plain HTML/JS it always has.
       coin move" news-matching first used a plain substring search, which
       matched a coin named "Quant" to an unrelated article about
       "quantum" cryptography. Fixed with word-boundary regex matching.
-- [ ] **Decision needed before going further:** which page migrates to
-      React next, and when the vanilla site gets a real build step to
-      actually ship a React page in production (today's POC only proves
-      the pattern locally — see msv-web/react-poc/README.md).
+- [x] **Phase 1 — build pipeline proven in production, 2026-09-30**
+      (`msv-web` 39ce4c3). `npm run build` outputs to a new sibling
+      `msv-web/react-crypto/` folder; deployed and linked from the live
+      Crypto page as a clearly labelled beta. See HISTORY.md for the full
+      writeup and the verification steps taken before calling it done.
+- [ ] **Phase 3, page 1 (next) — port real Crypto functionality into this
+      pipeline**, replacing the linked-beta stopgap: make `/react-crypto/`
+      (or wherever it ends up) the actual Crypto page, retire `crypto.js`.
+      Order after that: Sectors → ETFs → Screener → Market Data → Market
+      Intelligence → Learn → Home → the ticker deep-dive page (last) →
+      the sidebar/router shell itself (only once every page is React).
+      Not started.
 - [ ] Port Crypto Cycles (renamed 2026-09-30 from "Bitcoin Cycles" — same
       feature, Jozsua's call to avoid confusion with the separate Macro
       tab) and Crypto News into the vanilla site (the two sidebar
