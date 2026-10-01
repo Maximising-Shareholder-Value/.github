@@ -1274,6 +1274,38 @@ calendar + expanded news categories, ETF-by-issuer grouping, world-map
 country-dropdown-as-default, bigger sector ETF popups, more homepage/
 screener/stock-page content, and a Learn-section stock-picking guide.
 
+## Low-hanging-fruit batch: screener columns + more browse tickers — 2026-10-01
+
+Second pass the same day, after the chart fix/layout batch — Jozsua asked
+to start on the "not started" items, low-hanging fruit first.
+
+- **Screener: 5 new columns** (52-Week High, 52-Week Low, Beta, Dividend
+  Yield, Avg Volume 10-Day) — genuinely free, since `ensureScreenerData()`
+  already fetches a full `/stock/metric` response per ticker and these
+  fields were just sitting there unused. No new network calls, no slower
+  page load.
+- **BROWSE_CATEGORIES grown again** (`home.js`) — each of the 7 homepage
+  categories gained 4-6 more real tickers (Trending Tech/Blue Chip/
+  Dividend Payers/Growth +6 each, ETFs +6, Bond ETFs/Commodities +4
+  each), same zero-cost-at-list-stage pattern as the 2026-09-19 12→18
+  bump. **Every new ticker was live-verified against the real production
+  `msv-api` proxy before being added** (`/stock/profile2` for stocks —
+  real company name came back for all 24; `/quote` for ETFs — real
+  nonzero price for all but one) — one candidate (NIB, cocoa) came back
+  all-zero/invalid and was swapped for WOOD (timber & forestry) instead,
+  confirmed live. Same discipline as sectors.js/etfs.js's curated lists,
+  done because this project has a real history of delisted/renamed
+  tickers slipping into hand-written lists (EA, CMA, MRO, CTRA, ABB, SQ→XYZ,
+  FI→FISV, all documented in etfs.js's/sectors.js's own history).
+- **Side effect, documented not hidden:** the Screener's universe grew
+  ~70 → ~94 tickers (it draws from 4 of these same categories), so its
+  cost estimate updated too (~210 → ~282 Finnhub calls for a cold first
+  load) — same throttle protects it, just a slightly longer first load,
+  not a new risk category.
+
+Not deployed yet, same as the earlier batch today — Jozsua reviews
+before `wrangler deploy`.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
