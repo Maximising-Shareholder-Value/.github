@@ -856,13 +856,16 @@ production.
       trading-style "who's holding/trading what" page (Jozsua's
       r/tradewithcongress reference) — both need a free/hobby-tier data
       source confirmed to actually exist before scoping further.
+- [x] Bigger sector→top-ETFs popups — 2026-10-01: clicking a sector or
+      industry now also shows other ETFs tracking the same market
+      (cross-referenced from etfs.js's ETF_CATEGORIES, not a new hand-
+      curated list) — see HISTORY.md's "other ETFs tracking this
+      market" entry. 60/63 sectors+industries covered.
 - [ ] **Not started — moderate, needs new UI:** world map's country list
       made a dropdown by default instead of a secondary view (Jozsua
       attached a reference image, but it didn't actually show the
       described UI — need a real screenshot/example before building
-      this); bigger sector→top-ETFs popups (the current
-      click-to-expand-below behavior is liked, just wants more shown
-      inside it); more homepage sections; stock page 1D price/% change
+      this); more homepage sections; stock page 1D price/% change
       (likely already shown on the ticker deep-dive page and the dense
       quotes table — need Jozsua to point at the specific surface that's
       missing it before building something redundant).

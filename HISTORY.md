@@ -1339,6 +1339,48 @@ quotes-table component used everywhere else in the app.
 Not deployed yet, same as the day's earlier batches — Jozsua reviews
 before `wrangler deploy`.
 
+## Sectors: "other ETFs tracking this market" — 2026-10-01
+
+Fourth pass the same day. Jozsua's original ask, back when he first saw
+the Sectors page: "currently one ETF is representing one sector or
+subsector — upon clicking it, can it show the top ETFs in that market?
+Oh, it opens up below, so that's great, let's display more in the
+industry."
+
+Added a new section to the sector/industry detail panel (`sectors.js`,
+`renderSectorDetail`), right below the existing price/performance block:
+"Other ETFs tracking this sector/industry." Rather than hand-curating a
+second ETF list per sector, it cross-references `etfs.js`'s
+`ETF_CATEGORIES` for other funds already tracked on the same theme —
+e.g. clicking Technology (tracked by XLK) now also shows VGT, FTEC, IYW,
+SMH, SOXX, IGV, FDN, each with a live price. Verified the match rate with
+a standalone data script before touching the UI: 60 of 63 sector/industry
+entries (95%) found a matching multi-fund category; the 3 that don't
+(Communication Services sector itself, the Entertainment and Autos
+industries) just don't show the section, rather than showing something
+thin or wrong.
+
+One real bug caught by that same verification pass, before it shipped:
+the naive version matched the `sec-spdr` category first for every S&P
+sector (since that category also contains XLK etc.), which would have
+shown "other ETFs" that were actually just the other 10 unrelated S&P
+sectors' SPDRs — not useful, and not what was asked for. Fixed by
+excluding that one category from this specific lookup.
+
+**Explicitly not ranked by market cap or AUM** — Jozsua's original
+phrasing asked for that, but this project confirmed back in September
+that AUM/assets are paywalled on every free data source checked (see
+BLOCKERS.md), so the list is disclosed as "this app's own curated order,
+not a ranking" rather than faking a sort order off data that isn't
+actually available.
+
+Verified with a live browser check: clicking the Technology sector tile
+renders the new table with 7 real alternative ETFs, correct live
+prices/%, no console errors.
+
+Not deployed yet, same as the day's earlier batches — Jozsua reviews
+before `wrangler deploy`.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
