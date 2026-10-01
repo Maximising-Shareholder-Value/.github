@@ -845,26 +845,27 @@ production.
       Yield, Avg Volume, all from data already fetched.
 - [x] More stocks per homepage category — 2026-10-01: each of the 7
       BROWSE_CATEGORIES grew by 4-6 real, live-verified tickers.
+- [x] ETF categorization by issuer — 2026-10-01: new "By Issuer" toggle
+      on the ETFs page, 15 issuers (Vanguard, BlackRock/iShares, State
+      Street/SPDR, Schwab, JPMorgan + 10 more) each with a blurb, derived
+      from existing fund names so it can't drift out of sync — see
+      HISTORY.md's "ETF By-Issuer view" entry.
 - [ ] **Not started — needs feasibility research first** (same discipline
       as the options/bonds research in API_RESEARCH.md, before any UI is
       built): Polymarket/prediction-market data; a Burry/congressional-
       trading-style "who's holding/trading what" page (Jozsua's
       r/tradewithcongress reference) — both need a free/hobby-tier data
       source confirmed to actually exist before scoping further.
-- [ ] **Not started — moderate, needs new UI (not shipped in the
-      low-hanging pass — these need a new view/section built, not just
-      more rows/columns on an existing one):** ETF categorization by
-      issuer (Vanguard/Schwab/JPMorgan/etc. with overarching
-      descriptions — issuer data already exists from the 2026-09-30 FMP
-      work); world map's country list made a dropdown by default instead
-      of a secondary view (Jozsua attached a reference image, but it
-      didn't actually show the described UI — need a real
-      screenshot/example before building this); bigger sector→top-ETFs
-      popups (the current click-to-expand-below behavior is liked, just
-      wants more shown inside it); more homepage sections; stock page 1D
-      price/% change (likely already shown on the ticker deep-dive page
-      and the dense quotes table — need Jozsua to point at the specific
-      surface that's missing it before building something redundant).
+- [ ] **Not started — moderate, needs new UI:** world map's country list
+      made a dropdown by default instead of a secondary view (Jozsua
+      attached a reference image, but it didn't actually show the
+      described UI — need a real screenshot/example before building
+      this); bigger sector→top-ETFs popups (the current
+      click-to-expand-below behavior is liked, just wants more shown
+      inside it); more homepage sections; stock page 1D price/% change
+      (likely already shown on the ticker deep-dive page and the dense
+      quotes table — need Jozsua to point at the specific surface that's
+      missing it before building something redundant).
 - [ ] **Not started — professional-look design pass on the in-house
       chart** (distinct from the dead-space bug fix above): gridlines,
       candlestick styling, general visual polish so it reads as trustworthy

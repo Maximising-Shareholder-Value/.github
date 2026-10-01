@@ -1306,6 +1306,39 @@ to start on the "not started" items, low-hanging fruit first.
 Not deployed yet, same as the earlier batch today — Jozsua reviews
 before `wrangler deploy`.
 
+## ETF By-Issuer view — 2026-10-01
+
+Third pass the same day, continuing down the "low-hanging fruit" list.
+Jozsua's exact ask: "I know Vanguard has VOO/VOOG, Schwab has
+SCHG/SCHB/SCHD, JPMorgan has JEPI/JEPQ — I want this visualised in a
+simple to see and understand and intuitive way."
+
+Added a "By Category" / "By Issuer" toggle to the ETFs page (`etfs.js`).
+Issuer is **derived from each fund's own name string** rather than
+hand-tagging all ~290 tickers a second time — this file already writes
+names consistently as "Vanguard X", "iShares Y", "SPDR Z" (confirmed by
+inspection), so the by-issuer view can never drift out of sync with the
+by-category data above it. A sanity check script (run before calling this
+done, not just trusted by eye) confirmed **222 of 256 unique tickers
+(87%) matched to a real issuer**, sorted into 15 issuer cards each with a
+short blurb (Vanguard 32 funds, BlackRock/iShares 72, State Street/SPDR
+32, Schwab 6, JPMorgan 3, Invesco 19, and 9 smaller ones). The unmatched
+13% are smaller/niche issuers (Alerian, Amplify, abrdn, Sprott,
+KraneShares, United States Commodity Funds, etc.) — deliberately left out
+of this view rather than guessed at or mislabeled. One small override
+was needed: the 11 S&P sector SPDRs are written as short names
+("Technology", not "SPDR Technology") in their own category since that
+category's blurb already says SPDR — handled with an explicit
+ticker-level override rather than changing those existing display names.
+
+Verified with a live browser check (not just reading the code): the
+toggle switches views, all 15 issuer cards render with correct counts,
+clicking an issuer (tested Charles Schwab) opens the same dense
+quotes-table component used everywhere else in the app.
+
+Not deployed yet, same as the day's earlier batches — Jozsua reviews
+before `wrangler deploy`.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
