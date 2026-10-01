@@ -821,3 +821,53 @@ each would be given the app's existing zero-cost architecture:
       this needs Jozsua to do it himself in the Cloudflare dashboard
       (Notifications → the Workers Builds policy for msv-web/msv-api →
       select "Build failed" only). Not yet confirmed done.
+
+## Jozsua's 2026-10-01 feature list — triaged, first batch shipped
+
+Sent as one long list; sequenced into groups rather than attempted all at
+once (session-usage-limit risk flagged up front, per Jozsua's standing
+instruction). Group 1 (quick wins + the chart bug) shipped the same
+session — see HISTORY.md's "Chart honesty fix + layout density pass"
+entry for the detail. Not yet deployed to production.
+
+- [x] Chart 1D/4H dead-space bug (the "greyed out, unusable" report) —
+      fixed 2026-10-01.
+- [x] 1W chart x-axis showing time-only labels with no date — fixed
+      2026-10-01 (found while investigating the above, not originally
+      reported as a separate bug).
+- [x] Bigger charting section (in-house chart canvas + TradingView-sized
+      sub-panels) — 2026-10-01.
+- [x] Font size -5% (via the existing `--page-zoom` variable) — 2026-10-01.
+- [x] Narrower left sidebar, Seeking-Alpha-style — 2026-10-01.
+- [ ] **Not started — needs feasibility research first** (same discipline
+      as the options/bonds research in API_RESEARCH.md, before any UI is
+      built): Polymarket/prediction-market data; a Burry/congressional-
+      trading-style "who's holding/trading what" page (Jozsua's
+      r/tradewithcongress reference) — both need a free/hobby-tier data
+      source confirmed to actually exist before scoping further.
+- [ ] **Not started — moderate, no new data source needed:** ETF
+      categorization by issuer (Vanguard/Schwab/JPMorgan/etc. with
+      overarching descriptions — issuer data already exists from the
+      2026-09-30 FMP work); world map's country list made a dropdown by
+      default instead of a secondary view (Jozsua attached a reference
+      image, but it didn't actually show the described UI — need a real
+      screenshot/example before building this); bigger sector→top-ETFs
+      popups (the current click-to-expand-below behavior is liked, just
+      wants more shown inside it); more homepage sections; stock page 1D
+      price/% + more stocks per category; more Screener columns.
+- [ ] **Not started — professional-look design pass on the in-house
+      chart** (distinct from the dead-space bug fix above): gridlines,
+      candlestick styling, general visual polish so it reads as trustworthy
+      as the TradingView widget next to it.
+- [ ] **Not started — needs real research, not just more UI:** market
+      news page expansion (way more categories) + an IPO calendar — same
+      "confirm a free data source exists first" discipline as the other
+      research items above.
+- [ ] **Not started — content writing, no data risk:** Learn section
+      stock-picking page — what indicators/tools people actually use for
+      technical and fundamental analysis, and for finding lower-risk
+      picks.
+- [ ] React migration status, answered directly (not a to-do): Phase 1
+      (build pipeline) is deployed; Phase 3 page 1 (porting real Crypto
+      functionality in, replacing `crypto.js`) hasn't started yet — see
+      the React section above.

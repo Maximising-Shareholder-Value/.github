@@ -1214,6 +1214,66 @@ FMP-sourced description/ISIN for QQQ, and the TradingView Screener
 widget's toolbar (Overview/Filters/General dropdowns) renders live —
 zero console errors either way.
 
+## Chart honesty fix + layout density pass — 2026-10-01
+
+Jozsua sent a long list of feature requests for $MSV; the first batch
+tackled was the quick, low-risk layout items plus one real bug, chosen
+together so the session wouldn't stall on the bigger unknowns (Polymarket/
+congressional-trading data, which need their own feasibility research
+first — tracked separately below).
+
+**Found while investigating "the 1D/3D/7D ranges look greyed out and
+unusable" (Jozsua's report, imprecise range names but a real bug
+underneath):** screenshotted the live site's chart at every range before
+touching code (`msv-web` `chart.js`/`index.html`/`style.css`). Two real
+problems, not one:
+
+- **1D/4H wasted roughly half the chart as dead space.** The axis was
+  deliberately extended to the full 4am-8pm session window so there'd be
+  room to shade "this is when pre/after-hours would be" bands — but
+  Twelve Data's free tier has no real data in those windows, so the bands
+  were empty, and on a real screen the actual price line was squeezed
+  into a sliver of the chart. Jozsua's "unusable" report is correct: a
+  disclosure feature that eats half the chart for zero information isn't
+  worth it. Removed the axis extension and the shading entirely — 1D/4H
+  now bound tightly to the real data like every other range, replaced the
+  swatch legend with one plain sentence disclosing the same free-tier
+  limitation without taking up chart space for it.
+- **1W's x-axis labels showed time-of-day only ("9:30 AM" … "3:55 PM"),
+  no date** — `formatChartDate()` decided time-vs-date formatting off a
+  raw `series.intraday` flag, true for 1W's 30-minute bars same as any
+  single-session range, but 1W actually spans 5 different days. Every
+  label looked like it belonged to the same single day. Fixed by reusing
+  the same "single session vs multi-day" distinction `getXMapper` already
+  computed for its own axis-positioning decision — 1W labels now show
+  real dates (Sep 24, Sep 25, Sep 28…).
+
+**Also shipped in the same pass** (the "quick wins" Jozsua asked for
+first): the in-house price chart canvas grown 340px→460px (sub-panels
+scaled up to match) since TradingView's embedded widget next to it was
+already 500px and made the in-house one look small by comparison; sidebar
+width 264px→220px for a denser, Seeking-Alpha-style nav; the page-wide
+`--page-zoom` variable (the same knob used for the 2026-09-21 "+10%
+bigger" request) taken from 1.1→1.045 for the "decrease font size 5%"
+ask — the only global scale control this page has, so it moves spacing
+and images proportionally too, not just type.
+
+**Verified before calling it done:** real production screenshots (before)
+confirmed the actual bug visually rather than just from reading the code;
+a local Playwright harness with mocked Twelve Data responses shaped like
+5 real trading days (after) confirmed both fixes render correctly —
+full-width price line on 1D/4H, real per-day dates on 1W — plus
+`node --check` on the edited JS. Not yet deployed to production; Jozsua
+reviews before a `wrangler deploy`.
+
+**Still open from Jozsua's same request list** (deliberately not started
+this session): Polymarket/prediction-market data, a Burry/congressional-
+trading-style holdings page (needs feasibility research first, same
+discipline as the options/bonds research in API_RESEARCH.md), IPO
+calendar + expanded news categories, ETF-by-issuer grouping, world-map
+country-dropdown-as-default, bigger sector ETF popups, more homepage/
+screener/stock-page content, and a Learn-section stock-picking guide.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
