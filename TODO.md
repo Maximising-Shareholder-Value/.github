@@ -853,24 +853,39 @@ production.
 - [x] **Feasibility research done — 2026-10-01**, see
       API_RESEARCH.md's "Prediction markets & 'who's holding/trading
       what'" section for the full writeup. Three separate verdicts:
-  - [ ] **Polymarket — clear to build, no blockers.** Both public APIs
-        (Gamma + CLOB) are free, CORS-enabled (callable directly from
-        the browser, no msv-api proxy needed), generous rate limits,
-        confirmed live with real Fed-rate-decision markets. The
-        strongest result of the three — do this one first.
+  - [x] **Polymarket — shipped 2026-10-01.** New Prediction Markets page
+        (`predictionMarkets.js`), 6 tabs via `tag_id` filtering (found
+        `tag_slug` is silently broken on the live API — real bug caught
+        before shipping). No msv-api proxy needed. Verified live: 24
+        real markets per tab, including live Oct 2026 Fed-meeting odds.
+        Not deployed yet.
   - [ ] **Michael Burry / 13F institutional holdings — buildable, but a
         real multi-piece build.** SEC EDGAR is free and official;
         confirmed live against Scion Asset Management's actual filings.
         Needs two new msv-api proxy routes (SEC Archives isn't
         CORS-enabled; OpenFIGI for CUSIP→ticker mapping isn't either)
         plus real XML parsing — scope as its own small project, not a
-        quick add.
+        quick add. **Not Burry-specific** — Jozsua clarified 2026-10-01
+        this should cover any notable manager's 13F (Buffett, Ackman,
+        Wood, etc.), same mechanism per manager via their CIK.
   - [ ] **Nancy Pelosi / congressional trading — no good free API found,
         don't build yet.** House Stock Watcher and Senate Stock Watcher
         (the usual free answer) are both confirmed dead. Quiver
         Quantitative has no free API tier. See BLOCKERS.md's new
         "Congressional stock trading data" entry — revisit later or pay
         for Quiver if this becomes a priority.
+- [x] **Community/subreddit "what people are saying" page — researched
+      2026-10-01, declined.** Not a "no free tier" situation — the
+      platforms are actively closing: Reddit announced 2026-09-30 it's
+      shutting down RSS (Nov 13, 2026) and its whole public API (March
+      2027) for paid-only access; Stocktwits has new developer
+      registrations closed indefinitely. See BLOCKERS.md's new
+      "Community/subreddit sentiment data" entry. If still wanted,
+      suggested the Crypto page's hand-curated "Regulation & Adoption
+      tracker" pattern instead of a live feed — periodic research, not
+      an automated integration. Also flagged: "summarize" needs a real
+      LLM API call (real cost), different from every other free-tier
+      integration in this app.
 - [x] Bigger sector→top-ETFs popups — 2026-10-01: clicking a sector or
       industry now also shows other ETFs tracking the same market
       (cross-referenced from etfs.js's ETF_CATEGORIES, not a new hand-

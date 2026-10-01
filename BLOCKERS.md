@@ -74,6 +74,25 @@ either is a real, separate build task, not evaluated further here.
 **Current answer:** none. Revisit periodically (this space turns over
 fast) or pay for Quiver's API if this becomes a priority.
 
+### Community/subreddit sentiment data, for a "what are people saying" page
+**Blocked since:** 2026-10-01, researched for Jozsua's community-page
+request (full detail in [API_RESEARCH.md](API_RESEARCH.md)'s
+"Community/sentiment data" section). Not just "restrictive" —
+**actively shutting down**: Reddit announced 2026-09-30 (the day before
+this research) that it's closing RSS feeds November 13, 2026 and public
+API access entirely by March 2027, moving to paid-only AI-licensing
+deals. The old no-auth `.json` trick is already dead (confirmed: flat
+403). Stocktwits, the finance-native alternative, has a working legacy
+endpoint but its official developer program has new registrations
+closed indefinitely pending a review. **Current answer:** none — unlike
+most blockers here, this isn't "no vendor offers it free," it's "the
+platforms themselves are closing this door." If Jozsua still wants
+community content, the Crypto page's hand-curated, periodically-
+refreshed "Regulation & Adoption tracker" is the precedent to follow
+instead of a live feed. Note separately: "summarize" would need a real
+LLM API call from msv-api (actual per-request cost), a different
+category of spend than this app's free-tier-only integrations so far.
+
 ### ETF/fund "vital stats" — NAV, net assets/AUM, expense ratio, holdings, sector weighting
 **🅿️ PARKED, 2026-09-21 — Jozsua's explicit decision, not being pursued.**
 Blocked since 2026-09-19, confirmed a dead end on free tiers on

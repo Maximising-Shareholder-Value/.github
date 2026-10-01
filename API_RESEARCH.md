@@ -277,6 +277,80 @@ has more of a track record, or (c) if Jozsua wants this badly enough to
 pay, Quiver Quantitative's $30/month Hobbyist API is the most
 established paid option found. Not a "no," just a "not free yet."
 
+**Not just Burry** — Jozsua clarified (2026-10-01) he used Burry as one
+example, not the target: the real ask is a general "notable figures"
+holdings/trades page. This doesn't change the research above — 13F
+covers ANY manager who registered a CIK (Burry/Scion, Buffett/Berkshire
+Hathaway, Ackman/Pershing Square, Wood/ARK Invest, etc. all file the
+same way), so building it as "a curated list of tracked managers, same
+mechanism per manager" rather than "a Burry page" was already the right
+shape — just worth stating explicitly before anyone scopes it as a
+one-person feature.
+
+## Community/sentiment data: subreddits & similar (researched 2026-10-01)
+
+Jozsua asked whether a "community page" summarizing subreddit discussion
+(what people are saying, buy/sell chatter) is feasible. Checked two
+realistic candidates — **verdict: don't build this right now, for two
+different reasons.**
+
+### Reddit — actively shutting down third-party API access, not just restrictive
+
+This was already known to require OAuth and have tightened access (free
+tier capped at ~100 req/min, non-commercial only, and Reddit's
+"Responsible Builder Policy" — updated 2025-11-11 — closed self-service
+app registration; every new OAuth client now needs manual approval with
+a real chance of silent rejection). Confirmed directly: the old
+"append `.json` to any reddit.com URL" trick, still cited in a lot of
+tutorials, now returns a flat **403** — no anonymous access at all.
+
+**But the decisive finding is newer than any of that**, reported
+2026-09-30 (literally the day before this research) and confirmed
+against the primary report, not a secondhand summary: **Reddit is
+shutting down RSS feeds entirely on November 13, 2026, and closing
+public API access altogether by March 2027** — existing approved
+developer apps must re-register by January 12, 2027 just to avoid
+losing access before the final cutoff. Reddit's own stated reasoning is
+monetizing the same content through paid AI-licensing deals instead
+($43M in "other revenue" in Q2 2026, +24% YoY) — the direction is
+explicitly toward commercial-only access, not a free/hobby tier that's
+merely inconvenient to get into. Building a new integration on this
+right now means building on a platform with a published shutdown date a
+few months out, independent of whatever Jozsua personally has to do to
+get approved in the meantime.
+
+### Stocktwits — a finance-native alternative, but also closed to new developers
+
+Stocktwits (a Twitter-like feed specifically for stock/crypto chatter,
+closer to what a $MSV "what are people saying" feature would actually
+want than general Reddit) has a legacy public endpoint
+(`api.stocktwits.com/api/2/streams/symbol/{TICKER}.json`) that still
+returns real, live, unauthenticated messages — confirmed live against
+AAPL. **But:** it is **not CORS-enabled** (would need an msv-api proxy),
+and Stocktwits' own official developer portal states they are
+**currently not accepting new API registrations** while reviewing their
+whole API program, with no stated end date. The endpoint that works
+today is informal/unsupported, not a sanctioned path for a new
+integration — could be cut off without notice.
+
+### Recommendation
+
+**Don't build a live, automated community-sourced page right now** —
+both realistic sources are either actively closing (Reddit) or already
+closed to new developers (Stocktwits). If Jozsua wants "what people are
+discussing" content without a live feed, the precedent already exists
+in this app: the Crypto page's "Regulation & Adoption tracker" is
+hand-curated with web-search-verified, dated facts, refreshed
+periodically rather than pulled live — the same approach could cover
+"what the community's saying" as an occasional research pass instead of
+an automated feature. **Separately worth flagging:** "summarize them"
+specifically would need either an LLM call from msv-api (a real
+per-request cost, a different category of spend than every other free-
+tier integration in this app) or Claude doing one-off manual
+summarization during a session (not a live in-app feature) — worth
+deciding which before this is revisited, independent of the data-source
+blocker above.
+
 ## Sources
 
 - [Best Free Stock Market APIs and Data Tools in 2026 (DEV Community)](https://dev.to/nexgendata/best-free-stock-market-apis-and-data-tools-in-2026-a-developers-honest-comparison-1926)
@@ -306,3 +380,8 @@ established paid option found. Not a "no," just a "not free yet."
 - [OpenFIGI API](https://www.openfigi.com/api) — CUSIP-to-ticker mapping confirmed directly against a real CUSIP from Burry's own 13F filing; rate-limit headers confirmed live, not from docs alone.
 - [Quiver Quantitative API pricing](https://www.quiverquant.com/premium-vs-api/) — confirms no free API tier, $30/month minimum.
 - `housestockwatcher.com` / `senatestockwatcher.com` confirmed dead (DNS resolution failure) via direct `curl` on 2026-10-01, despite several 2026-dated blog posts citing them as live — a reminder that secondhand data-source claims in this space age out fast.
+- [Reddit is killing RSS feeds and ending public API access because of AI bots (TechCrunch, 2026-09-30)](https://techcrunch.com/2026/09/30/reddit-is-killing-rss-feeds-ending-public-api-access-because-of-ai-bots) — primary report on the RSS (Nov 13, 2026) and public API (March 2027) shutdown dates.
+- [Responsible Builder Policy (Reddit official)](https://support.reddithelp.com/hc/en-us/articles/42728983564564-Responsible-Builder-Policy) — referenced via the TechCrunch report and corroborating search results; the page itself returned 403 when fetched directly.
+- `reddit.com/r/*.json` (the old no-auth trick) confirmed returning a flat 403 via direct `curl` on 2026-10-01 — OAuth is mandatory, no anonymous path exists anymore.
+- [Stocktwits for Developers](https://api.stocktwits.com/developers) — states new API registrations are currently closed pending a program review, no end date given.
+- Stocktwits' legacy public symbol-stream endpoint confirmed live (real AAPL messages) but not CORS-enabled, via a direct `curl` with an `Origin` header on 2026-10-01.

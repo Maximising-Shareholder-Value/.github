@@ -1422,6 +1422,51 @@ contradicted what search results and blog posts said (the two Stock
 Watcher sites especially) — consistent with this project's standing
 "confirmed directly, not assumed" rule for data-source claims.
 
+## Prediction Markets page shipped; community/Reddit page researched and declined — 2026-10-01
+
+Sixth pass the same day. Jozsua gave the explicit go-ahead to build
+Polymarket (researched earlier the same day with no blockers found),
+asked for a feasibility check on a subreddit-sourced "community page,"
+and clarified the Burry research was meant generally ("notable figures,"
+not just him).
+
+**Prediction Markets page shipped** (`predictionMarkets.js`, new sidebar
+nav item, new `ROUTES`/`EXPLORE_DIRECTORY` entries in home.js): live
+odds from Polymarket's Gamma API, 6 tabs (Trending, Finance, Economy &
+Fed, Crypto, Business, Politics) via `tag_id` filtering. One real bug
+caught during the build: `tag_slug` (the parameter name several
+third-party guides use) is **silently ignored** by the live API —
+tested directly, it returned the same unfiltered top-by-volume results
+regardless of the slug passed. Switched to `tag_id` (an undocumented-
+by-slug-name integer), found by paginating Polymarket's full 2,100+-tag
+list and verified live per tag before trusting it. No msv-api proxy
+needed — confirmed CORS-enabled earlier the same day, same tier as
+CoinGecko. Verified with a live browser check against the real API (not
+mocked): 24 real markets render per tab, including genuinely relevant
+ones like live October 2026 Fed-meeting rate-decision odds with
+$400K+ 24h volume. Not deployed yet.
+
+**Community/subreddit page: researched, declined for now.** Checked
+Reddit and Stocktwits (see API_RESEARCH.md's "Community/sentiment data"
+section and the new BLOCKERS.md entry) — this isn't a "no free tier"
+situation like congressional trading, it's "the platform is actively
+closing." Reddit announced literally the day before this research that
+it's shutting down RSS (Nov 13, 2026) and the entire public API (March
+2027) in favor of paid AI-licensing deals. Stocktwits' official
+developer program has new registrations closed indefinitely. Recommended
+the same pattern already used for the Crypto page's "Regulation &
+Adoption tracker" instead — periodic hand-curated research, not a live
+feed — if community content is still wanted. Also flagged that
+"summarize" specifically would need a real LLM API call (real cost), a
+different category of spend than anything else in this app.
+
+**13F/"notable figures" research note:** Jozsua clarified Burry was one
+example, not the target — added a short note to API_RESEARCH.md stating
+explicitly that the researched mechanism (SEC EDGAR + CUSIP mapping)
+already covers any manager with a public CIK, so this should be scoped
+as "a curated list of tracked managers" when built, not a Burry-specific
+feature.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
