@@ -148,6 +148,135 @@ detour — that's a real complexity reduction versus how the FRED tab was
 built. Fall back to World Bank (proxied) only for countries/indicators
 OECD doesn't cover.
 
+## Prediction markets & "who's holding/trading what" (researched 2026-10-01)
+
+Jozsua asked for two things in one request: Polymarket/prediction-market
+odds on the site, and a page showing what specific public figures hold
+and trade — his examples were Michael Burry (a hedge fund manager, whose
+holdings come from **13F filings**) and Nancy Pelosi (a member of
+Congress, whose trades come from **STOCK Act disclosures**) — explicitly
+compared to r/tradewithcongress. These are three genuinely different
+data problems, researched separately below. Every claim here was
+confirmed with a live request (`curl -I` with an `Origin` header for
+CORS, or a real API call) on 2026-10-01, not taken from a blog post —
+several blog/aggregator claims below turned out to be wrong or stale
+when checked directly, which is exactly why this project checks live.
+
+### Prediction markets: Polymarket — ready to build, no blockers found
+
+**The strongest result of this whole research pass.** Polymarket's two
+public APIs were both confirmed live, with zero authentication needed
+for read-only market data:
+
+| API | What it gives | Free tier | CORS | Rate limit (confirmed from official docs, not a blog) |
+|---|---|---|---|---|
+| **Gamma API** (`gamma-api.polymarket.com`) | Market questions, descriptions, end dates, liquidity, 24h volume | Free, no key | **Yes** — confirmed live, `access-control-allow-origin: *` | 300 req/10s (`/markets`), 500 req/10s (`/events`), 900 req/10s combined |
+| **CLOB API** (`clob.polymarket.com`) | Live order book, prices, midpoints (the actual "probability" numbers) | Free, no key | **Yes** — confirmed live, `access-control-allow-origin: *` | 1,500 req/10s (`/price`, `/book`), 500 req/10s for the batch versions |
+
+Both can be called **directly from the browser**, same tier as Finnhub/
+Twelve Data/CoinGecko/FMP today — no new msv-api proxy route needed,
+which makes this cheaper to integrate than FRED or World Bank were.
+Confirmed real, finance-relevant markets exist with real volume, not
+just novelty bets — e.g. live-pulled today: "Will the Fed increase
+interest rates by 25 bps after the October 2026 meeting?" ($742k 24h
+volume) sitting right next to "Will there be no change in Fed interest
+rates after the October 2026 meeting?" — this slots naturally next to
+the existing Macro (FRED) tab. Rate limits are IP-based via Cloudflare,
+per the official docs, generous enough that this app's existing
+throttle patterns (dataUtils.js) would comfortably stay well under them.
+
+**Recommendation: build this one first** of the three — it's the only
+one with zero open questions.
+
+### Michael Burry / 13F institutional holdings — buildable, needs real backend work
+
+13F is a quarterly SEC filing required of any investment manager with
+over $100M in US equity assets — this is the *official*, free, primary
+source for "what does [hedge fund manager] hold," confirmed live against
+Michael Burry's actual firm, Scion Asset Management (CIK 0001649339):
+
+- **`data.sec.gov/submissions/CIK##########.json`** — list of a
+  manager's filings. **Free, no key, CORS-enabled** (confirmed:
+  `access-control-allow-origin: *`) — callable directly from the
+  browser. Scion's real filing history came back correctly, most recent
+  13F-HR dated 2025-11-03.
+- **The actual holdings table** lives in a separate `infotable.xml`
+  inside each filing, under `www.sec.gov/Archives/edgar/data/...` — NOT
+  the same host as above. Confirmed **no CORS header** on this one (it
+  sits behind SEC's Akamai bot-protection, visible in the response's
+  `_abck`/`bm_sz` cookies), so this half **needs an msv-api proxy route**,
+  same pattern as FRED. SEC's fair-access policy requires a descriptive
+  `User-Agent` header on every request (used `MSV research
+  contact@example.com` for this test) and asks for roughly ≤10 req/sec.
+- **Real data confirmed**: Scion's latest 13F genuinely lists Halliburton
+  call options, Lululemon, Molina Healthcare, NVIDIA and more — exactly
+  the kind of concentrated, well-known-for-contrarian-bets portfolio
+  Burry is known for. Not a mock.
+- **The catch: 13F identifies holdings by CUSIP, not ticker.** NVIDIA's
+  real CUSIP from Burry's filing (`67066G104`) was tested against
+  **OpenFIGI** (Bloomberg's free CUSIP→ticker mapping API) and correctly
+  resolved to `NVDA`. OpenFIGI is free but **not CORS-enabled either**
+  (confirmed: no `access-control-allow-origin` header) — second proxy
+  route needed. Unauthenticated rate limit confirmed live at **25
+  requests/minute** (`ratelimit-limit: 25`, `ratelimit-policy: 25;w=60`)
+  — tight for a filing with 20-50+ positions; a free OpenFIGI signup
+  raises this substantially ("map hundreds of thousands of instruments,"
+  per their own docs) and costs nothing, same low-friction pattern as
+  Twelve Data/CoinGecko/FMP's optional keys already in this app.
+
+**What building this actually requires:** two new msv-api proxy routes
+(SEC Archives + OpenFIGI), real XML parsing of the 13F infoTable format
+(not JSON — more parsing work than any current integration), and a
+curated list of which managers' CIKs to track (13F only covers managers
+who chose to register that CIK publicly in a findable way — "search by
+manager name" isn't a clean API, the CIK has to be looked up once,
+similar diligence to how ETF tickers are hand-verified in this app).
+**Feasible, but a real multi-piece build**, not a quick add — scope as
+its own small project if greenlit, not bundled into a "low-hanging
+fruit" pass.
+
+### Nancy Pelosi / congressional trading (STOCK Act disclosures) — no good free API found
+
+This is the weakest result of the three. The two sources that come up
+first in every search (**House Stock Watcher**, **Senate Stock
+Watcher** — historically the standard free/open answer for this) are
+**both confirmed dead**: `housestockwatcher.com` and
+`senatestockwatcher.com` (and `www.`/`api.` subdomain variants) all fail
+DNS resolution entirely (`curl` error 6, "couldn't resolve host") — not
+down temporarily, gone. Several 2026-dated blog posts still cite these
+as live and working, which they are not — a direct example of why this
+project doesn't trust secondhand summaries for data-source claims.
+
+What was actually checked:
+
+| Source | Verdict |
+|---|---|
+| **Quiver Quantitative** | Confirmed **no free API tier** — API pricing starts at $30/month (Hobbyist plan); the free tier is for their website dashboard only, a different product from the API. Ruled out. |
+| **Disclosed Capitol** (disclosedcapitol.com) | Claims a free tier (signup + API key required) limited to the most recent 90 days of trades, vague/undocumented rate limits. Small, unestablished vendor — not independently verified beyond reading their own docs page, and no track record to judge reliability against. |
+| **Lambda Finance** | Free tier exists but capped at 50 API calls/month per their own claim — too low to be useful for a live page. |
+| **Capitol Trace** (capitoltrace.com) | Returned **HTTP 403 Forbidden** when checked directly — couldn't even confirm what it offers. |
+| **Apify-hosted scrapers** (several) | Pay-per-use through Apify's platform, not free; also third-party scrapes of the official filings rather than a primary source. |
+
+**The only genuinely authoritative, zero-cost source is the government
+itself** — the House Clerk's disclosure portal
+(`disclosures-clerk.house.gov`) and the Senate's eFD system
+(`efdsearch.senate.gov`), both confirmed reachable live. Neither offers
+a structured JSON API — they're built for a human filling out a search
+form and reading a PDF/HTML filing, not for programmatic access. Scraping
+either one is a real, separate research/build task (parsing fragile
+HTML or PDFs, and the Senate system in particular is known for
+session/agreement-gating that complicates straightforward scraping) —
+not evaluated further here since it's beyond what "confirm a free data
+source exists" was meant to answer.
+
+**Recommendation: do not build this yet.** Either (a) wait and recheck
+periodically in case a genuinely free, reliable, well-documented API
+appears (this space turns over fast — two of the standard answers from
+even a year ago are already dead), (b) revisit Disclosed Capitol once it
+has more of a track record, or (c) if Jozsua wants this badly enough to
+pay, Quiver Quantitative's $30/month Hobbyist API is the most
+established paid option found. Not a "no," just a "not free yet."
+
 ## Sources
 
 - [Best Free Stock Market APIs and Data Tools in 2026 (DEV Community)](https://dev.to/nexgendata/best-free-stock-market-apis-and-data-tools-in-2026-a-developers-honest-comparison-1926)
@@ -171,3 +300,9 @@ OECD doesn't cover.
 - [Alpaca Options Trading docs](https://docs.alpaca.markets/us/docs/options-trading) — confirms free self-serve paper-account access
 - [Alpaca expands fixed income to corporate bonds (Alpaca blog)](https://alpaca.markets/blog/alpaca-expands-fixed-income-offering-to-include-corporate-bonds/)
 - [Massive (Polygon.io) pricing](https://massive.com/pricing) — confirms no bonds/fixed-income product exists
+- [Polymarket API rate limits (official docs)](https://docs.polymarket.com/api-reference/rate-limits)
+- Polymarket Gamma/CLOB CORS support and live market data: confirmed directly via `curl -I` with an `Origin` header and real market queries on 2026-10-01, not taken from any third-party guide.
+- [SEC EDGAR company filings API (data.sec.gov)](https://www.sec.gov/search-filings/edgar-application-programming-interfaces) — CORS and real filing data confirmed directly against Scion Asset Management's (Michael Burry) actual CIK on 2026-10-01.
+- [OpenFIGI API](https://www.openfigi.com/api) — CUSIP-to-ticker mapping confirmed directly against a real CUSIP from Burry's own 13F filing; rate-limit headers confirmed live, not from docs alone.
+- [Quiver Quantitative API pricing](https://www.quiverquant.com/premium-vs-api/) — confirms no free API tier, $30/month minimum.
+- `housestockwatcher.com` / `senatestockwatcher.com` confirmed dead (DNS resolution failure) via direct `curl` on 2026-10-01, despite several 2026-dated blog posts citing them as live — a reminder that secondhand data-source claims in this space age out fast.

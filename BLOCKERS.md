@@ -57,6 +57,23 @@ placeholder for this instead of omitting it entirely, matching the
 homepage world map's existing "Sample data" pattern — not real,
 disclosed as such.
 
+### Congressional stock trading data (a free, reliable, structured API)
+**Blocked since:** 2026-10-01, researched for Jozsua's "Nancy Pelosi
+holdings/trades" page request (full detail in
+[API_RESEARCH.md](API_RESEARCH.md)'s "Prediction markets &
+'who's holding/trading what'" section). The two standard free answers
+for this (House Stock Watcher, Senate Stock Watcher) are **both
+confirmed dead** — DNS resolution failure, not just down. Quiver
+Quantitative has no free API tier ($30/month minimum). A few smaller
+vendors (Disclosed Capitol, Lambda Finance, Capitol Trace) claim free
+tiers but are unestablished, rate-limited too low to be useful, or
+outright blocked the research request (403). The only authoritative
+zero-cost source is the House/Senate's own disclosure portals, which are
+built for a human reading a form/PDF, not a structured API — scraping
+either is a real, separate build task, not evaluated further here.
+**Current answer:** none. Revisit periodically (this space turns over
+fast) or pay for Quiver's API if this becomes a priority.
+
 ### ETF/fund "vital stats" — NAV, net assets/AUM, expense ratio, holdings, sector weighting
 **🅿️ PARKED, 2026-09-21 — Jozsua's explicit decision, not being pursued.**
 Blocked since 2026-09-19, confirmed a dead end on free tiers on

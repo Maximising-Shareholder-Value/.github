@@ -850,12 +850,27 @@ production.
       Street/SPDR, Schwab, JPMorgan + 10 more) each with a blurb, derived
       from existing fund names so it can't drift out of sync — see
       HISTORY.md's "ETF By-Issuer view" entry.
-- [ ] **Not started — needs feasibility research first** (same discipline
-      as the options/bonds research in API_RESEARCH.md, before any UI is
-      built): Polymarket/prediction-market data; a Burry/congressional-
-      trading-style "who's holding/trading what" page (Jozsua's
-      r/tradewithcongress reference) — both need a free/hobby-tier data
-      source confirmed to actually exist before scoping further.
+- [x] **Feasibility research done — 2026-10-01**, see
+      API_RESEARCH.md's "Prediction markets & 'who's holding/trading
+      what'" section for the full writeup. Three separate verdicts:
+  - [ ] **Polymarket — clear to build, no blockers.** Both public APIs
+        (Gamma + CLOB) are free, CORS-enabled (callable directly from
+        the browser, no msv-api proxy needed), generous rate limits,
+        confirmed live with real Fed-rate-decision markets. The
+        strongest result of the three — do this one first.
+  - [ ] **Michael Burry / 13F institutional holdings — buildable, but a
+        real multi-piece build.** SEC EDGAR is free and official;
+        confirmed live against Scion Asset Management's actual filings.
+        Needs two new msv-api proxy routes (SEC Archives isn't
+        CORS-enabled; OpenFIGI for CUSIP→ticker mapping isn't either)
+        plus real XML parsing — scope as its own small project, not a
+        quick add.
+  - [ ] **Nancy Pelosi / congressional trading — no good free API found,
+        don't build yet.** House Stock Watcher and Senate Stock Watcher
+        (the usual free answer) are both confirmed dead. Quiver
+        Quantitative has no free API tier. See BLOCKERS.md's new
+        "Congressional stock trading data" entry — revisit later or pay
+        for Quiver if this becomes a priority.
 - [x] Bigger sector→top-ETFs popups — 2026-10-01: clicking a sector or
       industry now also shows other ETFs tracking the same market
       (cross-referenced from etfs.js's ETF_CATEGORIES, not a new hand-

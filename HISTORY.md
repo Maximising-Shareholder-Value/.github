@@ -1381,6 +1381,47 @@ prices/%, no console errors.
 Not deployed yet, same as the day's earlier batches — Jozsua reviews
 before `wrangler deploy`.
 
+## Feasibility research: Polymarket + "who's holding what" — 2026-10-01
+
+Fifth pass the same day, moving into the two items from Jozsua's
+2026-10-01 list that explicitly needed research before any UI: live
+prediction-market odds, and a page showing what public figures
+(Michael Burry, Nancy Pelosi — his named examples) hold and trade. Full
+detail in [API_RESEARCH.md](API_RESEARCH.md); the short version, three
+separate verdicts since these turned out to be three different data
+problems:
+
+- **Polymarket: clear to build.** Both the Gamma API (market metadata)
+  and CLOB API (live prices/order book) confirmed free, CORS-enabled
+  (no msv-api proxy needed — callable straight from the browser, same
+  tier as Finnhub/Twelve Data today), and generously rate-limited, all
+  verified with live requests against the official docs, not a
+  third-party summary. Real finance-relevant markets confirmed live,
+  e.g. two live Fed-rate-decision markets with ~$700k+ 24h volume each —
+  a natural fit next to the existing Macro/FRED tab.
+- **Michael Burry (13F filings): buildable, real work.** SEC EDGAR
+  confirmed free and official, tested directly against Scion Asset
+  Management's actual filings (real holdings came back: Halliburton
+  calls, Lululemon, Molina Healthcare, NVIDIA). The submissions API is
+  CORS-enabled; the actual holdings documents are not (sit behind
+  Akamai bot protection) and 13F uses CUSIP identifiers, not tickers —
+  needs two new proxy routes (SEC Archives, OpenFIGI for CUSIP→ticker)
+  plus real XML parsing. Scoped as its own project if greenlit.
+- **Nancy Pelosi (congressional trading): no good free source, don't
+  build yet.** House Stock Watcher and Senate Stock Watcher — the
+  standard free answer for this, cited as current in several 2026-dated
+  blog posts — are both confirmed **dead** (DNS failure, not just down).
+  Quiver Quantitative has no free API tier ($30/month minimum). A few
+  smaller vendors claim free tiers but are unestablished or too limited
+  to be useful. Logged as a new entry in
+  [BLOCKERS.md](BLOCKERS.md) rather than left unresolved in chat.
+
+**Discipline note worth keeping:** every claim above was checked with a
+live `curl`/API call before being written down, including ones that
+contradicted what search results and blog posts said (the two Stock
+Watcher sites especially) — consistent with this project's standing
+"confirmed directly, not assumed" rule for data-source claims.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
