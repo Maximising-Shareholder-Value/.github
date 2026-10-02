@@ -1475,13 +1475,15 @@ behind the 2026-09-21 (+10%) and 2026-10-01 (-5%) adjustments — taken
 from 1.045 to 0.95. Shipped directly (`msv-web` 1651f7f).
 
 Also confirmed the Phase 3 React migration scope and pacing with
-Jozsua: pages migrate in the order already set in TODO.md (Sectors →
-ETFs → Screener → Market Data → Market Intelligence → Learn → Home →
-ticker deep-dive → sidebar/router shell last), one page at a time —
-built, reviewed by Jozsua in the browser, then committed and pushed —
-rather than attempting the whole migration in one session (flagged up
-front as session-usage-limit risk, per Jozsua's standing instruction).
-Sectors is first.
+Jozsua: one page at a time — built, reviewed by Jozsua in the browser,
+then committed and pushed — rather than attempting the whole migration
+in one session (flagged up front as session-usage-limit risk, per
+Jozsua's standing instruction). Order is the one already on record
+above: Crypto first (port real functionality into `react-crypto/` and
+retire `crypto.js`, rather than leaving it as a second parallel page to
+the beta), then Sectors → ETFs → Screener → Market Data → Market
+Intelligence → Learn → Home → ticker deep-dive → sidebar/router shell
+last.
 
 ---
 

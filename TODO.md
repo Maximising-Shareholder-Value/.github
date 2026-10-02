@@ -922,9 +922,12 @@ production.
       2026-10-02, Jozsua asked for the whole site scaled down a bit more.
       Same knob as the 2026-09-21 (+10%) and 2026-10-01 (-5%) changes.
 - [ ] **React migration Phase 3 — starting now, one page at a time.**
-      Jozsua confirmed scope 2026-10-02: migrate pages in the order
-      already set (Sectors → ETFs → Screener → Market Data → Market
-      Intelligence → Learn → Home → ticker deep-dive → sidebar/router
-      shell), each page built, reviewed by Jozsua in the browser, then
-      committed and pushed before starting the next — not attempted all
-      at once. Sectors is first.
+      Jozsua confirmed scope 2026-10-02: migrate pages one at a time,
+      each built, reviewed by Jozsua in the browser, then committed and
+      pushed before starting the next — not attempted all at once.
+      Order is the one already set above: **Crypto (page 1) first** —
+      port real functionality into `react-crypto/` and retire
+      `crypto.js`, replacing the linked-beta stopgap rather than
+      leaving it as a second, parallel Crypto page — then Sectors →
+      ETFs → Screener → Market Data → Market Intelligence → Learn →
+      Home → ticker deep-dive → sidebar/router shell last.
