@@ -915,3 +915,16 @@ production.
       (build pipeline) is deployed; Phase 3 page 1 (porting real Crypto
       functionality in, replacing `crypto.js`) hasn't started yet — see
       the React section above.
+
+## 2026-10-02
+
+- [x] Page-wide zoom reduced further, `--page-zoom` 1.045 → 0.95 —
+      2026-10-02, Jozsua asked for the whole site scaled down a bit more.
+      Same knob as the 2026-09-21 (+10%) and 2026-10-01 (-5%) changes.
+- [ ] **React migration Phase 3 — starting now, one page at a time.**
+      Jozsua confirmed scope 2026-10-02: migrate pages in the order
+      already set (Sectors → ETFs → Screener → Market Data → Market
+      Intelligence → Learn → Home → ticker deep-dive → sidebar/router
+      shell), each page built, reviewed by Jozsua in the browser, then
+      committed and pushed before starting the next — not attempted all
+      at once. Sectors is first.

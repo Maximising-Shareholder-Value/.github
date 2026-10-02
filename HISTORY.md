@@ -1467,6 +1467,22 @@ already covers any manager with a public CIK, so this should be scoped
 as "a curated list of tracked managers" when built, not a Burry-specific
 feature.
 
+## Page-zoom reduced further; React migration Phase 3 scoped and started — 2026-10-02
+
+Jozsua asked for the whole site scaled down "a little more." Reused the
+existing `--page-zoom` variable (`msv-web/style.css`) — the same knob
+behind the 2026-09-21 (+10%) and 2026-10-01 (-5%) adjustments — taken
+from 1.045 to 0.95. Shipped directly (`msv-web` 1651f7f).
+
+Also confirmed the Phase 3 React migration scope and pacing with
+Jozsua: pages migrate in the order already set in TODO.md (Sectors →
+ETFs → Screener → Market Data → Market Intelligence → Learn → Home →
+ticker deep-dive → sidebar/router shell last), one page at a time —
+built, reviewed by Jozsua in the browser, then committed and pushed —
+rather than attempting the whole migration in one session (flagged up
+front as session-usage-limit risk, per Jozsua's standing instruction).
+Sectors is first.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
