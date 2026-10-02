@@ -911,23 +911,32 @@ production.
       stock-picking page — what indicators/tools people actually use for
       technical and fundamental analysis, and for finding lower-risk
       picks.
-- [ ] React migration status, answered directly (not a to-do): Phase 1
-      (build pipeline) is deployed; Phase 3 page 1 (porting real Crypto
-      functionality in, replacing `crypto.js`) hasn't started yet — see
-      the React section above.
+- [ ] React migration status, answered directly (not a to-do): Phase 3
+      page 1 (Crypto) shipped 2026-10-02 — see the 2026-10-02 section
+      below. Sectors is next.
 
 ## 2026-10-02
 
 - [x] Page-wide zoom reduced further, `--page-zoom` 1.045 → 0.95 —
       2026-10-02, Jozsua asked for the whole site scaled down a bit more.
       Same knob as the 2026-09-21 (+10%) and 2026-10-01 (-5%) changes.
-- [ ] **React migration Phase 3 — starting now, one page at a time.**
-      Jozsua confirmed scope 2026-10-02: migrate pages one at a time,
-      each built, reviewed by Jozsua in the browser, then committed and
-      pushed before starting the next — not attempted all at once.
-      Order is the one already set above: **Crypto (page 1) first** —
-      port real functionality into `react-crypto/` and retire
-      `crypto.js`, replacing the linked-beta stopgap rather than
-      leaving it as a second, parallel Crypto page — then Sectors →
-      ETFs → Screener → Market Data → Market Intelligence → Learn →
-      Home → ticker deep-dive → sidebar/router shell last.
+- [x] **React migration Phase 3, page 1 — Crypto shipped and deployed,
+      2026-10-02.** Jozsua confirmed scope and pacing: migrate pages one
+      at a time, each built, reviewed by Jozsua in the browser, then
+      committed/pushed/deployed before starting the next — not attempted
+      all at once. `crypto.js` retired; the sidebar's Crypto, Crypto
+      Cycles, and Crypto News items now navigate to `/react-crypto/`
+      (with `?tab=cycles`/`?tab=news` for the latter two) instead of the
+      old vanilla page or a "Soon" placeholder. Also fixed while this was
+      a real destination for the first time (not a beta opened in a new
+      tab): the React page's theme toggle now shares the main site's
+      `stockDashboardTheme` localStorage key instead of its own separate
+      one, and got a "Back to $MSV" link in place of the old beta banner.
+      Verified live against the real production deploy (response bodies,
+      not just status codes). **Known gap:** the React page has no
+      sidebar of its own yet, so leaving it means using that back link —
+      acceptable with one page migrated, worth revisiting once more are.
+      See `msv-web/CLAUDE.md`'s React migration section for the detail.
+- [ ] **React migration — next up: Sectors**, then ETFs → Screener →
+      Market Data → Market Intelligence → Learn → Home → ticker
+      deep-dive → sidebar/router shell last. Not started.

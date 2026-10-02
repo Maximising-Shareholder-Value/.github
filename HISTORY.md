@@ -1485,6 +1485,70 @@ the beta), then Sectors → ETFs → Screener → Market Data → Market
 Intelligence → Learn → Home → ticker deep-dive → sidebar/router shell
 last.
 
+## React migration Phase 3, page 1: Crypto shipped — 2026-10-02
+
+Same session as the page-zoom change above. Built and deployed the first
+real page migration: `react-crypto/` (the React + TypeScript rebuild
+that had been sitting live as a linked beta since 2026-09-30) became the
+actual Crypto page, and `crypto.js` — the old vanilla implementation —
+was deleted.
+
+**What changed in `msv-web`:** `home.js`'s `ROUTES` table had three
+entries pointed at crypto — `crypto`, `bitcoin-cycles`, `crypto-news`
+(the latter two previously "Soon" placeholders, per the 2026-09-27 batch
+entry above). All three now do a real `window.location.href` navigation
+to `/react-crypto/` (`?tab=cycles` / `?tab=news` for the placeholders)
+instead of calling the old `renderCryptoPage()` or `showPlaceholderPage()`
+— a genuine browser navigation, not an in-app SPA route change, since
+`react-crypto/` is its own separate static build with its own routing
+and can't be slotted into the vanilla site's single-page-app view
+switching. Confirmed via `grep` that nothing outside `crypto.js` called
+any of its functions before deleting it; `node --check` run against
+every remaining `.js` file afterward to catch any syntax fallout.
+Sidebar: the "Soon" badges came off Crypto Cycles/News, and the
+`#cryptoPageCard`/`#cryptoRoot` markup (dead once nothing rendered into
+it) was removed from `index.html`.
+
+**What changed in `react-poc`**, now that this is a real destination
+people land on directly rather than a labelled experiment opened in a
+new tab: the "React + TypeScript beta" banner became a "← Back to $MSV"
+link (there's no shared sidebar between the vanilla site and this
+separate React build yet, so without this link a visitor would have no
+way back except browser-back); the page `<title>` dropped "(React
+beta)"; and the theme toggle was switched from its own `poc-theme`
+localStorage key to the main site's actual key
+(`stockDashboardTheme`, matching `script.js`'s `THEME_KEY`) so a
+visitor's light/dark choice carries over between the two instead of
+flipping on every navigation — needed a small hand-written
+read/write instead of the generic `useLocalStorage` hook, since that
+hook JSON-stringifies values and the main site stores the theme as a
+plain unquoted string.
+
+**Verification, same discipline as the `.assetsignore` story**: `npm run
+typecheck` and `npm run build` both passed; started a local static
+server over the whole `msv-web` root (not just `react-poc`'s own dev
+server) so the real end-to-end click path could be checked — sidebar →
+real navigation → built `react-crypto/` bundle → back link — before
+asking Jozsua to review it himself in a browser (no browser tool
+available this session to check it directly). After Jozsua confirmed it
+looked right, committed/pushed, then `npx wrangler deploy`, then
+re-verified against the **live** production URLs: `/react-crypto/`'s
+title, `/crypto.js` now falling through to the SPA shell instead of
+serving real content, and the sidebar HTML having zero remaining
+`crypto.js` references and no leftover "Soon" badges — response
+*bodies* checked, not just status codes, since `not_found_handling:
+"single-page-application"` makes everything return 200 regardless.
+
+**Known gap, not fixed in this pass:** the React page still has no
+sidebar/nav of its own, so leaving it for anywhere else on the site
+means using the back link first. Fine with only one page migrated;
+likely needs addressing once a few more pages exist and a shared app
+shell is worth building — noted in `msv-web/CLAUDE.md`.
+
+**Next up: Sectors**, per the already-recorded page order (ETFs,
+Screener, Market Data, Market Intelligence, Learn, Home, ticker
+deep-dive page, sidebar/router shell last).
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
