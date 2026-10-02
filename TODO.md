@@ -720,49 +720,55 @@ bugfix:
       [API_RESEARCH.md](API_RESEARCH.md)) exposes fund holdings at all
       before promising this.
 
-## Homepage feature recommendations (brainstormed 2026-09-19, not yet chosen)
+## Homepage feature recommendations (brainstormed 2026-09-19)
 
 Asked for "an extensive range of recommendations" to consider adding —
-these are options, not commitments. Roughly ordered by how cheap/easy
-each would be given the app's existing zero-cost architecture:
+were options, not commitments, roughly ordered by how cheap/easy each
+would be given the app's existing zero-cost architecture. **Status
+re-checked 2026-10-02 (Jozsua: "built all the low-hanging fruit"):**
+every item cheap enough to build zero-cost had, in fact, already been
+built in earlier sessions without this list ever being checked off —
+only the FX strip was actually still open. Corrected below so this list
+doesn't send a future session re-investigating things that already ship.
 
-- **Upcoming earnings calendar strip** — Finnhub's `/calendar/earnings`
-  is already used per-ticker (deep-dive page); a homepage-wide version
-  ("who reports this week") is the same endpoint, no new data source.
-- **Economic calendar** (next Fed meeting, next CPI/jobs report date) —
-  pairs naturally with the Macro tab; FRED doesn't provide calendar
-  dates directly, would need a small curated/hand-maintained list rather
-  than a live feed (dates are known well in advance, low maintenance).
-- **A real watchlist**, separate from Recently Viewed — user manually
-  adds/removes tickers, stored in `localStorage` (same zero-backend
-  pattern already used for theme and recently-viewed). Natural pairing
-  with the "Recently Viewed as a sidebar column" item above.
-- **Sector performance heatmap** (not per-stock — per-sector, e.g. using
-  the `XL*` sector ETFs already in the ETFs browse category) — cheap,
-  reuses tickers already fetched or easily added.
-- **"Did you know" rotating fact** tied to Pillar 5 (the education
-  layer) — a small, free way to surface bite-sized learning content on
-  every visit once that content exists.
-- **Currency/FX strip** (USD/SGD, USD/AUD, etc.) — **confirmed 2026-09-24**
-  (live request to Twelve Data's `/quote` endpoint for EUR/USD, real data
-  came back) that Twelve Data's free tier DOES support forex quotes,
-  resolving the open question this bullet used to pose. Finnhub's free
-  tier still has zero forex coverage (unchanged, see the root
-  `CLAUDE.md`). A genuine candidate to build, not researched further than
-  this one confirmation — a placeholder "Forex" tile now exists in
-  Explore Products' Market Outlook section reflecting this.
-- **Trending/most-searched tickers this week** — needs some form of
-  shared counter across visitors, which the current architecture doesn't
-  have (everything today is per-browser, no shared backend state) — the
-  one item here that's a real architecture addition, not just more UI.
-- **Investor-style line/bar graphs directly on the homepage** — flagged
-  2026-09-24 (Jozsua: "I want to see a bit more graphs on the homepage").
-  Recorded as a future intent, not scoped or built yet — the homepage
-  doesn't have much of its own time-series data to chart today (most
-  numeric data lives on the per-ticker deep-dive page, not the
-  homepage itself). Worth revisiting once there's more homepage-native
-  data to visualize (e.g. once the [DATA_EXPANSION_RECOMMENDATIONS.md](DATA_EXPANSION_RECOMMENDATIONS.md)
-  ideas below start landing).
+- [x] **Upcoming earnings calendar strip** — already live, homepage
+      `#earningsCalendarCard` ("Earnings This Week", `home.js`'s
+      `loadEarningsCalendar()`/`loadEarningsCalendar()`'s Finnhub call).
+- [x] **Economic calendar** — already live, homepage `#econCalendarCard`,
+      backed by the hand-maintained `ECON_CALENDAR_EVENTS` list.
+- [x] **A real watchlist** — already live (`script.js`'s
+      `getWatchlist()`/`toggleWatchlist()`, `home.js`'s
+      `renderWatchlist()`, the ☆ on every ticker page).
+- [x] **Sector performance heatmap** — already live, homepage
+      `#sectorHeatmapCard`, 11 sector ETFs.
+- [x] **"Did you know" rotating fact** — already live, homepage
+      `#didYouKnowCard` (`learn.js`'s `renderDidYouKnowTip()`) — actually
+      pulls from real Learn hub lesson topics (deterministic by date, a
+      new one each day) rather than the raw indicator-tooltip
+      definitions this bullet originally envisioned; better content than
+      planned, and click-through jumps straight to the full Learn
+      article.
+- [x] **Currency/FX strip** — shipped 2026-10-02, see HISTORY.md. 6 major
+      pairs (EUR/USD, GBP/USD, USD/JPY, USD/SGD, USD/AUD, USD/CHF) via
+      one batched Twelve Data `/quote` call, confirmed live against the
+      real `msv-api` proxy before building (Finnhub still has zero forex
+      coverage).
+- [ ] **Trending/most-searched tickers this week** — needs some form of
+      shared counter across visitors, which the current architecture
+      doesn't have (everything today is per-browser, no shared backend
+      state) — the one item here that's a real architecture addition,
+      not just more UI. Not cheap; deliberately not attempted in the
+      2026-10-02 low-hanging-fruit pass.
+- [ ] **Investor-style line/bar graphs directly on the homepage** —
+      flagged 2026-09-24 (Jozsua: "I want to see a bit more graphs on
+      the homepage"). Recorded as a future intent, not scoped or built
+      yet — the homepage doesn't have much of its own time-series data
+      to chart today (most numeric data lives on the per-ticker
+      deep-dive page, not the homepage itself). Worth revisiting once
+      there's more homepage-native data to visualize (e.g. once the
+      [DATA_EXPANSION_RECOMMENDATIONS.md](DATA_EXPANSION_RECOMMENDATIONS.md)
+      ideas below start landing). Not cheap/well-scoped enough for the
+      2026-10-02 pass either.
 
 ## Standalone items
 

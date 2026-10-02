@@ -1549,6 +1549,65 @@ shell is worth building — noted in `msv-web/CLAUDE.md`.
 Screener, Market Data, Market Intelligence, Learn, Home, ticker
 deep-dive page, sidebar/router shell last).
 
+## Homepage low-hanging-fruit pass: FX strip shipped, brainstorm list corrected — 2026-10-02
+
+Jozsua asked to build out the cheapest/easiest items from the 2026-09-19
+homepage brainstorm list (TODO.md), flagging he was running low on his
+weekly token budget — a cue to move efficiently rather than re-explore
+broadly.
+
+**First finding, before writing any code:** checked each brainstormed
+item against the actual live site rather than assuming the list was
+still accurate, and 5 of the 6 cheap-tier items turned out to already be
+built — the earnings calendar, economic calendar, a real watchlist, the
+sector heatmap, and a "Did You Know" rotating fact (the last one, in
+fact, better than originally envisioned: it pulls real Learn-hub lesson
+content, deterministic by date, rather than raw indicator-tooltip
+definitions). None of these had ever been checked off this particular
+list, even though they shipped in earlier sessions — the brainstorm
+section was simply stale. Corrected it in the same commit as this entry
+so a future session doesn't spend tokens re-discovering the same thing.
+
+**Only genuinely unbuilt item: the Currency/FX strip.** Built it:
+
+- 6 major pairs (EUR/USD, GBP/USD, USD/JPY, USD/SGD, USD/AUD, USD/CHF),
+  via Twelve Data's `/quote` endpoint — **confirmed live against the real
+  production `msv-api` proxy before writing any front-end code** (not
+  assumed from the 2026-09-24 single-pair test): one request with all 6
+  symbols comma-separated returns one object keyed by symbol instead of
+  a flat quote, so the whole strip costs exactly one API call, same
+  zero-extra-cost pattern as every other homepage card. Finnhub's own
+  forex coverage remains zero (unchanged).
+- Reused the existing `.index-chip` styling (the same chips the World
+  Markets strip already uses) rather than writing new CSS.
+- **Real script-order bug caught before shipping:** `twelveDataUrl()`
+  lives in `chart.js`, which loads *after* `home.js` in `index.html`'s
+  script order (see `msv-web/CLAUDE.md`'s "script order matters" note —
+  previously bit `crypto.js` the same way). Calling it synchronously
+  inside `initHome()` would have thrown `ReferenceError` partway through
+  that function and silently skipped everything after it, including the
+  sidebar wiring (`initHomeLayout()`) — i.e. it would have broken
+  homepage navigation entirely, not just the new card. Fixed with a 0ms
+  `setTimeout`, which runs after the synchronous script-loading phase
+  finishes.
+- **Verification, no browser tool available this session:** syntax-
+  checked every `.js` file, then validated the actual render/formatting
+  logic in Node against a real captured API response (not fabricated
+  test data) before shipping — confirmed sensible output for all 6
+  pairs, including JPY correctly getting 2 decimal places instead of 4
+  (price scale differs enormously from the other pairs). Checked the
+  built markup was present in the served HTML, both locally and against
+  the live production deploy afterward.
+- Shipped directly to production (committed, pushed, `wrangler deploy`)
+  given the stated time/token pressure, rather than pausing for a
+  browser-review checkpoint the way the Crypto page migration did.
+
+**Deliberately not attempted**, despite being on the same brainstorm
+list: Trending/most-searched tickers (needs real shared-backend state,
+the one item on the list that was never actually "cheap") and homepage
+investor graphs (still not scoped — no homepage-native time-series data
+exists yet to chart). Both left open in TODO.md.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
