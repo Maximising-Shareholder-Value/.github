@@ -1641,6 +1641,50 @@ standalone Node test of the new helper against normal/missing-percent/
 missing-price/both-missing cases. Shipped directly (committed, pushed,
 `wrangler deploy`).
 
+## Codebase quality pass: Macro tab extracted, one finding deliberately skipped — 2026-10-02
+
+Jozsua asked how the codebase looked "in the eyes of an SWE." Given the
+standing budget concern, did a single-pass review (not the `/simplify`
+skill's normal 4-parallel-agent process) across reuse, simplification,
+efficiency, and altitude.
+
+**Clean overall**: no leftover `console.log`/`debugger` statements, no
+TODO/FIXME markers, and every feature except one follows the codebase's
+own one-file-per-feature convention.
+
+**Fixed — `home.js` was the one outlier.** At 2,019 lines (vs. 917 for
+the next-largest, `chart.js`) it had accumulated routing/shell code
+*and* the ~425-line Macro tab (World Bank/FRED country indicators)
+together. Extracted the Macro tab into its own `macro.js` (pure move, no
+logic changes) — `home.js` is now 1,582 lines. Placed `macro.js` before
+`marketData.js` in `index.html`'s script order, since `marketData.js`
+already calls `fetchWorldBankIndicator()`/reads
+`WORLD_BANK_GOVERNANCE_INDICATORS` (both now in `macro.js`) from its
+country-governance panel — safe either way since that's a call-time
+reference, not load-time, but matched the dependency direction anyway.
+Verified: `node --check` on every file, confirmed `macro.js` serves
+correctly both locally and on the live production deploy, confirmed
+`home.js` still calls `renderMacroTab()` correctly post-split. Shipped.
+
+**Deliberately skipped — the throttled-fetch duplication.**
+`dataUtils.js` has a `runThrottled()`/`loadQuotesThrottled()` helper
+built specifically so "any page that loads many tickers must go through
+this, not raw fetch" (its own doc comment) — but `home.js` hand-rolls
+the same staggered-fetch pattern 3 separate times
+(`ensureBrowseQuotes`, `ensureRankingLoaded`, `loadSectorHeatmap`, each
+with a different stagger gap: 45ms/30ms/40ms) instead of using it.
+Looked carefully at whether this was safely swappable before touching
+anything: it isn't a clean drop-in. The shared helper caps true
+concurrency at 3 requests with 180ms gaps between each worker's calls;
+the hand-rolled versions just stagger *start* times with no concurrency
+cap, a materially different request-timing/rate-limit profile against
+Finnhub's 60/min budget. `ensureBrowseQuotes` additionally has its own
+in-flight-promise dedup and a different cache shape than what the
+shared helper assumes. Consolidating these for real would mean changing
+actual loading behavior on 3 different pages, not just tidying code —
+left alone rather than forced, flagged here for whoever next touches
+this area to decide on purpose rather than by accident.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
