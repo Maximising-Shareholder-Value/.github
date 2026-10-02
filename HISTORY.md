@@ -1608,6 +1608,39 @@ the one item on the list that was never actually "cheap") and homepage
 investor graphs (still not scoped — no homepage-native time-series data
 exists yet to chart). Both left open in TODO.md.
 
+## Bug check on today's changes: 3 real findings, all fixed — 2026-10-02
+
+Jozsua asked for a comprehensive health check before moving on. Given
+the stated token-budget pressure, scoped it down with him first rather
+than attempting an exhaustive pass over the whole ~500KB `msv-web`
+codebase: medium-depth, `msv-web` only (not `msv-api`, which had no
+changes today). Found 3 real, high-confidence issues, all in the FX
+strip just shipped:
+
+1. **`renderForexStrip()` could render a literal "NaN%"** — if a pair's
+   `close` price was valid but `percent_change` was missing/non-numeric,
+   the old code still ran `pct.toFixed(2)` on `NaN` unconditionally.
+2. **Stale, contradictory copy**: the Explore Products "Forex"
+   placeholder still said "not built yet" even though the new homepage
+   Currency strip had gone live in the same session — a user could see
+   real FX quotes, then click through to a placeholder claiming they
+   don't exist.
+3. **Duplicated chip-formatting logic** between `loadMarketTickers()` and
+   `renderForexStrip()` — the actual root cause of #1: the same
+   positive/negative/muted-and-percentage logic existed in two places,
+   so a correct version in one didn't help the other.
+
+**Fix**: extracted a shared `indexChipValue(formattedValue, pct)` helper
+(`home.js`) used by both chip-building call sites — degrades gracefully
+now (shows just the price with no percentage if `pct` is bad, "···"
+only if there's no price at all) instead of fabricating "NaN%". Updated
+the stale Forex placeholder copy to accurately describe what now exists
+(a homepage snapshot) vs. what doesn't (a full dedicated page, like
+Sectors/ETFs have). Verified with `node --check` on every file plus a
+standalone Node test of the new helper against normal/missing-percent/
+missing-price/both-missing cases. Shipped directly (committed, pushed,
+`wrangler deploy`).
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
