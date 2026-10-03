@@ -978,3 +978,9 @@ production.
 - [x] **Market news page — built 2026-10-03 (React, `?page=news`).** Finnhub
       `/news` in four categories (general, mergers, crypto, forex) with a
       search box. Forex is thin on Finnhub. Not deployed yet.
+- [x] **ETFs page in React — built 2026-10-03 (`?page=etfs`).** All 42
+      categories under 8 families, live prices per category, a search across
+      all 290 funds, and the By Issuer view. Fund links open the main site's
+      ticker page via `?ticker=`. Not deployed yet. Not shown: AUM, expense
+      ratio, holdings (paywalled). The fund profile panel from the vanilla page
+      (FMP) isn't ported yet.
