@@ -1039,3 +1039,13 @@ Still open:
 - [x] Ticker page in React: crypto layout (CoinGecko detail; the homepage crypto table fixed to use it, since the markets list is blocked on the proxy); chart MACD and support/resistance.
 - [x] "What if you'd invested?" calculator and the Compare page in React. Chart indicators (MACD, support/resistance) done. Still to do: the "real-life example" paragraphs under each section; the main-site router (sidebar and page switching) moving to React; removing the vanilla code for pages that have moved.
 - [x] Real-life example paragraphs under each ticker-page section (stock, ETF and crypto).
+
+## 2026-10-03 — the main site now runs on React
+
+- [x] Prediction Markets, the "Coming soon" pages, and Macro ported to React.
+- [x] Main-site router moved: `/` and every sidebar path open their React page (index.html is now a redirect; the old homepage is kept as legacy.html).
+- [ ] Review the React site in a browser, page by page, before deleting the vanilla code (legacy.html and the old JS files).
+- [ ] Remove the vanilla code once reviewed.
+- [ ] Market Data and Macro figures: check a few against the old pages.
+- [ ] The React Crypto page's coin table still uses the markets list, which the proxy refuses (403). The homepage works around it; the Crypto page doesn't yet.
+- [ ] Decisions still open: custom domain, Workers Builds emails, TradingView licence, which pillar next, chart polish target, world map screenshot.
