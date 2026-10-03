@@ -1072,3 +1072,13 @@ line by line; remove the vanilla code after review.
 
 Decisions still open: custom domain; Workers Builds emails; TradingView licence; which
 pillar next; chart polish target; world map dropdown (built from a written note).
+
+## 2026-10-03 — visual matching started (Explore done)
+
+- [x] Explore: markup matches the old page; sidebar highlight fixed; light/dark applied on every React page (`msv-web` e8a5bd7); deployed and checked live.
+- [ ] Decide: keep or drop the React top navigation strip (PageNav), which the old pages don't have.
+- [ ] Decide: sidebar width. React is wider than the old sidebar so labels aren't clipped (the old one cut "Create Free Acco..."). Keep the wider one unless told otherwise.
+- [ ] Add the old light/dark toggle (top-right) to the React pages; it's only on the Crypto page now.
+- [ ] Explore: fix "Coming soon" badges overlapping long titles (Analyst Upgrades, EV & Battery Map).
+- [ ] Next pages to match, in order: homepage (explore and "your lists" sections, the old intro copy), ticker pages, then the rest.
+- [ ] Still open from before: `index.html` guard should use `document.documentElement`; `home.js` market-data route points at dead `/react-crypto/`.

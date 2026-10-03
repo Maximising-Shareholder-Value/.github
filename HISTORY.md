@@ -1708,3 +1708,30 @@ fund size is paywalled on every free source the app has checked.
 
 *Add new phases here as they happen, most recent last — this is meant to
 stay current, not be a one-time snapshot.*
+
+## Explore page matched to the old page; theme fixed on every React page — 2026-10-03, deployed (`msv-web` e8a5bd7)
+
+Jozsua asked for every page to look like the old version, and asked why the React
+pages looked so much worse. Found two causes on the Explore page:
+
+- The light/dark choice was only applied by the Crypto page. Every other React page
+  ignored the saved choice and showed the default theme, so they looked nothing like
+  the old site. Now `main.tsx` applies the saved choice (the same key the old site uses)
+  before anything renders, on every page.
+- The Explore markup had its own header instead of the old page's card, heading and
+  intro copy. It now matches the old structure. The sidebar also failed to highlight
+  "Explore Products" (wrong key); fixed.
+
+Compared against the old page at 1440 and 1920 px. Tile descriptions now run full
+width. Deployed; live `/app/?page=explore` shows all 53 tiles with no page errors, and
+the live homepage still loads.
+
+Still different from the old page, on purpose or not yet decided: the React pages
+have a top navigation strip the old page doesn't; the React sidebar is wider than the
+old one (so labels aren't cut off); the old page's light/dark toggle isn't on the React
+pages yet; and a few "Coming soon" badges still overlap long titles.
+
+## Docs saved — 2026-10-03
+
+`msv-web/CLAUDE.md` session status updated with the open bugs (Explore icon fix,
+`index.html` guard, `home.js` dead route) and committed to `msv-web` (`b66822d`).
