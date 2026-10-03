@@ -984,3 +984,26 @@ production.
       ticker page via `?ticker=`. Not deployed yet. Not shown: AUM, expense
       ratio, holdings (paywalled). The fund profile panel from the vanilla page
       (FMP) isn't ported yet.
+- [x] **Stock Screener in React — built 2026-10-03 (`?page=screener`).** The
+      96 stocks from the four stock categories, with filters for category,
+      market cap, price, today's move and P/E, and sortable columns. A cold load
+      takes about 5–6 minutes (three calls per stock, paced for the free tier),
+      and the table fills in as results arrive. Not deployed yet. The TradingView
+      whole-market screener stays on the vanilla page.
+
+## 2026-10-03 — deployed to the live site
+
+- [x] **Deployed:** the React Sectors, ETFs, Stock Screener, IPO calendar and
+      Market News pages are live at `/react-crypto/?page=…`.
+- [x] **Sidebar switched:** Sectors, ETFs, Stock Screener and Market News in the
+      sidebar now open their React pages (Crypto already did).
+- [~] **Market Data in React — first slice only (`?page=market-data`).** Done:
+      the country picker (dropdown and full list), market hours and open/closed
+      status, live country-ETF prices. Not done: the world map, the World Bank
+      macro charts and the risk dashboard. The sidebar's Market Data item stays
+      on the vanilla page until those are ported.
+- [ ] **Still to port:** Market Intelligence, Learn, Home, ticker deep-dive page,
+      sidebar/router shell, and the rest of Market Data (above).
+- [ ] **Still open:** AUM and expense ratio (paywalled); chart polish (needs a
+      target from Jozsua); the vanilla Sectors/ETFs/Screener code is now unused
+      but not yet deleted.
