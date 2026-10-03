@@ -1018,3 +1018,12 @@ Still open:
 - [ ] AUM and expense ratio (paywalled); chart polish (needs a target).
 - [ ] Custom domain, Workers Builds email decision, Quagmire link, pillar choice (see older sections).
 - [x] Deployed Market Data React page and switched the sidebar item (2026-10-03, version 871684e5).
+
+## 2026-10-03 — React migration status (latest)
+
+- [x] Home fully in React (`?page=home`), Explore (`?page=explore`), Learn, Market Intelligence, Market Data (full), Sectors, ETFs, Screener, IPO, News: built and deployed (`952e8ad`).
+- [x] Shared sidebar drawn in React on every React page (AppSidebar, 23 items from index.html).
+- [ ] Main-site router and sidebar still vanilla. The React sidebar links to React pages where they exist and to the vanilla routes elsewhere.
+- [ ] Ticker deep-dive page (script.js, ~103 KB plus chart, valuation, invest, compare) not started. It's the last big piece; the router's full move depends on it.
+- [ ] Cleanup of the vanilla code for moved pages, after review.
+- [ ] Crypto markets table: CoinGecko /coins/markets returns 403 through the proxy right now (affects live React Crypto too).
