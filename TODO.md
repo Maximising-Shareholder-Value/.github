@@ -1017,3 +1017,4 @@ Still open:
 - [ ] Add IPO calendar page to the sidebar (page is live but not linked).
 - [ ] AUM and expense ratio (paywalled); chart polish (needs a target).
 - [ ] Custom domain, Workers Builds email decision, Quagmire link, pillar choice (see older sections).
+- [x] Deployed Market Data React page and switched the sidebar item (2026-10-03, version 871684e5).
