@@ -997,7 +997,7 @@ production.
       Market News pages are live at `/react-crypto/?page=…`.
 - [x] **Sidebar switched:** Sectors, ETFs, Stock Screener and Market News in the
       sidebar now open their React pages (Crypto already did).
-- [~] **Market Data in React — first slice only (`?page=market-data`).** Done:
+- [x] **Market Data in React — built and pushed (`b6a9c98`), not yet deployed (`?page=market-data`).** Now includes the world map, country profile and risk dashboard. Earlier note, superseded:
       the country picker (dropdown and full list), market hours and open/closed
       status, live country-ETF prices. Not done: the world map, the World Bank
       macro charts and the risk dashboard. The sidebar's Market Data item stays
@@ -1007,3 +1007,13 @@ production.
 - [ ] **Still open:** AUM and expense ratio (paywalled); chart polish (needs a
       target from Jozsua); the vanilla Sectors/ETFs/Screener code is now unused
       but not yet deleted.
+
+## 2026-10-03 — status after Market Data
+
+Still open:
+- [ ] Deploy the Market Data React page and sidebar switch (Market Data item still points at the vanilla page).
+- [ ] Market Intelligence, Learn, Home, ticker deep-dive page, sidebar/router shell in React.
+- [ ] Delete the unused vanilla Sectors/ETFs/Screener code after review.
+- [ ] Add IPO calendar page to the sidebar (page is live but not linked).
+- [ ] AUM and expense ratio (paywalled); chart polish (needs a target).
+- [ ] Custom domain, Workers Builds email decision, Quagmire link, pillar choice (see older sections).
