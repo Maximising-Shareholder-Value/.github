@@ -1036,3 +1036,4 @@ Still open:
 - [x] Ticker page in React: SEC filings with descriptions and EDGAR links. Still on the main site: MACD and support/resistance, options; ETF and crypto layouts; comparison and "what if I'd invested" tools.
 - [x] Ticker page in React: options chain. Still on the main site: MACD and support/resistance; ETF and crypto layouts; comparison and "what if I'd invested" tools; the "real-life example" paragraphs.
 - [x] Ticker page in React: ETF layout (fund details, performance, trading activity, chart, options, filings). Still on the main site: crypto layout; MACD and support/resistance; comparison and "what if I'd invested" tools; the "real-life example" paragraphs.
+- [x] Ticker page in React: crypto layout (CoinGecko detail; the homepage crypto table fixed to use it, since the markets list is blocked on the proxy); chart MACD and support/resistance.
