@@ -1027,3 +1027,4 @@ Still open:
 - [ ] Ticker deep-dive page (script.js, ~103 KB plus chart, valuation, invest, compare) not started. It's the last big piece; the router's full move depends on it.
 - [ ] Cleanup of the vanilla code for moved pages, after review.
 - [ ] Crypto markets table: CoinGecko /coins/markets returns 403 through the proxy right now (affects live React Crypto too).
+- [~] Ticker deep-dive page in React, first slice (`?page=ticker&symbol=AAPL`): header, price, ranges, company facts and valuation. Still on the main site: growth and profitability, financial health, dividends and risk, financial statements, ownership, insider transactions, SEC filings, options, chart, recommendations and earnings, news and peers, and the hover tooltips (definitions.js). ETF and crypto layouts also still on the main site.
