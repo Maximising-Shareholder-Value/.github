@@ -963,3 +963,11 @@ production.
 - [ ] **World map dropdown** — still waiting on a real screenshot of the
       wanted UI.
 - [ ] **Next React page after Sectors:** ETFs → Screener → Market Data → … (unchanged order).
+- [x] **Research: IPO calendar + market news sources (2026-10-03)** — Finnhub `/calendar/ipo` and `/news?category=general` both live-checked through the existing proxy; see API_RESEARCH.md. Building the pages is still open.
+- [x] **World map / country picker — built 2026-10-03 from the written
+      note (no screenshot).** The Market Data directory is now a grouped
+      dropdown by default, with a "Full list" toggle back to the old view.
+      Needs a look from Jozsua: if the layout isn't what was meant, say so.
+- [x] **"Open XLI page" button — built 2026-10-03.** The React Sectors page
+      links to `/?ticker=XLI`; the main site opens that ticker on load.
+      Works on the live site only after the next deploy.

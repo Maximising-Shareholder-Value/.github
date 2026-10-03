@@ -385,3 +385,26 @@ blocker above.
 - `reddit.com/r/*.json` (the old no-auth trick) confirmed returning a flat 403 via direct `curl` on 2026-10-01 — OAuth is mandatory, no anonymous path exists anymore.
 - [Stocktwits for Developers](https://api.stocktwits.com/developers) — states new API registrations are currently closed pending a program review, no end date given.
 - Stocktwits' legacy public symbol-stream endpoint confirmed live (real AAPL messages) but not CORS-enabled, via a direct `curl` with an `Origin` header on 2026-10-01.
+
+## 2026-10-03 — IPO calendar and market news (live-checked)
+
+**IPO calendar: Finnhub `/calendar/ipo`** — works on the existing free
+key through msv-api's `/api/finnhub` proxy (no new key, no new cost).
+Live check for 2026-10-01 to 2026-11-15 returned real rows: date,
+exchange, company name, ticker, expected price, shares, total value and
+status (`expected` / `priced`). Search results say the free tier allows a
+date window up to 365 days, but that was not re-verified here. Caveat
+seen in the live data: many rows are SPAC blank-cheque companies, so the
+page should label them as such rather than list them as ordinary IPOs.
+
+**General market news: Finnhub `/news?category=general`** — works through
+the same proxy. Live check returned headline, source, summary, link,
+image and a category tag. Useful for widening the News page beyond the
+crypto feed. Not yet checked: whether other categories (`forex`, `merger`)
+also return data on the free tier.
+
+Other sources surfaced by search, not checked: Financial Modeling Prep
+general news (`/stable/news/general-latest`, the key is already in use for
+ETF profiles), marketaux (free plan, stocks/ETFs/crypto), Alpha Vantage
+news (free key). None of these are needed if the Finnhub endpoints cover
+the page.
