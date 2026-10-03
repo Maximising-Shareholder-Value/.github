@@ -1038,3 +1038,4 @@ Still open:
 - [x] Ticker page in React: ETF layout (fund details, performance, trading activity, chart, options, filings). Still on the main site: crypto layout; MACD and support/resistance; comparison and "what if I'd invested" tools; the "real-life example" paragraphs.
 - [x] Ticker page in React: crypto layout (CoinGecko detail; the homepage crypto table fixed to use it, since the markets list is blocked on the proxy); chart MACD and support/resistance.
 - [x] "What if you'd invested?" calculator and the Compare page in React. Chart indicators (MACD, support/resistance) done. Still to do: the "real-life example" paragraphs under each section; the main-site router (sidebar and page switching) moving to React; removing the vanilla code for pages that have moved.
+- [x] Real-life example paragraphs under each ticker-page section (stock, ETF and crypto).
