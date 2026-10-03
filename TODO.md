@@ -946,3 +946,20 @@ production.
 - [ ] **React migration — next up: Sectors**, then ETFs → Screener →
       Market Data → Market Intelligence → Learn → Home → ticker
       deep-dive → sidebar/router shell last. Not started.
+
+## 2026-10-03
+
+- [x] **CI green again** — fixed two load-time errors (`macro.js`
+      formatter reference, forex strip timing). Commit `4276a9b`.
+- [x] **Sectors in React — built, not yet deployed.** Tiles for all 63
+      sectors/industries, detail panel, related-ETF table with YTD/1Y/beta/
+      volume. Reachable at `/react-crypto/?page=sectors` after a build.
+- [ ] **Sectors — not done yet:** "Open XLI page" button (the vanilla page
+      opens the ticker in place; the React build has no way to do that
+      until the ticker page moves to React). AUM and expense ratio columns
+      are blocked on paid data (BLOCKERS.md).
+- [ ] **Sectors — decision needed:** link the sidebar's Sectors item to the
+      React page, replacing the vanilla one, once reviewed in the browser.
+- [ ] **World map dropdown** — still waiting on a real screenshot of the
+      wanted UI.
+- [ ] **Next React page after Sectors:** ETFs → Screener → Market Data → … (unchanged order).

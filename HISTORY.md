@@ -1685,6 +1685,25 @@ actual loading behavior on 3 different pages, not just tidying code —
 left alone rather than forced, flagged here for whoever next touches
 this area to decide on purpose rather than by accident.
 
+## 2026-10-03 — CI repaired; Sectors rebuilt in React
+
+**CI was failing on `main` since Oct 2.** The Playwright smoke test caught
+two real load-time bugs in the site, both introduced by the Oct 2 homepage
+work: the World Bank indicator list in `macro.js` called a function that
+lives in a file loaded later, and the new forex strip was deferred with a
+zero-delay timer that could fire before `chart.js` had downloaded. Both
+fixed (commit `4276a9b`), CI green on that commit. The test working as
+intended is the point: it stopped a broken homepage from merging.
+
+**Sectors page rebuilt in React** (`react-poc/`, served as `?page=sectors`
+on the React build, not yet deployed or linked from the live sidebar).
+Ports the vanilla Sectors page: all 11 sectors and 52 industries/themes as
+colour-coded tiles, a click-to-open detail panel with price, performance
+vs the S&P 500, what drives it, related ETFs with YTD / 1Y / beta / volume
+columns, and representative companies. Live data goes through a queue that
+stays under Finnhub's 60-calls-per-minute free limit. AUM is not shown:
+fund size is paywalled on every free source the app has checked.
+
 ---
 
 *Add new phases here as they happen, most recent last — this is meant to
