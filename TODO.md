@@ -1049,3 +1049,12 @@ Still open:
 - [ ] Market Data and Macro figures: check a few against the old pages.
 - [ ] The React Crypto page's coin table still uses the markets list, which the proxy refuses (403). The homepage works around it; the Crypto page doesn't yet.
 - [ ] Decisions still open: custom domain, Workers Builds emails, TradingView licence, which pillar next, chart polish target, world map screenshot.
+
+## 2026-10-03 — review pass and fixes
+
+- [x] Live React pages moved from /react-crypto/ to /app/. The old path had a bad copy of the redirect page in Cloudflare's edge cache, so React pages stopped loading for everyone; the new path has no bad copy. Old /react-crypto/ links are dead.
+- [x] Redirect page guard: a React address that ever gets the redirect page stops instead of looping.
+- [x] Crypto page table: CoinGecko's markets list is refused by the proxy (403); the page now asks CoinGecko directly when that happens.
+- [x] Review pass (browser, live): all React pages load and show content, with no page errors, apart from a transient bad-cache response on /app/?page=explore that cleared on its own.
+- [ ] Review by a person: check each /app/ page against the old site; figures in Market Data, Macro and the ticker pages are not yet compared line by line.
+- [ ] Remove the vanilla code once reviewed (legacy.html and the old JS files are still in the repo).
