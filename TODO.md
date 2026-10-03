@@ -1058,3 +1058,17 @@ Still open:
 - [x] Review pass (browser, live): all React pages load and show content, with no page errors, apart from a transient bad-cache response on /app/?page=explore that cleared on its own.
 - [ ] Review by a person: check each /app/ page against the old site; figures in Market Data, Macro and the ticker pages are not yet compared line by line.
 - [ ] Remove the vanilla code once reviewed (legacy.html and the old JS files are still in the repo).
+
+## Session save — 2026-10-03 (end of day)
+
+Live: the React site at `/app/` (the main site now forwards there). Pages built: home, explore,
+sectors, ETFs, screener, IPO, news, market data, market intelligence, learn, macro,
+prediction markets, compare, ticker (stock/ETF/crypto), placeholders.
+
+Top priority: make the React pages look like the old site (copy the old markup and class
+names page by page, compare with legacy.html at the same width, remove overrides). Then:
+homepage explore and lists sections; old introduction and wording; verify figures
+line by line; remove the vanilla code after review.
+
+Decisions still open: custom domain; Workers Builds emails; TradingView licence; which
+pillar next; chart polish target; world map dropdown (built from a written note).
