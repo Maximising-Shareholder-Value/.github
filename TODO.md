@@ -1034,3 +1034,4 @@ Still open:
 - [x] Ticker page in React: ownership note and insider trades. Still on the main site: MACD and support/resistance, financial statements, SEC filings, options; ETF and crypto layouts; comparison and "what if I'd invested" tools.
 - [x] Ticker page in React: financial statements summary (last four quarters). Still on the main site: MACD and support/resistance, SEC filings, options; ETF and crypto layouts; comparison and "what if I'd invested" tools.
 - [x] Ticker page in React: SEC filings with descriptions and EDGAR links. Still on the main site: MACD and support/resistance, options; ETF and crypto layouts; comparison and "what if I'd invested" tools.
+- [x] Ticker page in React: options chain. Still on the main site: MACD and support/resistance; ETF and crypto layouts; comparison and "what if I'd invested" tools; the "real-life example" paragraphs.
