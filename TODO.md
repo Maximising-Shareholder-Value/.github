@@ -971,3 +971,10 @@ production.
 - [x] **"Open XLI page" button — built 2026-10-03.** The React Sectors page
       links to `/?ticker=XLI`; the main site opens that ticker on load.
       Works on the live site only after the next deploy.
+- [x] **IPO calendar page — built 2026-10-03 (React, `?page=ipo`).** Finnhub
+      `/calendar/ipo`, live. Shows listings from two weeks back to 30/60/90
+      days ahead, with a "likely SPAC" flag from the company name (a guess) and
+      a hide-SPACs toggle. Not deployed yet.
+- [x] **Market news page — built 2026-10-03 (React, `?page=news`).** Finnhub
+      `/news` in four categories (general, mergers, crypto, forex) with a
+      search box. Forex is thin on Finnhub. Not deployed yet.
