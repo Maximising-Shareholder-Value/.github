@@ -1032,3 +1032,4 @@ Still open:
 - [x] Price chart on the React ticker page: ranges 1D to 5Y, line and candles, 20/50-day averages, hover readout, volume and RSI. Still on the main site: MACD and support/resistance.
 - [x] Ticker page in React: analyst recommendations, recent earnings, company news and peers. Still on the main site: MACD and support/resistance, financial statements, ownership and insider transactions, SEC filings, options; ETF and crypto layouts; the comparison and "what if I'd invested" tools.
 - [x] Ticker page in React: ownership note and insider trades. Still on the main site: MACD and support/resistance, financial statements, SEC filings, options; ETF and crypto layouts; comparison and "what if I'd invested" tools.
+- [x] Ticker page in React: financial statements summary (last four quarters). Still on the main site: MACD and support/resistance, SEC filings, options; ETF and crypto layouts; comparison and "what if I'd invested" tools.
