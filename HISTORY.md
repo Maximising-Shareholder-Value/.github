@@ -1735,3 +1735,81 @@ pages yet; and a few "Coming soon" badges still overlap long titles.
 
 `msv-web/CLAUDE.md` session status updated with the open bugs (Explore icon fix,
 `index.html` guard, `home.js` dead route) and committed to `msv-web` (`b66822d`).
+
+## CI repaired, live outage fixed, homepage rebuilt, site chrome shared — 2026-10-03 to 2026-10-04, deployed (`msv-web` 18a3ee6)
+
+**CI emails.** Every push to `msv-web` main had been failing its Playwright smoke test
+since the React app became the main site on 2026-10-03. The test still looked for the
+retired vanilla homepage (`#homeView`). Also, the React build (`app/`) is gitignored, so
+CI had no `/app/` to test. Fixed in `58a1d92`: the test checks the root redirect into
+`/app/` and a rendered AAPL ticker page, and the smoke job builds `react-poc` first. CI
+green on `58a1d92` and `18a3ee6`.
+
+**Live site down.** `/app/` addresses were serving the redirect page, and the redirect
+script threw before the page loaded. Two causes: the Cloudflare edge cache, and a guard
+that touched `document.body` from `<head>`. Guard fixed; site redeployed and verified in
+a headless browser.
+
+**Accidental publish.** A deploy published `tests/smoke.spec.js` publicly because
+`.assetsignore` didn't exclude `tests/`. Excluded and redeployed; the file no longer
+serves. No secrets were in it.
+
+**Homepage rebuilt in React** (`react-poc/src/components/HomePage.tsx` and new `Home*`
+components):
+- Markets today: intro with a live sentence (index and strongest/weakest sector moves,
+  from the same quotes), and a sign-up card with Google and Apple placeholders.
+- Search bar for tickers, placed above the intro. Topic search isn't built yet.
+- Market news: 15 headlines in three compact columns, from Finnhub's general feed.
+- Index strip: eight US index funds in one row, each checked live first.
+- Global markets: country bubbles, the map (hover highlights and a popup at the cursor),
+  the breadth bar, and a country list with a card showing hours, live index price, day
+  range, and World Bank GDP growth, inflation and unemployment.
+- Browse by category: 13 categories, with the sector-level ones checked live.
+- Crypto: 14 coins with rank, 1-day, 7-day and 30-day changes.
+- Sectors: tiles with move bars, and an Industries & themes view that loads on demand.
+- Earnings: widened to companies with at least $1bn estimated revenue, up to 80 rows.
+  Still a Finnhub estimate list, not a full week.
+- Economic calendar: unchanged. No new dates were added; they need checking against the
+  official schedules first.
+- Currencies: 12 pairs, loaded in two batches (see the Twelve Data entry in BLOCKERS.md).
+- Market intelligence card: the AI supply chain plus all 12 market categories with their
+  layers and example companies (static data, not live).
+- Learn: numbered cards with no emoji on the homepage.
+- Explore $MSV: every live page grouped by category, with coloured icons and descriptions.
+- Your lists, Did you know, How to use $MSV: redone as a two-column row, with a five-step
+  how-to in numbered cards.
+- Footer: the sidebar's logo lockup, a sitemap, socials and a legal row. All links are
+  placeholders.
+
+**Shared chrome across every React page.** A frozen ribbon at the top of every page: a
+local-time pill and a market pill on the left (the market defaults to the US and can be
+changed; the choice is remembered), and recommended links, the bell, the light/dark
+toggle, Log in and, on phones, a menu button on the right. The search bar and footer are
+also on every page. Panels are white cards with grey gaps between them.
+
+**Responsive.** Checked at 1920, 1024 and 390 px with no horizontal overflow. On phones
+the sidebar becomes a slide-out menu opened from the ribbon.
+
+**Placeholder AI.** The sidebar's "Ask $MSV AI Anaiyst" item (working name; the spelling
+is intentional) opens a placeholder page listing what it will include: plain-English answers
+using live numbers, sector and market questions, sources for every answer, limits with no
+buy or sell advice, and follow-up questions.
+
+**Deployed.** `msv-web` commit `18a3ee6`, Cloudflare version `7f4cd850`. Live homepage
+loads in a headless browser with no page errors. CI green.
+
+## Current status — 2026-10-04 (recap)
+
+**Built and live:** the React homepage described above, the frozen ribbon, search, footer
+and card layout on every React page, responsive layout, the placeholder AI page, and the
+Screener, ETFs, Sectors, Market Data (pending its own deploy, see below), IPO, News,
+Prediction Markets, Crypto, Learn and ticker pages in React.
+
+**Built, not yet deployed:** Market Data in React (`?page=market-data`). The sidebar still
+points at the vanilla page for it.
+
+**Still to port to React:** Market Intelligence, Learn, the ticker deep-dive page, and the
+sidebar/router shell.
+
+**Blocked:** AUM and expense ratio (paywalled everywhere checked). Currency pairs are
+rate-limited on Twelve Data's free plan (see BLOCKERS.md).

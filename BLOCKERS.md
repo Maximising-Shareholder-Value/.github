@@ -212,3 +212,11 @@ before being recorded — see the linked history/research docs for the
 actual evidence. If a new free API, a new permission, or a paid budget
 ever changes the picture, update the relevant entry here (move it to
 "resolved" in HISTORY.md) rather than leaving a stale blocker on record.
+
+## Twelve Data free plan: 8 lookups a minute (found 2026-10-04)
+
+The currency strip on the homepage was stuck on "···" with no error shown. The free plan
+allows 8 credits a minute, and each forex pair costs one credit. A 12-pair request is refused
+with HTTP 429 and a message saying so. The homepage now sends 8 pairs and then the rest about
+65 seconds later, and retries a refused batch. Verified against the live proxy on 2026-10-04.
+Limit: 800 requests a day on the same plan.

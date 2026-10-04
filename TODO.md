@@ -1082,3 +1082,35 @@ pillar next; chart polish target; world map dropdown (built from a written note)
 - [ ] Explore: fix "Coming soon" badges overlapping long titles (Analyst Upgrades, EV & Battery Map).
 - [ ] Next pages to match, in order: homepage (explore and "your lists" sections, the old intro copy), ticker pages, then the rest.
 - [ ] Still open from before: `index.html` guard should use `document.documentElement`; `home.js` market-data route points at dead `/react-crypto/`.
+
+## Status recap — 2026-10-04
+
+**Built and live on `msv-web` (`18a3ee6`):** homepage as described in HISTORY.md (2026-10-03
+to 2026-10-04); frozen ribbon, search and footer on every React page; responsive layout;
+placeholder "Ask $MSV AI Anaiyst" page.
+
+**Open, needs a decision from Jozsua:**
+- [ ] Confirm the AI name and spelling. Working name is "Ask $MSV AI Anaiyst" (intentional
+      spelling). Logo is an SVG badge; change it if the name changes.
+- [ ] Confirm the footer's social handles and links (all placeholders now).
+- [ ] Decide whether the React pages keep their own sidebar width (wider than the old one).
+
+**Open, needs building or checking:**
+- [ ] Economic calendar: add new dates only after checking each one against the official
+      Fed, BLS and BEA schedules. The list is hand-maintained.
+- [ ] Earnings: the list depends on Finnhub's estimates. Check whether the week's list is
+      complete enough.
+- [ ] Topic search in the homepage search bar (currently tickers only).
+- [ ] Deploy the React Market Data page and switch the sidebar item to it.
+- [ ] Port to React: Market Intelligence, Learn, ticker deep-dive page, sidebar/router shell.
+- [ ] Learn page itself still uses emoji category icons (the homepage was cleaned up).
+- [ ] Old vanilla pages on the main site don't have the new look (not React).
+- [ ] Mobile and tablet layouts checked at 1024 and 390 px only. Check other sizes.
+- [ ] Log in and Create Free Account: placeholders only. Accounts aren't built.
+- [ ] Custom domain (still undecided).
+- [ ] Chart polish target (still needs a target from Jozsua).
+- [ ] Cloudflare Workers Builds notifications (see BLOCKERS.md).
+- [ ] Twelve Data's free plan limit: currency pairs load in two batches. If pairs are added,
+      keep each batch at 8 or fewer.
+- [ ] CoinGecko: the crypto table makes 14 calls on each homepage load. Watch the 30/min limit
+      if more coins are added.
