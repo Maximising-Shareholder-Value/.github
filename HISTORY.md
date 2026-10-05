@@ -1798,6 +1798,18 @@ buy or sell advice, and follow-up questions.
 **Deployed.** `msv-web` commit `18a3ee6`, Cloudflare version `7f4cd850`. Live homepage
 loads in a headless browser with no page errors. CI green.
 
+## Phone layout pass on the React site — 2026-10-05 (not yet deployed)
+
+- The page column kept 32px gutters on phones, so content used about 300px of a 390px screen.
+  Phones now use a 12px gutter, and the cards fill the width.
+- The page-links strip (Sectors, ETFs, Screener…) wrapped onto three lines. It is now one
+  swipeable row.
+- Checked at 390px on Home, Ticker, Market Data and Explore: no page-wide sideways scroll.
+  Wide tables scroll inside their own box.
+- The sticky ribbon is one row on phones (46px, was about 115px across three rows). The local-time pill
+  is hidden there to make room; the market picker keeps its own clock.
+- Still open: sizes other than 390px and 360px are unchecked; the search box below the ribbon is not sticky.
+
 ## Current status — 2026-10-04 (recap)
 
 **Built and live:** the React homepage described above, the frozen ribbon, search, footer

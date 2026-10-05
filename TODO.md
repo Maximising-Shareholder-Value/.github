@@ -1105,7 +1105,7 @@ placeholder "Ask $MSV AI Anaiyst" page.
 - [ ] Port to React: Market Intelligence, Learn, ticker deep-dive page, sidebar/router shell.
 - [ ] Learn page itself still uses emoji category icons (the homepage was cleaned up).
 - [ ] Old vanilla pages on the main site don't have the new look (not React).
-- [ ] Mobile and tablet layouts checked at 1024 and 390 px only. Check other sizes.
+- [ ] Mobile and tablet layouts: 390 px gutters and page-link strip fixed 2026-10-05 (React, not yet deployed). Still to do: compact the header stack on phones; check sizes other than 390 and 1024 px.
 - [ ] Log in and Create Free Account: placeholders only. Accounts aren't built.
 - [ ] Custom domain (still undecided).
 - [ ] Chart polish target (still needs a target from Jozsua).
@@ -1114,3 +1114,15 @@ placeholder "Ask $MSV AI Anaiyst" page.
       keep each batch at 8 or fewer.
 - [ ] CoinGecko: the crypto table makes 14 calls on each homepage load. Watch the 30/min limit
       if more coins are added.
+
+## 2026-10-05 — homepage approved
+
+- [x] Jozsua reviewed the React homepage and is happy with it. The "match the old site" pass
+      for the homepage (Explore and "Your lists" sections, old intro copy) is dropped from the
+      list. Other pages are still to be reviewed one by one, slowly, by Jozsua.
+- [ ] Next, in order (none started; deploys need Jozsua's go-ahead):
+      1. Deploy the React Market Data page and switch the sidebar item to it.
+      2. Decisions: AI name, footer links, sidebar width, keep or drop PageNav, old light/dark toggle on React pages.
+      3. Small fixes: `home.js` market-data route points at dead `/react-crypto/`; `index.html` guard should use `document.documentElement`; Explore "Coming soon" badges overlap long titles; Learn page emoji icons.
+      4. Port to React: Market Intelligence, Learn, ticker deep-dive page (last big piece), sidebar/router shell.
+      5. Page-by-page review, then delete the vanilla code.
