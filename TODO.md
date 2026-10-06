@@ -1120,9 +1120,13 @@ placeholder "Ask $MSV AI Anaiyst" page.
 - [x] Jozsua reviewed the React homepage and is happy with it. The "match the old site" pass
       for the homepage (Explore and "Your lists" sections, old intro copy) is dropped from the
       list. Other pages are still to be reviewed one by one, slowly, by Jozsua.
-- [ ] Next, in order (none started; deploys need Jozsua's go-ahead):
-      1. Deploy the React Market Data page and switch the sidebar item to it.
-      2. Decisions: AI name, footer links, sidebar width, keep or drop PageNav, old light/dark toggle on React pages.
-      3. Small fixes: `home.js` market-data route points at dead `/react-crypto/`; `index.html` guard should use `document.documentElement`; Explore "Coming soon" badges overlap long titles; Learn page emoji icons.
-      4. Port to React: Market Intelligence, Learn, ticker deep-dive page (last big piece), sidebar/router shell.
-      5. Page-by-page review, then delete the vanilla code.
+- [x] Market Data polish, shared country picker, card layout, scoreboard filters — deployed 2026-10-06 (see HISTORY.md).
+- [x] Stock Analysis page (own page, not the homepage) — deployed 2026-10-06.
+- [x] Watchlist page (own page, remove per row, recently viewed) — deployed 2026-10-06.
+- [x] Vanilla site removed: `legacy.html` and 25 vanilla JS files — 2026-10-06.
+- [ ] Still open:
+      1. Decisions: AI name, footer links, sidebar width, keep or drop PageNav, old light/dark toggle on React pages.
+      2. Small fixes: Explore "Coming soon" badges overlap long titles; Learn page emoji icons; `index.html` guard should use `document.documentElement`.
+      3. Port to React: Market Intelligence, Learn, ticker deep-dive page (last big piece), sidebar/router shell.
+      4. Check the figures on Market Data, Macro and the ticker pages line by line.
+      5. Process: use a branch and a pull request for changes to `main` (msv-web's branch protection requires it; the 2026-10-06 push went through by bypassing it).
