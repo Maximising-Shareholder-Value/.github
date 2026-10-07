@@ -1101,8 +1101,6 @@ placeholder "Ask $MSV AI Anaiyst" page.
 - [ ] Earnings: the list depends on Finnhub's estimates. Check whether the week's list is
       complete enough.
 - [ ] Topic search in the homepage search bar (currently tickers only).
-- [ ] Deploy the React Market Data page and switch the sidebar item to it.
-- [ ] Port to React: Market Intelligence, Learn, ticker deep-dive page, sidebar/router shell.
 - [ ] Learn page itself still uses emoji category icons (the homepage was cleaned up).
 - [ ] Old vanilla pages on the main site don't have the new look (not React).
 - [ ] Mobile and tablet layouts: 390 px gutters and page-link strip fixed 2026-10-05 (React, not yet deployed). Still to do: compact the header stack on phones; check sizes other than 390 and 1024 px.
@@ -1124,9 +1122,14 @@ placeholder "Ask $MSV AI Anaiyst" page.
 - [x] Stock Analysis page (own page, not the homepage) — deployed 2026-10-06.
 - [x] Watchlist page (own page, remove per row, recently viewed) — deployed 2026-10-06.
 - [x] Vanilla site removed: `legacy.html` and 25 vanilla JS files — 2026-10-06.
-- [ ] Still open:
-      1. Decisions: AI name, footer links, sidebar width, keep or drop PageNav, old light/dark toggle on React pages.
-      2. Small fixes: Explore "Coming soon" badges overlap long titles; Learn page emoji icons; `index.html` guard should use `document.documentElement`.
-      3. Port to React: Market Intelligence, Learn, ticker deep-dive page (last big piece), sidebar/router shell.
-      4. Check the figures on Market Data, Macro and the ticker pages line by line.
-      5. Process: use a branch and a pull request for changes to `main` (msv-web's branch protection requires it; the 2026-10-06 push went through by bypassing it).
+- [ ] Still open (corrected 2026-10-07: Market Intelligence, Learn, the ticker deep-dive page and
+      the sidebar/router are already live in React — an earlier version of this list still had
+      them as to-do, in error):
+      1. Decisions: AI name, footer links, keep or drop PageNav. Sidebar width and the light/dark
+         toggle are already resolved (see the 2026-10-04 section above and HISTORY.md) — only
+         need closing out in this list, not more work.
+      2. Small fixes: Explore "Coming soon" badges overlap long titles; Learn page emoji icons;
+         `index.html` guard should use `document.documentElement`.
+      3. Check the figures on Market Data, Macro and the ticker pages line by line.
+      4. Process: use a branch and a pull request for changes to `main` (msv-web's branch
+         protection requires it; the 2026-10-06 push went through by bypassing it).
