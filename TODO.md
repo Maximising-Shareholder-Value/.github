@@ -1102,8 +1102,16 @@ placeholder "Ask $MSV AI Anaiyst" page.
       complete enough.
 - [x] Topic search in the homepage search bar — shipped 2026-10-07, see that section below.
 - [ ] Learn page itself still uses emoji category icons (the homepage was cleaned up).
-- [ ] Old vanilla pages on the main site don't have the new look (not React).
-- [ ] Mobile and tablet layouts: 390 px gutters and page-link strip fixed 2026-10-05 (React, not yet deployed). Still to do: compact the header stack on phones; check sizes other than 390 and 1024 px.
+- [x] Old vanilla pages on the main site — moot, resolved 2026-10-06: `legacy.html` and the 25
+      vanilla JS files were deleted outright, not just visually matched. No vanilla page is
+      reachable from the live site any more.
+- [x] Mobile and tablet layouts: 390 px gutters and page-link strip fixed 2026-10-05. Checked
+      2026-10-08 across 360-1920 px on 6 pages: zero horizontal overflow. Found and fixed two
+      real bugs along the way (the 761-900 px tablet dead zone, and the ribbon's two-line wrap
+      on desktop widths) — see that day's section below. One minor leftover, not blocking: at
+      768-834 px the ribbon still runs 3 rows (pills, pills, buttons) because the pills
+      themselves need more room than fits there — legible, nothing overlaps, just not as tidy
+      as the ranges on either side of it.
 - [ ] Log in and Create Free Account — see the 2026-10-07 section below: explicitly held, needs a database.
 - [ ] Custom domain — see the 2026-10-07 section below: explicitly held.
 - [x] Chart polish — shipped 2026-10-07, see that section below.
