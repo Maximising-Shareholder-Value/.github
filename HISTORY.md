@@ -2079,3 +2079,46 @@ remaining step is Jozsua's own look before the `msv-web` side goes live. Tier 2 
 tech-leader insider trades) and Tier 3 (13F institutional holdings) remain next, per the
 already-agreed order, and haven't been started — both need their own new `msv-api` proxy
 route and real XML parsing, separate work from this page.
+
+## Trading Insider: alignment, real per-member overview, visual bars (2026-10-08, `msv-web` 4cb8844)
+
+Jozsua's feedback after the security fix: better alignment, a "cool and intuitive" way to see
+the data, an overview per member rather than just an isolated trade list, and more information
+on screen if possible. All four addressed the same session, still not deployed.
+
+- **Alignment**: the page's columns are names, dates and categories, not numbers — but the
+  site's shared table style right-aligns everything except the first column, built for dense
+  price tables elsewhere in the app. Scoped a left-align override to this page, with the one
+  genuinely numeric column (the performance percentage) opted back into right-alignment.
+- **The real problem behind "an overall view of each individual"**: opening a member with a
+  lot of disclosed trades (April McClain Delaney, 125) rendered as 125 flat rows with her own
+  name repeated in every single one — a wall of text, no structure, no summary, not even
+  paginated. Replaced with an actual overview: a buy/sell balance bar, average time to
+  disclose (her own trades' transaction-to-disclosure gap, averaged — 17 days, well under the
+  STOCK Act's ~45-day allowance), average gain on buys since trade, and her most-traded
+  tickers ranked with mini bars (LTH 11×, CHRW 8×, and so on). Every number here is computed
+  client-side from the trades Bargo already returned for her — no extra request, no new API
+  cost. The full list is still there below it, now capped to 10 rows with a "show all 100"
+  toggle (Bargo's own member-detail response caps at 100 even though her real total is 125),
+  and no longer repeats her name down the column once she's already the one selected.
+- **Visual bars, reused at three sizes**: the "most traded, last 90 days" chips and the "most
+  active members" chips now show a buy/sell balance bar instead of a bare number — green/red
+  proportion, readable at a glance. Every trade row (main table and per-member list) got a
+  small log-scale size bar under its disclosed amount range: the STOCK Act's brackets run from
+  about $1,000 up to "over $50,000,000," so a straight linear bar would have made almost every
+  real trade look identically tiny.
+- **More information, zero new cost**: a trade's `outcome` field — GOOD EXIT, LOSS, FLAT, EARLY
+  EXIT — was already present in every API response and simply never shown. Now a small badge
+  next to the trade type.
+- Checked: typecheck, build, smoke test all pass; zero horizontal overflow at 390px; the
+  overview and collapsed-list behaviour specifically stress-tested against the member with the
+  most trades, not just a typical one.
+- **Merged to `main`, still deliberately NOT deployed** — same standing rule, Jozsua reviews
+  on localhost first.
+
+**Roadmap, confirmed still accurate** (Jozsua asked whether steps 2/3/4 of the original order
+were still coming): Tier 2 (SEC Form 4, tech-leader insider trades — Musk, Zuckerberg, etc.)
+and Tier 3 (13F institutional holdings — Buffett, Burry, Ackman, Wood) are next, neither
+started, both needing a new `msv-api` proxy route and real XML parsing. Tier 4 (insidercat.com,
+~$12-20/month) remains an optional paid shortcut only — not needed now that Tier 1 works well
+for free.
