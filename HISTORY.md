@@ -2032,3 +2032,50 @@ actioned the same session; still not deployed.
   localhost via a real browser check (`h2` text, sidebar active label both read "Trading
   Insider"). Bargo's live quota was still a 429 as of this check.
 - **Merged to `main` (PR #34), still deliberately NOT deployed** — same standing rule as Tier 1.
+
+## Trading Insider: Bargo key secured server-side, Tier 1 fully working (2026-10-08, `msv-web` 92656ed, `msv-api` 39b867a+secret)
+
+Jozsua shared a free Bargo API key he'd signed up for (and the MCP endpoint URL, noted for
+later — not needed for this). Using it required a real architecture change first, not just
+pasting it in: `msv-web`'s Bargo calls ran directly from the browser, which was fine on the
+free keyless tier (no secret involved) but would expose a real key to anyone who opened dev
+tools, since client-side code ships to every visitor.
+
+- **New `/api/bargo` proxy route on `msv-api`** (same repo, same pattern as every other keyed
+  source — Finnhub, Twelve Data, FRED, FMP): holds `BARGO_API_KEY` as a Cloudflare secret, set
+  via `wrangler secret put` (the key itself was never committed to any file). Reuses the
+  existing generic `proxy()` function — Bargo accepts its key as a query-string `token`, the
+  same shape as the other four. `keyRequired: false`, so it falls back to the keyless tier
+  gracefully rather than hard-erroring if the secret is ever unset.
+- **Edge caching added**: `/stats` and `/members` cached 10 minutes, `/trades` and individual
+  member profiles 5 minutes — congressional disclosures are never same-day (the STOCK Act
+  allows up to ~45 days to report), so none of this needs to be fresher than that. The real
+  benefit: many visitors loading the page within that window share one cached response instead
+  of each spending their own request against the daily budget.
+- **`msv-web`'s `lib/bargo.ts` switched to call the proxy**, not Bargo directly, and wired into
+  the existing `trackedFetch`/usage-panel system (`lib/apiUsage.ts`) the same way every other
+  source is, so it shows up in the sidebar's API usage estimate.
+- **Rate limits corrected from live response headers**, not Bargo's own docs page (which claimed
+  1,000 requests/day with a key — the actual header said otherwise): keyless, 30 requests/day
+  and 100 rows/day per IP (unchanged from the original 2026-10-08 research); with the free key,
+  **100 requests/day and 1,000 rows/day**.
+- **Verified live, end to end**: `msv-api` deployed and its new route checked directly
+  (`200`, real JSON, `cache-control: public, max-age=600` confirmed). Then the actual
+  `msv-web` page tested against it in a real browser on localhost — 25 real trade rows, 8 real
+  member chips, real stats (50.4K trades, 418 members, 4.1K tickers), clicking a member opened
+  their real trade history, zero page errors, and critically zero "showing cached data" notice
+  — this was a fresh live fetch, not the fallback built earlier the same day.
+- **Icon, 4th and final round**: a fourth set of concepts (crown, a masquerade mask, a
+  lightning bolt) drawn and checked at 19px after Jozsua asked for "another cool looking
+  logo" — picked the crown, which reads boldest small and ties directly to the page's
+  "notable figures" premise. Final sequence: magnifying glass → unlocked padlock → crown.
+- **Merged to `main` on both repos.** `msv-api`'s change is already deployed and live (it has
+  no page to review — it's a proxy endpoint, not something Jozsua would look at directly).
+  `msv-web`'s change is merged but deliberately **not deployed**, same standing rule as the
+  rest of Tier 1 — Jozsua reviews on localhost first.
+
+**Tier 1 (congressional trading) is now fully working end to end with real data.** The only
+remaining step is Jozsua's own look before the `msv-web` side goes live. Tier 2 (SEC Form 4,
+tech-leader insider trades) and Tier 3 (13F institutional holdings) remain next, per the
+already-agreed order, and haven't been started — both need their own new `msv-api` proxy
+route and real XML parsing, separate work from this page.

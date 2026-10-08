@@ -1216,3 +1216,21 @@ placeholder "Ask $MSV AI Anaiyst" page.
          Jozsua's own browser has nothing cached yet, so he'll still see "couldn't load" until
          either the daily quota resets for him or a free key is obtained (needs his own Google
          sign-in, see above).
+- [x] **Jozsua got a free Bargo API key and shared it — handled 2026-10-08.** It could not go
+      directly into `msv-web` (client-side code ships to every visitor's browser; the key
+      would be readable in the page's own JS). Built a new `/api/bargo` proxy route on
+      `msv-api` instead — same pattern as every other keyed source — holding the key as a
+      Cloudflare secret, with edge caching. `msv-web`'s `lib/bargo.ts` now calls that proxy,
+      not Bargo directly. Verified live end to end: real stats, real trades, real member
+      profiles, zero errors, zero fallback-to-cache (fetched fresh). **Tier 1 is now fully
+      working with real data** — the only thing left is Jozsua's own localhost review before
+      `msv-web` is deployed (`msv-api`, which has no page to review, is already deployed).
+- [x] **Corrected the rate-limit numbers** — confirmed from live response headers, not Bargo's
+      own docs page (which said 1,000 req/day with a key; the header said otherwise): keyless
+      30 requests/day & 100 rows/day per IP; with the free key, **100 requests/day & 1,000
+      rows/day**. Much less of a concern than it sounds now that `msv-api` caches each
+      response for 5-10 minutes — many real visitors in that window share one upstream
+      request instead of each spending their own.
+- [x] **Icon, 4th and final pick: a crown.** After the magnifying glass, the unlocked
+      padlock, and this round (crown / masquerade mask / lightning bolt), the crown read
+      boldest at the real 19px size and ties directly to "notable figures" — in use now.
