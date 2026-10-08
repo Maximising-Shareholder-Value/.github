@@ -1935,3 +1935,61 @@ bugs turned up while chasing the "not built" responsive items, both fixed the sa
 - Deploy note: the known "Worker serves the redirect page for `/app/` right after a deploy" issue
   (see this file's 2026-10-03 entry) happened again here — a second `wrangler deploy` cleared it,
   confirmed via the page title and a real element check, not just the HTTP status.
+
+## New standing rule: localhost/draft before deploying — 2026-10-08
+
+Jozsua's instruction, added to `msv-web/CLAUDE.md`: always share the localhost link (and a
+draft/Artifact for substantial changes) and let him look before running `wrangler deploy`,
+unless he's explicitly waived it for a specific small change. Applies from here on.
+
+## Notable Trades, Tier 1 — built and merged, not deployed (2026-10-08, `msv-web` ed76c42)
+
+Jozsua asked to revisit the notable-figures trading page, asked specifically about
+`insidercat.com` as an API and about using Reddit/X content, and — after the research pass
+(see API_RESEARCH.md's "Notable-figures trading page: revisited" section) — confirmed: build
+with the free-tier APIs, in the proposed order, starting with congressional trading.
+
+**On "borrowing" Reddit/X content as if browsing like a real user:** declined to build this.
+Both platforms' terms of service prohibit automated collection outside their official API, and
+Reddit's own stated reason for shutting down free API access is specifically to stop this kind
+of scraping. Not a grey area — not something to build a feature on, regardless of technical
+feasibility. The existing precedent (the Crypto page's hand-curated, periodically-refreshed
+tracker) remains the real option for "what people are saying" content, if that's still wanted.
+
+**Tier 1 — congressional trading, via Bargo's free Congress Trades API (see API_RESEARCH.md
+for the full source verification):**
+- New page, `?page=notable-trades`: dataset totals (trades/members/tickers/buys/sells),
+  most-traded tickers in the last 90 days (click to filter), most active members (click to
+  open their profile), a trades table filterable by chamber/type/ticker/member name and
+  paginated, and a member detail panel (their own stats and trade history).
+- New sidebar icon (a magnifying glass over a small rising trend line), the pick from the
+  three concepts drawn 2026-10-08, checked at the real 19px sidebar size.
+- `lib/bargo.ts`: typed fetch wrappers, called directly from the browser (real CORS, no
+  msv-api proxy needed). Kept economical against the free tier's keyless limit on purpose —
+  one `/stats` and one `/members` call on page load, one `/trades` call per filter change, a
+  member's own detail only fetched when actually opened.
+- A real mock-routing bug was found and fixed during testing (not an app bug): an early test
+  script matched any URL containing `/members`, including individual member-detail requests,
+  to the wrong response shape, which surfaced a worthwhile defensive fix in the component too
+  (`!memberDetail?.stats` instead of `=== null`, so an unexpected response shape shows the
+  "couldn't load" message instead of throwing).
+- **Rate limit note:** Bargo's keyless free tier (30 requests/day, 100 rows/day, per IP) was
+  genuinely exhausted during this session's own research `curl`s and interactive testing from
+  this one machine — confirmed via a real `429`/budget-exceeded response, not assumed. Not a
+  production concern (each real visitor's browser calls from their own IP), but real enough
+  that the final interactive verification pass used real API response shapes captured earlier
+  via live `curl` (not invented placeholder data) rather than hitting the live, now-limited
+  endpoint again. A free Bargo API key (1,000 req/day, 25,000 rows/day) would give a
+  comfortable safety margin, but getting one needs Jozsua's own Google sign-in at
+  `bargo.ai/free-apis/dash` — not something done on his behalf.
+- Checked: typecheck clean, build clean, Playwright smoke test passes, zero page errors and
+  zero horizontal overflow at both 390px and 1440px.
+- **Merged to `main` (PR #33, admin-merged per the standing process), but deliberately NOT
+  deployed** — per the new standing rule above, waiting on Jozsua's own look at
+  `http://localhost:5173/?page=notable-trades` first.
+
+**Next:** Tier 2 (SEC Form 4, tech-leader insider trades) and Tier 3 (13F institutional
+holdings, e.g. Buffett/Burry/Ackman) are scoped but not started — both need a new msv-api
+proxy route (SEC's Archives host isn't CORS-enabled) and real XML parsing, in the separate
+`msv-api` repo. insidercat.com (paid, ~$12-20/month) remains an optional shortcut for Tier 2's
+insider-trade piece specifically, not needed for Tier 1.
