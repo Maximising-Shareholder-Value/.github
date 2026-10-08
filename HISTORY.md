@@ -1993,3 +1993,42 @@ holdings, e.g. Buffett/Burry/Ackman) are scoped but not started — both need a 
 proxy route (SEC's Archives host isn't CORS-enabled) and real XML parsing, in the separate
 `msv-api` repo. insidercat.com (paid, ~$12-20/month) remains an optional shortcut for Tier 2's
 insider-trade piece specifically, not needed for Tier 1.
+
+## Trading Insider: rename, icon, width fix, rate-limit fallback (2026-10-08, `msv-web` fb197c4)
+
+Jozsua reviewed Tier 1 on localhost and sent back four things: no data showing, rename to
+"Trading Insider", a cooler icon, and the main container narrower than the footer. All four
+actioned the same session; still not deployed.
+
+- **Renamed** "Notable Trades" → "Trading Insider" everywhere — nav key, component file
+  (`NotableTradesPage.tsx` → `TradingInsiderPage.tsx`), sidebar label, page title, Explore
+  directory entry. Nothing was deployed under the old name, so this is a clean rename, not a
+  permanent internal/external mismatch like the one Market Intelligence still carries from
+  before it could be renamed cleanly.
+- **New icon**: a dollar sign inside an unlocked padlock ("insider info, unlocked"). Three
+  fresh concepts drawn (a fedora/trilby hat, an eye with a pupil, this one) and checked at the
+  real 19px sidebar size before picking — the original magnifying glass read as too plain.
+- **Width fix**: the page was narrower than the footer below it — the exact same bug class
+  Market Data had before its own fix. Same cause (the generic "every other page" rule adds a
+  24px side margin) and the same fix (an override scoped to `.trades-page`, matching Market
+  Data's).
+- **No data showing — real cause, real fix.** Confirmed live: Bargo's free-tier daily quota
+  (30 requests/day, 100 rows/day per IP) really was still exhausted from this session's own
+  research `curl`s and testing earlier the same day. Rather than just wait it out, added a
+  genuine resilience feature to `lib/bargo.ts`: every successful response is cached in
+  `localStorage`, keyed per request; if a later fetch is rate-limited, the page falls back to
+  the last real response and says so plainly ("showing the last successful load, from
+  [time]") instead of either erroring or quietly showing stale data as if it were current.
+  One page-wide notice, not one per section — the sections load together and go stale
+  together, so three copies of the same notice would just be noise.
+- **Verified the real mechanism, not just the code**: seeded Claude's own Playwright test
+  browser's `localStorage` with genuinely-captured real responses (the same JSON this
+  session's live `curl` calls returned earlier), then let a real page load hit the still-
+  rate-limited live API and fall through to that cache — confirmed the notice and the real
+  data both render correctly. Told Jozsua plainly that his own browser is separate and has
+  nothing cached yet, so he'll see "couldn't load" on his first look regardless, until either
+  the daily quota resets for him or a free key is obtained.
+- Checked again: typecheck, build, smoke test all pass; the renamed page confirmed live on
+  localhost via a real browser check (`h2` text, sidebar active label both read "Trading
+  Insider"). Bargo's live quota was still a 429 as of this check.
+- **Merged to `main` (PR #34), still deliberately NOT deployed** — same standing rule as Tier 1.

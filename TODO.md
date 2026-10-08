@@ -1199,3 +1199,20 @@ placeholder "Ask $MSV AI Anaiyst" page.
       holdings) — next, not started.** Both need a new msv-api proxy route (the SEC Archives
       host isn't CORS-enabled) and real XML parsing — separate repo, separate work from
       Tier 1. See API_RESEARCH.md for the confirmed-live technical path.
+- [x] **Jozsua's review feedback on Tier 1, actioned 2026-10-08 (`msv-web` fb197c4), still
+      NOT deployed:**
+      1. Renamed "Notable Trades" → "Trading Insider" everywhere (nav key included — nothing
+         was deployed under the old name, so a clean rename beat a permanent mismatch).
+      2. New icon: a dollar sign inside an unlocked padlock, swapped in after three fresh
+         concepts were checked at 19px (the original magnifying glass felt flat to him).
+      3. Fixed the page being narrower than the footer — same bug class Market Data had,
+         same fix (an override on the generic "every other page" card-wrapping rule).
+      4. Jozsua reported seeing no data — the Bargo free-tier quota really was still
+         exhausted from the research pass. Added a genuine fix, not a workaround: each
+         response is now cached in `localStorage`; if a later fetch is rate-limited, the page
+         shows the last real response with a plain "showing the last successful load, from
+         [time]" notice instead of either an error or silently stale data. Verified the real
+         mechanism works by seeding Claude's own test browser with genuinely-captured data —
+         Jozsua's own browser has nothing cached yet, so he'll still see "couldn't load" until
+         either the daily quota resets for him or a free key is obtained (needs his own Google
+         sign-in, see above).
