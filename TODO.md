@@ -1234,3 +1234,31 @@ placeholder "Ask $MSV AI Anaiyst" page.
 - [x] **Icon, 4th and final pick: a crown.** After the magnifying glass, the unlocked
       padlock, and this round (crown / masquerade mask / lightning bolt), the crown read
       boldest at the real 19px size and ties directly to "notable figures" — in use now.
+- [x] **Visual redesign, 2026-10-08 (`msv-web` 4cb8844) — alignment, member overview, more
+      info density, still NOT deployed:**
+      1. Alignment fixed: this page's columns are names/dates/categories, not numbers, but
+         the site's default table style right-aligns everything except the first column
+         (built for price tables). Overridden for this page: left by default, right only for
+         the one genuinely numeric column.
+      2. A member with many disclosed trades (April McClain Delaney, 125) used to render as a
+         flat, unbroken wall of 125 rows with her own name repeated in every one — no
+         structure, no summary. Replaced with a real overview above the list: a buy/sell
+         balance bar, average time to disclose (computed from each trade's own dates, already
+         in the data), average gain on buys, and that member's most-traded tickers ranked
+         with their own mini bars — all computed client-side from trades already fetched, no
+         extra request. The full list stays underneath, capped to 10 rows with a "show all N"
+         toggle, member name column dropped (redundant once a member is already selected).
+      3. Visual balance bars (buy/sell split) added to the "most traded" chips and the member
+         chips, replacing bare counts. Every trade row got a small log-scale size bar under
+         its disclosed amount range (STOCK Act brackets run ~$1,000 to "over $50,000,000", so
+         a linear bar would make everything under $1M look identical).
+      4. A trade's `outcome` field (GOOD EXIT / LOSS / FLAT / EARLY EXIT) was already in every
+         API response and unused — now shown as a small badge. Zero new API cost for any of
+         this; it all comes from data already being fetched.
+      5. Checked: typecheck/build/smoke test pass, zero overflow at 390px, stress-tested
+         against the member with the most trades. Still not deployed — localhost review first.
+- [ ] **Roadmap, confirmed still accurate:** Tier 2 (SEC Form 4, tech-leader insider trades)
+      and Tier 3 (13F institutional holdings — Buffett, Burry, Ackman, Wood) are next, in that
+      order, and neither has been started — both need a new `msv-api` proxy route and real
+      XML parsing. Tier 4 (insidercat.com, ~$12-20/month) remains an optional paid shortcut
+      only, not needed now that Tier 1 works well for free.
