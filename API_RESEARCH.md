@@ -408,3 +408,199 @@ general news (`/stable/news/general-latest`, the key is already in use for
 ETF profiles), marketaux (free plan, stocks/ETFs/crypto), Alpha Vantage
 news (free key). None of these are needed if the Finnhub endpoints cover
 the page.
+
+## Notable-figures trading page: revisited (2026-10-08)
+
+Jozsua asked to revisit this (see "Prediction markets & 'who's holding/trading
+what'" above, researched 2026-10-01) — wants a page showing what notable
+figures (tech leaders, politicians) are doing with their money: holdings,
+trades, sentiment. Asked specifically about `insidercat.com` as a possible
+API, and asked to extend the search to Reddit and X/Twitter, prioritised.
+Every claim below was checked with a live request on 2026-10-08, not taken
+from a summary — in particular, "free" and "CORS-enabled" claims from search
+results are routinely wrong or stale for this kind of data, as the 2026-10-01
+research already found with House/Senate Stock Watcher.
+
+### The headline finding: congressional trading is no longer blocked
+
+The 2026-10-01 research concluded "no good free API found." That verdict is
+now **outdated** — a new, genuinely free, CORS-enabled option exists:
+
+**Bargo Congress Trades API** (`www.bargo.ai/free-apis/congress`) —
+confirmed live, 2026-10-08:
+- `GET https://www.bargo.ai/free-apis/congress/v1/trades` — global feed,
+  filterable by `ticker`, `member`, `chamber`, `type`, date range.
+- `GET .../v1/trades/{ticker}` — all trades in one stock.
+- `GET .../v1/members` — member rankings (trade counts, buy/sell split).
+- `GET .../v1/members/{member_slug}` — one member's trades + stats.
+- `GET .../v1/stats` — dataset totals and most-traded tickers.
+- **Real CORS**: `access-control-allow-origin: *` confirmed on a live
+  response — callable directly from the browser, no msv-api proxy needed,
+  same tier as Polymarket/FRED-via-proxy/World Bank.
+- **Free, no card**: 30 requests/day + 100 rows/day per IP with no key;
+  100 requests/day + 1,000 rows/day with a free API key (just an email
+  signup, confirmed via their `/free-apis/dash` page).
+- **Real, current, correctly-attributed data** — fetched live and checked
+  against a known figure: `members/nancy-pelosi` returned her actual recent
+  trades (Bloom Energy and Intel purchases, both disclosed 2026-08-21,
+  correct dollar ranges and dates matching the public record), plus a
+  computed `perf_pct`/`realized_return_pct` (gain since the trade, using a
+  recent price) that the raw STOCK Act filings don't provide on their own —
+  a genuine value-add, not just a reformat.
+- **Confirmed both chambers covered** — a 200-row sample came back with
+  both `"chamber":"house"` and `"chamber":"senate"` members (e.g. Senator
+  Blumenthal). 50,416 trades / 418 members / 4,092 tickers in the dataset
+  as of this check.
+- **Same caveat as the official filings it's built on**: STOCK Act
+  disclosures lag up to ~45 days behind the actual trade, so this is never
+  real-time — label it as "disclosed" dates, not "traded today."
+- Source: the underlying data ultimately comes from the House Clerk's and
+  Senate's own disclosure portals (same primary sources the 2026-10-01
+  research confirmed are real but have no API of their own) — Bargo has
+  done the scraping/structuring work and offers the result as a real,
+  CORS-open, no-cost API. One dependency risk worth naming: it's a small,
+  independent provider (not a government source, not an established
+  paid vendor like Quiver), so the usual "small vendor, no track record"
+  caveat from the 2026-10-01 Disclosed Capitol entry applies here too —
+  worth a periodic live recheck if this gets built on, same discipline as
+  anything else in this file.
+
+**This changes the recommendation from 2026-10-01's "do not build this
+yet" to: buildable now, free, no new proxy.**
+
+### insidercat.com — a real, cheap, paid option; not free; no Reddit/X in it
+
+Confirmed live via its own published OpenAPI spec (`insidercat.com/openapi.json`,
+fetched and parsed directly, 109KB, real schema) and a live health check
+(`GET insidercat.com/api/v1` → `{"status":"ok",...}`, confirmed working):
+
+- **What it actually is**: a unified API across congressional trades,
+  corporate insider (SEC Form 3/4/5) trades, and *reconstructed* live
+  portfolios for politicians (holdings + performance, not just a trade
+  log) — plus some narrow/thematic endpoints: tickers mentioned by Donald
+  Trump, holdings of defense-sector politicians, Trump-administration
+  holdings, and companies tied to "Trump Accounts"/the White House
+  Ballroom fundraising drive.
+- **"Sentiment" here is not social media** — `/sentiment/insider` and
+  `/sentiment/politician` aggregate *buy-vs-sell ratios from the trade
+  disclosures themselves*, not Reddit or X data. Worth being clear about
+  this since the name invites the assumption it pulls from social
+  platforms; it doesn't appear to, anywhere in the spec.
+- **Pricing** (from search results, not independently invoiced): $12/month
+  billed annually, or $20/month month-to-month. 120 requests/minute.
+  **No free tier found** for the real data endpoints — only the health/
+  capabilities endpoints are open; every trades/portfolio/stock endpoint
+  requires `bearerAuth`.
+- **CORS**: not confirmed either way without a valid key to test an
+  authenticated request against; given the bearer-token requirement, this
+  would need a server-side call (an msv-api proxy) regardless, the same
+  as any other keyed vendor in this app (FMP, Twelve Data).
+- **Where it beats the free DIY path**: insider (Form 4) trades and
+  *reconstructed portfolios* in one call, instead of building that
+  separately (see the SEC Form 4 section below, which is real build work).
+  Where it doesn't add anything: congressional trades, which Bargo already
+  covers for free.
+- **Verdict**: a real, legitimate, cheap product — not a scam, not vapourware,
+  genuinely documented. Worth it only as a paid shortcut if Jozsua wants to
+  skip building the insider/portfolio piece himself; not needed for the
+  congressional-trades piece now that Bargo exists for free.
+
+### Tech leaders' own insider trades (Form 4) — technically proven, real build work
+
+Jozsua's ask included tech leaders specifically (not just politicians).
+The free, official path for "what is [a named executive] doing with their
+own company's stock" is the **same SEC EDGAR mechanism already proven
+in this file's 13F research** — confirmed live again today:
+
+- `data.sec.gov/submissions/CIK##########.json` works for an *individual*
+  reporting person, not just a fund — confirmed live against Elon Musk's
+  own CIK (`0001494730`): returned 173 recent filings, including real
+  Form 3/4 entries and Schedule 13G/A filings, correctly dated.
+- Same CORS status already confirmed for the 13F work: this submissions
+  endpoint is open (`access-control-allow-origin: *`); the actual
+  transaction data lives in a separate `primaryDocument` XML under
+  `www.sec.gov/Archives/edgar/data/...`, which is **not** CORS-enabled
+  (same bot-protected host as the 13F infoTable) — needs the same kind
+  of msv-api proxy route already scoped for 13F, plus XML parsing of the
+  Form 4 schema specifically (different shape from the 13F infoTable).
+- **Real scope limit, not a technical one**: a person's Form 3/4/5 filings
+  only cover companies where they're an officer, director, or 10%+ owner
+  — Musk's filings are Tesla/SpaceX-related, not "everything Musk
+  personally invests in." That's an accurate reflection of what "insider"
+  trading legally means, not a gap in the data source.
+- **What building this needs**: the same msv-api proxy + XML-parsing work
+  already scoped (not started) for 13F, plus a curated list of which
+  named individuals' CIKs to track — a one-time lookup per person, same
+  diligence pattern already used for ETF/ticker curation elsewhere in
+  this app. Given the shared proxy/parsing shape, this and the 13F work
+  are realistically one build, not two.
+
+### Reddit — worse than the 2026-10-01 verdict, not better
+
+The 2026-09-30 shutdown announcement already covered in this file is now
+closer and has a detail the earlier research didn't surface: **Reddit
+stops accepting new public API app registrations on October 31, 2026** —
+23 days from today. RSS shuts down November 13, 2026; the full public API
+closes March 2027. The public API is still technically answering requests
+today for apps that already exist, but starting a brand-new integration
+now means racing a 3-week window just to register the app, on a platform
+with a published, imminent shutdown date. **Confirms, more strongly than
+before: do not build on Reddit.**
+
+### X/Twitter — confirmed no free path, genuinely expensive
+
+Not previously researched in this file. Confirmed via multiple current
+pricing writeups (not independently tested against a live X account,
+since that needs a paid credential to even try): **X removed its free
+tier entirely** as of February 2026 and moved to pay-per-use credits —
+reading a tweet costs $0.005 (~$5 per 1,000), search defaults to a 7-day
+window on the pay-as-you-go tier, and full-archive search requires an
+Enterprise plan starting at $42,000+/month. The old $200/month Basic and
+$5,000/month Pro tiers are closed to new signups entirely. X offers
+case-by-case free access to "for-good public utility apps," but that's a
+discretionary exception, not something to plan a feature around.
+**Verdict: not viable for a free-tier hobby project, at any realistic
+request volume.** Unofficial resale/proxy APIs for X data exist (surfaced
+in search results, e.g. `twitterapi.io`) but these scrape or resell access
+against X's own terms — not evaluated further, not recommended.
+
+### Recommendation: a tiered build, prioritised by what's actually free
+
+Jozsua asked to prioritise Reddit/X specifically — the research above is
+the reason not to, at least not as the starting point: Reddit is actively
+shutting its door and X has no free door at all. Proposed order instead:
+
+1. **Congressional trading (Bargo, free, no proxy)** — the strongest,
+   cleanest, zero-cost result. Covers "big name politicians" directly,
+   with real performance tracking built in.
+2. **Tech-leader insider trades (SEC Form 4, free, needs a proxy + XML
+   parsing)** — covers "tech leaders," reuses the exact pattern already
+   scoped for 13F.
+3. **13F institutional holdings (free, same proxy/parsing shape as #2)**
+   — covers hedge-fund-manager "big names" (Buffett, Burry, Ackman, Wood).
+   Natural to build alongside #2 since the backend work overlaps.
+4. **insidercat.com, optional, ~$12-20/month** — a paid shortcut that
+   bundles #2's insider data and adds reconstructed portfolio views, if
+   Jozsua wants to skip building that part himself. Not needed for #1.
+5. **Reddit/X — not recommended to build on right now**, for the reasons
+   above. If "what people are saying" content is still wanted without a
+   live feed, the same precedent already used on the Crypto page (a
+   hand-curated, dated tracker, refreshed periodically via real web
+   search rather than a live API) is the realistic path.
+
+### Icon design (2026-10-08)
+
+Three options drawn in the sidebar's existing icon style (20x20 viewBox,
+1.6 stroke width, `currentColor`, no fill), checked at the real 19px
+sidebar render size in both themes before picking:
+- **A — a magnifying glass over a small rising trend line.** Recommended:
+  reads cleanly at 19px, and the metaphor (scrutinising a notable trade)
+  fits insiders, politicians and fund managers equally, not just one group.
+- **B — a capitol/government building silhouette.** Strong alternative if
+  the page leans more political than general; reads clearly small too.
+- **C — a medal/rosette with a check mark** ("a notable, verified figure").
+  Deliberately avoids the Performance sidebar item's existing
+  trending-arrow glyph (`3,15 8,9 12,12 17,5`), which an earlier draft of
+  this icon accidentally duplicated.
+
+Sources (fetched/tested live, 2026-10-08): [Bargo Congress Trades API docs](https://www.bargo.ai/free-apis/congress) and a live `curl` against `https://www.bargo.ai/free-apis/congress/v1/trades`/`.../members/nancy-pelosi`/`.../stats`; [InsiderCat](https://insidercat.com/) and its [OpenAPI spec](https://insidercat.com/openapi.json) (fetched directly) and [API & MCP page](https://insidercat.com/api-mcp); a live request to `data.sec.gov/submissions/CIK0001494730.json`; [Reddit RSS/API shutdown coverage](https://www.unite.ai/reddit-sets-dates-to-retire-rss-feeds-and-close-public-api-access/); [X API 2026 pricing](https://www.socialcrawl.dev/blog/x-twitter-api-2026) and [twitterapi.io's own cost breakdown](https://twitterapi.io/blog/x-api-cost-breakdown-2026).

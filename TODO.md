@@ -1162,3 +1162,23 @@ placeholder "Ask $MSV AI Anaiyst" page.
       raises it again.
 - [ ] Page nav (the secondary link row on some pages, duplicating the sidebar) — still
       awaiting Jozsua's decision to keep or drop it.
+
+## 2026-10-08 — notable-figures trading page: researched, not built yet
+
+- [x] Revisited the "who's holding/trading what" page per Jozsua's request. Full writeup in
+      API_RESEARCH.md's "Notable-figures trading page: revisited" section — don't duplicate
+      the research, read that section first if this comes up again.
+- [x] **Congressional trading is no longer blocked** — found and live-verified a free,
+      CORS-open API (Bargo) that the 2026-10-01 research missed. No proxy needed.
+- [x] Evaluated `insidercat.com` (Jozsua's suggestion) — real, cheap ($12-20/mo), not free,
+      no Reddit/X in it despite the "sentiment" tag (that's buy/sell-ratio from disclosures).
+- [x] Confirmed SEC Form 4 works for named individuals (tech leaders), same proven pattern as
+      the 13F research — real build work, shares a proxy/parsing shape with 13F.
+- [x] Reddit and X/Twitter re-checked — both worse than before, not better. New Reddit API
+      registrations close 2026-10-31. X has no free tier at all, $5/1,000 tweets read.
+- [x] Three icon concepts drawn and checked at real sidebar size (19px), both themes — see
+      API_RESEARCH.md for the SVGs and the pick (a magnifying glass over a trend line).
+- [ ] **Open: which tier(s) to build, and the icon choice — waiting on Jozsua.** Proposed
+      order in API_RESEARCH.md: congressional (free) → tech-leader insider trades (free,
+      real work) → 13F (free, same work) → insidercat.com (optional, paid) → Reddit/X (not
+      recommended). Not started.
