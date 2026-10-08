@@ -1893,3 +1893,45 @@ addressed (see above) — revisit only if Jozsua wants it taken further; custom 
 In/Create Account are explicitly held (see TODO.md); page nav decision outstanding; Workers
 Builds notifications (see BLOCKERS.md); Twelve Data's free plan limit (currency pairs load in
 two batches); CoinGecko's 30/min limit on the homepage crypto table.
+
+## Ribbon two-line wrap, two header-related bugs — 2026-10-08, deployed (`msv-web` e163c03, Cloudflare version `40bcb3e8`)
+
+Jozsua reported the top ribbon wrapping to two lines on a 15" MacBook Air window. Two more real
+bugs turned up while chasing the "not built" responsive items, both fixed the same session.
+
+- **Ribbon wraps to two lines on desktop.** The recommended links (Stock Analysis, Market Data,
+  Learn, Market Intelligence, Explore Products) now drop off the right end, one at a time,
+  whenever the ribbon would wrap, and come back as the window widens. Re-measured on every width
+  change via a `ResizeObserver` on `.app-main`.
+  **Technical note, worth remembering if this needs touching again:** two more obvious
+  measurement techniques were tried first and both gave wrong answers for this specific layout —
+  (1) forcing `flex-wrap: nowrap` and comparing `scrollWidth` to `clientWidth` (the standard
+  overflow check) always reported "fits", because the flex children have the default
+  `flex-shrink: 1` and just shrink to absorb the overflow instead of genuinely overflowing; (2)
+  manually summing each piece's own measured width and comparing to the available space also
+  gave a wrong answer, off by about 80px, because flexbox's real wrap decision is driven by each
+  flex item's *automatic minimum size*, not its rendered content width. What actually worked:
+  hide links one at a time and ask the browser directly — compare the real rendered vertical
+  position of the pills group and the button group after each attempt (same top ⇒ one line; a
+  large gap, tens of px ⇒ wrapped; small gaps are just `align-items: center` centring items of
+  different heights, not wrapping).
+  Checked at 9 widths (1024-1920px), both fresh page loads and live window resizes in both
+  directions, and confirmed live on the deployed site at 1280px and 1512px.
+- **Stock Analysis and Watchlist were missing the ribbon, search bar and footer entirely.** Both
+  were built standalone on 2026-10-06 instead of reusing the shared pieces every other page has.
+  Now match the rest of the site.
+- **Tablet dead zone, 761-900px.** `style.css`'s inherited rule (from before the React move)
+  stacks the sidebar above the page content in this range, but the hamburger button that opens
+  the phone drawer only exists at 760px and below. That left the sidebar's full nav list
+  rendering as a tall block above the content, pushing the ribbon and everything else below the
+  fold, with no way to open or close it. Restored the normal side-by-side layout through 900px;
+  the phone drawer still takes over at 760px as designed.
+- Checked for regressions: 6 pages (home, Stock Analysis, Watchlist, Market Data, Sectors,
+  ticker) x 8 widths (360-1280px) — zero horizontal overflow, zero page errors, both before and
+  after these fixes.
+- **Known minor leftover, not blocking:** at 768-834px specifically, the ribbon still runs 3
+  rows, because the pills themselves (local time + market picker) need more room than that width
+  gives them, independent of the recommended-links fix. Legible, nothing overlaps or cuts off.
+- Deploy note: the known "Worker serves the redirect page for `/app/` right after a deploy" issue
+  (see this file's 2026-10-03 entry) happened again here — a second `wrangler deploy` cleared it,
+  confirmed via the page title and a real element check, not just the HTTP status.
