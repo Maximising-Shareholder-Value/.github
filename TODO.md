@@ -1100,13 +1100,13 @@ placeholder "Ask $MSV AI Anaiyst" page.
       Fed, BLS and BEA schedules. The list is hand-maintained.
 - [ ] Earnings: the list depends on Finnhub's estimates. Check whether the week's list is
       complete enough.
-- [ ] Topic search in the homepage search bar (currently tickers only).
+- [x] Topic search in the homepage search bar — shipped 2026-10-07, see that section below.
 - [ ] Learn page itself still uses emoji category icons (the homepage was cleaned up).
 - [ ] Old vanilla pages on the main site don't have the new look (not React).
 - [ ] Mobile and tablet layouts: 390 px gutters and page-link strip fixed 2026-10-05 (React, not yet deployed). Still to do: compact the header stack on phones; check sizes other than 390 and 1024 px.
-- [ ] Log in and Create Free Account: placeholders only. Accounts aren't built.
-- [ ] Custom domain (still undecided).
-- [ ] Chart polish target (still needs a target from Jozsua).
+- [ ] Log in and Create Free Account — see the 2026-10-07 section below: explicitly held, needs a database.
+- [ ] Custom domain — see the 2026-10-07 section below: explicitly held.
+- [x] Chart polish — shipped 2026-10-07, see that section below.
 - [ ] Cloudflare Workers Builds notifications (see BLOCKERS.md).
 - [ ] Twelve Data's free plan limit: currency pairs load in two batches. If pairs are added,
       keep each batch at 8 or fewer.
