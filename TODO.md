@@ -1178,7 +1178,24 @@ placeholder "Ask $MSV AI Anaiyst" page.
       registrations close 2026-10-31. X has no free tier at all, $5/1,000 tweets read.
 - [x] Three icon concepts drawn and checked at real sidebar size (19px), both themes — see
       API_RESEARCH.md for the SVGs and the pick (a magnifying glass over a trend line).
-- [ ] **Open: which tier(s) to build, and the icon choice — waiting on Jozsua.** Proposed
-      order in API_RESEARCH.md: congressional (free) → tech-leader insider trades (free,
-      real work) → 13F (free, same work) → insidercat.com (optional, paid) → Reddit/X (not
-      recommended). Not started.
+- [x] Jozsua confirmed: use the free-tier APIs, go with the proposed order. Icon A (the
+      magnifying glass over a trend line) used without a separate confirmation — it was the
+      stated recommendation and the only one that held up legible at 19px.
+- [x] **Tier 1 — congressional trading, built and merged to `main`, 2026-10-08
+      (`msv-web` ed76c42), NOT deployed.** New `?page=notable-trades`: dataset totals,
+      most-traded tickers, most active members, a filterable/sortable trades table, member
+      detail panel. Checked: typecheck, build, smoke test all pass; zero page errors and zero
+      horizontal overflow at 390px and 1440px (checked with real API response shapes captured
+      via live `curl`, since the live keyless quota ran out mid-session — see below). Per the
+      new standing rule (CLAUDE.md), waiting on Jozsua's localhost review before deploying —
+      local link: `http://localhost:5173/?page=notable-trades`.
+- [ ] **Bargo's keyless free tier (30 req/day, 100 rows/day per IP) was exhausted today** by
+      this session's own research `curl`s and testing — not a production problem (each real
+      visitor's browser calls from their own IP, so this doesn't share across visitors), but
+      worth knowing before a heavy testing pass. If a comfortable safety margin is wanted
+      (1,000 req/day, 25,000 rows/day), a free API key needs **Jozsua's own Google sign-in**
+      at `bargo.ai/free-apis/dash` — not something Claude can do on his behalf.
+- [ ] **Tier 2 (SEC Form 4, tech-leader insider trades) and Tier 3 (13F institutional
+      holdings) — next, not started.** Both need a new msv-api proxy route (the SEC Archives
+      host isn't CORS-enabled) and real XML parsing — separate repo, separate work from
+      Tier 1. See API_RESEARCH.md for the confirmed-live technical path.
