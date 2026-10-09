@@ -1163,102 +1163,46 @@ placeholder "Ask $MSV AI Anaiyst" page.
 - [ ] Page nav (the secondary link row on some pages, duplicating the sidebar) — still
       awaiting Jozsua's decision to keep or drop it.
 
-## 2026-10-08 — notable-figures trading page: researched, not built yet
+## Trading Insider ($MSV's "notable figures" trading page) — Tier 1 live, 2026-10-08/09
 
-- [x] Revisited the "who's holding/trading what" page per Jozsua's request. Full writeup in
-      API_RESEARCH.md's "Notable-figures trading page: revisited" section — don't duplicate
-      the research, read that section first if this comes up again.
-- [x] **Congressional trading is no longer blocked** — found and live-verified a free,
-      CORS-open API (Bargo) that the 2026-10-01 research missed. No proxy needed.
-- [x] Evaluated `insidercat.com` (Jozsua's suggestion) — real, cheap ($12-20/mo), not free,
-      no Reddit/X in it despite the "sentiment" tag (that's buy/sell-ratio from disclosures).
-- [x] Confirmed SEC Form 4 works for named individuals (tech leaders), same proven pattern as
-      the 13F research — real build work, shares a proxy/parsing shape with 13F.
-- [x] Reddit and X/Twitter re-checked — both worse than before, not better. New Reddit API
-      registrations close 2026-10-31. X has no free tier at all, $5/1,000 tweets read.
-- [x] Three icon concepts drawn and checked at real sidebar size (19px), both themes — see
-      API_RESEARCH.md for the SVGs and the pick (a magnifying glass over a trend line).
-- [x] Jozsua confirmed: use the free-tier APIs, go with the proposed order. Icon A (the
-      magnifying glass over a trend line) used without a separate confirmation — it was the
-      stated recommendation and the only one that held up legible at 19px.
-- [x] **Tier 1 — congressional trading, built and merged to `main`, 2026-10-08
-      (`msv-web` ed76c42), NOT deployed.** New `?page=notable-trades`: dataset totals,
-      most-traded tickers, most active members, a filterable/sortable trades table, member
-      detail panel. Checked: typecheck, build, smoke test all pass; zero page errors and zero
-      horizontal overflow at 390px and 1440px (checked with real API response shapes captured
-      via live `curl`, since the live keyless quota ran out mid-session — see below). Per the
-      new standing rule (CLAUDE.md), waiting on Jozsua's localhost review before deploying —
-      local link: `http://localhost:5173/?page=notable-trades`.
-- [ ] **Bargo's keyless free tier (30 req/day, 100 rows/day per IP) was exhausted today** by
-      this session's own research `curl`s and testing — not a production problem (each real
-      visitor's browser calls from their own IP, so this doesn't share across visitors), but
-      worth knowing before a heavy testing pass. If a comfortable safety margin is wanted
-      (1,000 req/day, 25,000 rows/day), a free API key needs **Jozsua's own Google sign-in**
-      at `bargo.ai/free-apis/dash` — not something Claude can do on his behalf.
-- [ ] **Tier 2 (SEC Form 4, tech-leader insider trades) and Tier 3 (13F institutional
-      holdings) — next, not started.** Both need a new msv-api proxy route (the SEC Archives
-      host isn't CORS-enabled) and real XML parsing — separate repo, separate work from
-      Tier 1. See API_RESEARCH.md for the confirmed-live technical path.
-- [x] **Jozsua's review feedback on Tier 1, actioned 2026-10-08 (`msv-web` fb197c4), still
-      NOT deployed:**
-      1. Renamed "Notable Trades" → "Trading Insider" everywhere (nav key included — nothing
-         was deployed under the old name, so a clean rename beat a permanent mismatch).
-      2. New icon: a dollar sign inside an unlocked padlock, swapped in after three fresh
-         concepts were checked at 19px (the original magnifying glass felt flat to him).
-      3. Fixed the page being narrower than the footer — same bug class Market Data had,
-         same fix (an override on the generic "every other page" card-wrapping rule).
-      4. Jozsua reported seeing no data — the Bargo free-tier quota really was still
-         exhausted from the research pass. Added a genuine fix, not a workaround: each
-         response is now cached in `localStorage`; if a later fetch is rate-limited, the page
-         shows the last real response with a plain "showing the last successful load, from
-         [time]" notice instead of either an error or silently stale data. Verified the real
-         mechanism works by seeding Claude's own test browser with genuinely-captured data —
-         Jozsua's own browser has nothing cached yet, so he'll still see "couldn't load" until
-         either the daily quota resets for him or a free key is obtained (needs his own Google
-         sign-in, see above).
-- [x] **Jozsua got a free Bargo API key and shared it — handled 2026-10-08.** It could not go
-      directly into `msv-web` (client-side code ships to every visitor's browser; the key
-      would be readable in the page's own JS). Built a new `/api/bargo` proxy route on
-      `msv-api` instead — same pattern as every other keyed source — holding the key as a
-      Cloudflare secret, with edge caching. `msv-web`'s `lib/bargo.ts` now calls that proxy,
-      not Bargo directly. Verified live end to end: real stats, real trades, real member
-      profiles, zero errors, zero fallback-to-cache (fetched fresh). **Tier 1 is now fully
-      working with real data** — the only thing left is Jozsua's own localhost review before
-      `msv-web` is deployed (`msv-api`, which has no page to review, is already deployed).
-- [x] **Corrected the rate-limit numbers** — confirmed from live response headers, not Bargo's
-      own docs page (which said 1,000 req/day with a key; the header said otherwise): keyless
-      30 requests/day & 100 rows/day per IP; with the free key, **100 requests/day & 1,000
-      rows/day**. Much less of a concern than it sounds now that `msv-api` caches each
-      response for 5-10 minutes — many real visitors in that window share one upstream
-      request instead of each spending their own.
-- [x] **Icon, 4th and final pick: a crown.** After the magnifying glass, the unlocked
-      padlock, and this round (crown / masquerade mask / lightning bolt), the crown read
-      boldest at the real 19px size and ties directly to "notable figures" — in use now.
-- [x] **Visual redesign, 2026-10-08 (`msv-web` 4cb8844) — alignment, member overview, more
-      info density, still NOT deployed:**
-      1. Alignment fixed: this page's columns are names/dates/categories, not numbers, but
-         the site's default table style right-aligns everything except the first column
-         (built for price tables). Overridden for this page: left by default, right only for
-         the one genuinely numeric column.
-      2. A member with many disclosed trades (April McClain Delaney, 125) used to render as a
-         flat, unbroken wall of 125 rows with her own name repeated in every one — no
-         structure, no summary. Replaced with a real overview above the list: a buy/sell
-         balance bar, average time to disclose (computed from each trade's own dates, already
-         in the data), average gain on buys, and that member's most-traded tickers ranked
-         with their own mini bars — all computed client-side from trades already fetched, no
-         extra request. The full list stays underneath, capped to 10 rows with a "show all N"
-         toggle, member name column dropped (redundant once a member is already selected).
-      3. Visual balance bars (buy/sell split) added to the "most traded" chips and the member
-         chips, replacing bare counts. Every trade row got a small log-scale size bar under
-         its disclosed amount range (STOCK Act brackets run ~$1,000 to "over $50,000,000", so
-         a linear bar would make everything under $1M look identical).
-      4. A trade's `outcome` field (GOOD EXIT / LOSS / FLAT / EARLY EXIT) was already in every
-         API response and unused — now shown as a small badge. Zero new API cost for any of
-         this; it all comes from data already being fetched.
-      5. Checked: typecheck/build/smoke test pass, zero overflow at 390px, stress-tested
-         against the member with the most trades. Still not deployed — localhost review first.
-- [ ] **Roadmap, confirmed still accurate:** Tier 2 (SEC Form 4, tech-leader insider trades)
-      and Tier 3 (13F institutional holdings — Buffett, Burry, Ackman, Wood) are next, in that
-      order, and neither has been started — both need a new `msv-api` proxy route and real
-      XML parsing. Tier 4 (insidercat.com, ~$12-20/month) remains an optional paid shortcut
-      only, not needed now that Tier 1 works well for free.
+Full build-and-polish story (research, the security fix, the visual redesign) is in
+HISTORY.md across several 2026-10-08/09 entries — this is the current-state summary, not a
+repeat of it.
+
+- [x] **Tier 1 (congressional trading) is live in production** — `?page=trading-insider`,
+      deployed 2026-10-09 (`msv-web` `8e55d8d2`). Real data from Bargo's Congress Trades API,
+      proxied through a new `msv-api` route (`/api/bargo`) with the real API key held as a
+      Cloudflare secret, never in client code, plus edge caching. Crown icon, footer-width
+      layout, left-aligned table, a real per-member overview (buy/sell balance, average
+      disclosure lag, top tickers), visual balance/size bars, and an "outcome" badge.
+- [x] insidercat.com, Reddit/X, SEC Form 4 and 13F all researched — see API_RESEARCH.md's
+      "Notable-figures trading page: revisited" section for the full writeup and sourcing.
+      Don't re-research any of these without reading that section first.
+- [ ] **Next: Tier 2 (SEC Form 4, tech-leader insider trades) and Tier 3 (13F institutional
+      holdings — Buffett, Burry, Ackman, Wood).** Neither started. Both need a new `msv-api`
+      proxy route (SEC's Archives host isn't CORS-enabled) and real XML parsing — see
+      API_RESEARCH.md for the confirmed-live technical path. Tier 4 (insidercat.com,
+      ~$12-20/month) stays an optional paid shortcut, not needed now that Tier 1 works free.
+
+## Session save — 2026-10-09 (end of session)
+
+New standing rule, added to `msv-web/CLAUDE.md`: always show Jozsua the localhost link (and a
+draft for substantial changes) before deploying, unless he's explicitly waived it.
+
+Deployed to production this session (`msv-web` `8e55d8d2`, `msv-api` with the `/api/bargo`
+secret): everything from the last several sessions — Stock Analysis and Watchlist pages,
+Market Data polish, chart polish, homepage topic search, the ribbon one-line fix, the 761-900px
+tablet layout fix, and the new Trading Insider page (Tier 1 of the notable-figures work). All
+reviewed on localhost first, per the new rule, then deployed on Jozsua's go-ahead. Verified
+live afterwards, including a real browser check that Trading Insider shows live data, not a
+rate-limited fallback.
+
+Also this session: `msv-web`'s branch-protection review requirement surfaced as a recurring
+practical issue — every PR needs an `--admin` merge once its real checks pass, since there's
+no second person to approve. That's accepted as the standing process now, not something to
+re-litigate each time (see this file's process notes above).
+
+Next up, waiting on Jozsua: Tier 2 (SEC Form 4) and Tier 3 (13F) for Trading Insider — see
+above. Open decisions (AI name confirmed/footer confirmed, page nav still undecided; custom
+domain, chart polish target, Workers Builds notifications) are listed in the 2026-10-04/07
+sections above and haven't changed.

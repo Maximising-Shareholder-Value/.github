@@ -2122,3 +2122,17 @@ and Tier 3 (13F institutional holdings — Buffett, Burry, Ackman, Wood) are nex
 started, both needing a new `msv-api` proxy route and real XML parsing. Tier 4 (insidercat.com,
 ~$12-20/month) remains an optional paid shortcut only — not needed now that Tier 1 works well
 for free.
+
+## Deployed to production — 2026-10-09 (`msv-web` 8e55d8d2, `msv-api` with BARGO_API_KEY)
+
+Jozsua reviewed Trading Insider on localhost and said to deploy. Shipped everything accumulated
+across this session and the last: Stock Analysis and Watchlist pages, Market Data polish, chart
+polish, homepage topic search, the ribbon one-line fix, the 761-900px tablet layout fix, and the
+full Trading Insider build (security fix + visual redesign). Verified live afterward in a real
+browser: home, Trading Insider, Stock Analysis and Watchlist all load with no errors, and
+Trading Insider shows genuine live data (25 real trade rows, no rate-limit fallback notice).
+
+The known "Worker serves the redirect shell instead of the built app" glitch (see this file's
+2026-10-03 entry) showed up again right before this deploy — Jozsua reported the main site not
+loading, confirmed via the page `<title>` being the redirect page's bare "$MSV" instead of the
+React app's own title. A fresh `wrangler deploy` cleared it, same as every previous time.
