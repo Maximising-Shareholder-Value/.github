@@ -2136,3 +2136,73 @@ The known "Worker serves the redirect shell instead of the built app" glitch (se
 2026-10-03 entry) showed up again right before this deploy — Jozsua reported the main site not
 loading, confirmed via the page `<title>` being the redirect page's bare "$MSV" instead of the
 React app's own title. A fresh `wrangler deploy` cleared it, same as every previous time.
+
+## Trading Insider Tier 2: SEC Form 4 insider trades built (2026-10-11, `msv-web`/`msv-api`, not yet deployed to msv-web)
+
+Jozsua picked up the next item on the roadmap himself ("yes im happy to start with the plan").
+Picked the 10 tracked people via a broader-than-minimum list (big tech CEOs/founders plus Dimon,
+Ellison, Dell), per his own choice when asked.
+
+**CIK verification, done properly, not from a name search alone.** SEC's company-search by name
+returned 4 different "Timothy Cook"s for Apple's CEO — a wrong pick here would have silently
+attributed a stranger's trades to him. Verified all 10 CIKs the real way: fetched each one's
+most recent live Form 4 filing and checked the `<issuerName>` inside it actually matches the
+expected company, not just the owner name. One real surprise this surfaced: **a tracked person
+can file under more than one issuer** — Elon Musk's recent filings split between Tesla and
+SpaceX (he's an officer/director at both); Tim Cook's between Apple and Nike (he's also a Nike
+board member, confirmed real, not a data error). Michael Dell's CIK is real too, but his most
+recent filings are for other MSD-affiliated boards (5C Lending Partners, MSD Investment Corp,
+SecureWorks, Hayward Holdings, Townsquare Media) — Dell Technologies itself only shows up
+further back in his filing history. **Built around this finding, not against it**: nothing in
+the data model assumes one person maps to one company — every transaction carries its own
+issuer/ticker, read straight from that filing.
+
+**Two SEC hosts, one needs a new proxy.** `data.sec.gov/submissions/CIK##########.json` (lists
+a person's filings) has real CORS support, confirmed live — called directly from the browser,
+no proxy. The actual transaction numbers live in a separate ownership XML under
+`www.sec.gov/Archives/edgar/data/...`, which has none (SEC's Akamai bot protection, same as the
+already-known 13F situation) — new `msv-api` route `/api/sec-archive` added for this, same
+edge-caching pattern as every other proxied source, but cached far longer (24h) since a filing's
+XML never changes once filed. SEC's fair-access policy requires a descriptive User-Agent with
+contact info on every Archives request; since `msv-api`'s code is in a **public** repo, that
+string isn't hardcoded — it's `SEC_USER_AGENT` in `wrangler.jsonc`'s `vars` (not a secret, just
+not meant to be guessed at from the source). Jozsua chose a project-URL-only string over his own
+email for this.
+
+**Real path quirk found while building, not documented anywhere beforehand**: the filings list's
+`primaryDocument` field for a Form 4 is typically `"xslF345X06/wk-form4_123.xml"` — that
+`xslXXX/` folder is SEC's own XSLT-rendered **HTML** view of the filing for human readers
+(confirmed live: fetching that exact path returns an HTML document, not XML), despite the
+`.xml`-looking filename. The real raw XML sits at the accession root under the same filename
+with that folder stripped. Missing this would have made every fetch silently parse HTML as XML
+and return empty data rather than erroring loudly — worth remembering for Tier 3's 13F work,
+which uses the same filings-list shape.
+
+**UI**: a new "Company Insiders" tab next to Tier 1's "Congress" tab on the Trading Insider page
+(`TradingInsiderPage.tsx` split into a shared header/tab-bar wrapper plus two panels — the
+existing Congress content became `CongressTradesPanel`, unchanged beyond that). New
+`InsiderTradesPanel.tsx`: a tracked-people chip row (buy/sell lean + last-filed date, computed
+free from the already-fetched feed), a per-person detail view (their own recent transactions,
+officer title, which companies), and a combined recent-activity feed across everyone tracked.
+Transaction codes keep their real SEC meaning rather than collapsing into generic buy/sell —
+only "P" (open-market buy) and "S" (open-market sale) get green/red coloring; grants, option
+exercises, tax withholding and gifts are routine compensation mechanics, not a directional bet,
+and are shown as such. A concurrency limiter (4 at once) mirrors `lib/worldBank.ts`'s existing
+pattern, since a cold load fans out across up to 10 tracked people's filings at once.
+
+**Verification, and a real limitation of this session's own test setup.** `msv-api` was deployed
+and the new route confirmed live via direct request. `tsc --noEmit` and `npm run build` both
+clean. The actual fetch-and-parse logic (not just the proxy) was run against live data for 3 of
+the 10 tracked people using Node's own fetch (bypassing this session's sandboxed test browser) —
+issuer name, ticker, officer title and transaction codes all came back correct for Musk (Tesla +
+SpaceX), Cook (Apple), and Huang (Nvidia). The sandboxed headless browser used earlier in the
+same session for a screenshot check turned out **unable to reach `data.sec.gov` at all** — and,
+tellingly, also couldn't reach `example.com`, while a plain `curl` in the same session reached
+both fine — so that's a restriction of this particular test sandbox, not a bug in the shipped
+code. What that failed screenshot DID usefully confirm: the UI's loading/empty/error states
+render cleanly rather than crash when a fetch genuinely fails, and the Congress tab (which goes
+through `msv-api`, not `sec.gov`, and the sandboxed browser could reach) renders correctly with
+the new tab bar in place. **Real, populated data on screen hasn't been seen from this end** —
+Jozsua needs to check `http://localhost:5174/?page=trading-insider` → "Company Insiders" himself
+in a real browser, which won't have this sandbox's restriction, per the standing deploy rule.
+Not deployed to `msv-web` pending that look.

@@ -1178,11 +1178,40 @@ repeat of it.
 - [x] insidercat.com, Reddit/X, SEC Form 4 and 13F all researched — see API_RESEARCH.md's
       "Notable-figures trading page: revisited" section for the full writeup and sourcing.
       Don't re-research any of these without reading that section first.
-- [ ] **Next: Tier 2 (SEC Form 4, tech-leader insider trades) and Tier 3 (13F institutional
-      holdings — Buffett, Burry, Ackman, Wood).** Neither started. Both need a new `msv-api`
-      proxy route (SEC's Archives host isn't CORS-enabled) and real XML parsing — see
-      API_RESEARCH.md for the confirmed-live technical path. Tier 4 (insidercat.com,
-      ~$12-20/month) stays an optional paid shortcut, not needed now that Tier 1 works free.
+- [x] **Tier 2 (SEC Form 4, tech-leader insider trades) built 2026-10-11 — merged, deployed
+      backend, frontend NOT yet deployed.** New "Company Insiders" tab on the Trading Insider
+      page, alongside Tier 1's "Congress" tab. 10 tracked people (Musk, Zuckerberg, Bezos,
+      Cook, Nadella, Huang, Pichai, Dimon, Ellison, Dell) — each CIK verified live against a
+      real recent filing's issuer, not just a name search (SEC's company search returned 4
+      different "Timothy Cook"s; the wrong one would have silently shown someone else's trades
+      under Apple's CEO's name). Built per-transaction, not per-person-to-one-company: one
+      tracked person can file under more than one issuer (confirmed live — Musk's filings cover
+      both Tesla and SpaceX; Tim Cook's cover Apple and Nike, where he's also a director).
+      `msv-api` got a new `/api/sec-archive` proxy route (`39b867a`-range follow-on commit,
+      deployed and live) for the Form 4 ownership XML, which sits on a different SEC host than
+      the filings-list JSON and has no CORS support of its own (SEC's Akamai bot protection).
+      Real path quirk found and worked around: the filings list's `primaryDocument` field points
+      at an `xslXXX/`-prefixed path, which is SEC's human-readable HTML rendering of the filing,
+      not the raw XML — the real XML sits at the same filename with that folder stripped. SEC's
+      fair-access policy requires a descriptive User-Agent on every Archives request; since
+      `msv-api`'s code is public, that lives in a `SEC_USER_AGENT` Cloudflare env var (not a
+      secret — not sensitive), not hardcoded. **Not deployed to `msv-web`** — per the standing
+      rule, waiting on Jozsua's own look at `http://localhost:5174/?page=trading-insider` (the
+      "Company Insiders" tab) first. Verified from this end: typecheck/build clean, the live
+      proxy confirmed working, and the real fetch-and-parse logic confirmed against live data
+      for 3 of the 10 tracked people (issuer/ticker/officer title/transaction codes all came
+      back correct) — but this session's sandboxed test browser couldn't reach `data.sec.gov`
+      at all (a sandbox network restriction, not a code bug — confirmed by also failing to
+      reach `example.com` from the same browser, while plain `curl` from the same session
+      reached both fine), so the UI's real-data rendering itself hasn't been seen on screen from
+      this end. The empty/loading/error states were confirmed to render cleanly rather than
+      crash, which is what that failure actually exercised.
+- [ ] **Next: Tier 3 (13F institutional holdings — Buffett, Burry, Ackman, Wood).** Not started.
+      Needs its own new `msv-api` proxy route (same SEC Archives host, same CORS gap) plus a
+      SECOND proxy (OpenFIGI, for CUSIP→ticker mapping — 13F holdings are identified by CUSIP,
+      not ticker) and real XML parsing of the 13F infoTable format (a different, more complex
+      shape than Form 4's — see API_RESEARCH.md's original 13F section). Tier 4 (insidercat.com,
+      ~$12-20/month) stays an optional paid shortcut, not needed now that Tiers 1-2 work free.
 
 ## Session save — 2026-10-09 (end of session)
 
