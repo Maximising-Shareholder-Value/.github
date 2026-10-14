@@ -2206,3 +2206,26 @@ the new tab bar in place. **Real, populated data on screen hasn't been seen from
 Jozsua needs to check `http://localhost:5174/?page=trading-insider` → "Company Insiders" himself
 in a real browser, which won't have this sandbox's restriction, per the standing deploy rule.
 Not deployed to `msv-web` pending that look.
+
+## Live site white screen: the known redirect-shell glitch recurred (2026-10-14)
+
+Jozsua reported the live production site (not localhost) showing a white screen, separate from
+the localhost dev-server issues earlier this week. Confirmed directly: `/app/` paths were
+serving the redirect-shell `index.html` (the one `/` forwards from) instead of the real built
+React app — the same "Worker serves the redirect shell instead of the built app" glitch logged
+on 2026-10-03 and again right before the 2026-10-09 deploy. Same fix as both previous times: a
+fresh `wrangler deploy` cleared it.
+
+**Done carefully, since Tier 2 (SEC Form 4) is merged to `main` but explicitly not yet
+reviewed/approved for production**: `git worktree` checked out the last known-good deployed
+commit (`4cb8844`, PR #36 — the tip of `main` right before Tier 2's PR #37) into an isolated
+directory, built it there, confirmed the built JS bundle contained zero Tier 2 strings
+("Company Insiders", "secForm4", "InsiderTradesPanel" — none present), and deployed only that.
+Verified live afterward with a real headless-browser check: real title (`$MSV — Markets`), real
+data loading, zero console errors. The worktree was removed after. Tier 2 remains undeployed.
+
+**Open question worth tracking, not yet investigated**: this is now the third occurrence of the
+same glitch (2026-10-03, 2026-10-09, 2026-10-14) with the same one-line fix each time. Worth a
+real root-cause look next time it's convenient — possibly a Cloudflare asset-routing cache that
+needs a nudge after some specific trigger — rather than continuing to treat each occurrence as a
+one-off.
