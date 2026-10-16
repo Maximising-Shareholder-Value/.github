@@ -1210,12 +1210,47 @@ repeat of it.
       restriction, not a code bug), so the UI's real-data rendering itself was only ever seen on
       screen by Jozsua, not by Claude directly — this is expected and consistent with the
       standing review rule, not a gap.
-- [ ] **Next: Tier 3 (13F institutional holdings — Buffett, Burry, Ackman, Wood).** Not started.
-      Needs its own new `msv-api` proxy route (same SEC Archives host, same CORS gap) plus a
-      SECOND proxy (OpenFIGI, for CUSIP→ticker mapping — 13F holdings are identified by CUSIP,
-      not ticker) and real XML parsing of the 13F infoTable format (a different, more complex
-      shape than Form 4's — see API_RESEARCH.md's original 13F section). Tier 4 (insidercat.com,
-      ~$12-20/month) stays an optional paid shortcut, not needed now that Tiers 1-2 work free.
+- [x] **Tier 3 (13F institutional holdings) built 2026-10-16 — merged to `main` (msv-web PR
+      #39), `msv-api` backend deployed, frontend NOT yet deployed.** New "Holdings" tab on the
+      Trading Insider page, tracking Buffett (Berkshire Hathaway), Burry (Scion), Ackman
+      (Pershing Square) and Wood (ARK) — each shows their latest quarterly 13F snapshot (top
+      positions, % of reported portfolio, size bar). **Zero new backend work needed for the SEC
+      side** — checked first, confirmed live: a 13F's holdings-table file sits on the same
+      Akamai-protected host as Form 4's ownership XML, in the same flat `/<cik>/<accession>/
+      <file>` shape, so the existing `/api/sec-archive` proxy already covered it. One genuinely
+      new backend route: `/api/openfigi` (CUSIP→ticker mapping, since 13F identifies holdings by
+      CUSIP not ticker) — deployed and live. Real limit found by testing directly, not assumed
+      from docs: OpenFIGI's free tier caps a request at **10 CUSIPs**, not the "100" figure some
+      guides cite (that's a registered-key number) — `msv-web`'s `lib/sec13F.ts` batches
+      accordingly, well within the 25/min rate limit for a 4-manager page.
+      Two real gotchas found and handled, same diligence as Tier 2's Tim Cook mix-up:
+      - **Ackman's original Pershing Square CIK (1336528) now only files 13F-NT notices** (a
+        notice that holdings are reported jointly elsewhere — zero real holdings data). The
+        actual filings moved to a newer entity, "Pershing Square Inc." (CIK 2026053), confirmed
+        by its 13F-HR containing his known real positions (Howard Hughes, Hertz, Uber,
+        Brookfield). Tracking the newer CIK.
+      - **The holdings-table filename isn't always `infotable.xml`** — that's just what Scion's/
+        Ackman's/ARK's filing agents happen to use. Berkshire's latest 13F-HR (a different
+        filing agent) names it `56757.xml` instead. Found via a live 404 while testing, fixed by
+        looking up each filing's real file list via SEC's own `index.json` (also covered by the
+        existing proxy) instead of assuming a fixed filename.
+      Also confirmed and documented: 13F's `<value>` field is already in whole dollars under
+      SEC's current rules, not thousands like older pre-2023-rule guides describe (verified
+      against a real Halliburton position's implied per-share price).
+      **Verification, same real limitation as Tier 2:** this session's sandboxed headless test
+      browser gets a real `403 "Your Request Originates from an Undeclared Automated Tool"` from
+      SEC's own Akamai bot protection on `data.sec.gov` — confirmed this is specific to the
+      automated browser (a plain `curl` with a descriptive User-Agent, and Node's own `fetch`,
+      both reach it fine; Tier 2's identical direct-browser-call pattern already works for real
+      visitors in production). Verified correctness instead with an end-to-end check in plain
+      Node mirroring the app's exact logic against live SEC + msv-api endpoints for all 4
+      managers — real top holdings matched known public positions (Buffett: Amex/Alphabet/Apple/
+      Coca-Cola; Burry: Palantir/Nvidia/Pfizer; Ackman: Uber/Brookfield/Microsoft; Wood: Tesla/
+      AMD/SpaceX). `tsc --noEmit` and `vite build` both clean. **Not deployed to `msv-web`** —
+      per the standing rule, waiting on Jozsua's own look at
+      `http://localhost:5174/?page=trading-insider` → "Holdings" first.
+      Tier 4 (insidercat.com, ~$12-20/month) stays an optional paid shortcut, not needed now
+      that Tiers 1-3 all work free.
 
 ## Session save — 2026-10-09 (end of session)
 
