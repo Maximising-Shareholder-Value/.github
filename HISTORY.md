@@ -2229,3 +2229,24 @@ same glitch (2026-10-03, 2026-10-09, 2026-10-14) with the same one-line fix each
 real root-cause look next time it's convenient — possibly a Cloudflare asset-routing cache that
 needs a nudge after some specific trigger — rather than continuing to treat each occurrence as a
 one-off.
+
+## Tier 2 (SEC Form 4, Company Insiders tab) reviewed and deployed (2026-10-16)
+
+Jozsua looked at `http://localhost:5174/?page=trading-insider` → "Company Insiders" himself (the
+dev server from earlier sessions was still running) and approved it — the first time real,
+populated data from this feature was actually seen on screen, since every verification attempt
+from Claude's end this week was blocked by the sandboxed test browser's inability to reach
+`data.sec.gov` (see the 2026-10-11 and 2026-10-14 entries above).
+
+Rebuilt (`react-poc`: `tsc --noEmit && vite build`, clean, same output hash as the version built
+2026-10-12 — confirming nothing drifted) and deployed with `npx wrangler deploy`
+(version `01e22591-4542-443b-a63b-5717bed31ab1`). Confirmed live the same way the 2026-10-14
+entry above confirmed its deploy: fetched the live site's actual JS bundle and grepped it
+directly, rather than trusting the deploy command's own success message. Before this deploy the
+live bundle had zero matches for "Company Insiders" (expected — 2026-10-14's deploy had
+deliberately shipped the pre-Tier-2 commit); after, it has one, and `/app/?page=trading-insider`
+returns a real 200.
+
+Tier 2 is now live in production alongside Tier 1. Next up: Tier 3 (13F institutional holdings),
+scoped in TODO.md — not started.
+one-off.

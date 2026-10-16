@@ -1195,17 +1195,21 @@ repeat of it.
       not the raw XML — the real XML sits at the same filename with that folder stripped. SEC's
       fair-access policy requires a descriptive User-Agent on every Archives request; since
       `msv-api`'s code is public, that lives in a `SEC_USER_AGENT` Cloudflare env var (not a
-      secret — not sensitive), not hardcoded. **Not deployed to `msv-web`** — per the standing
-      rule, waiting on Jozsua's own look at `http://localhost:5174/?page=trading-insider` (the
-      "Company Insiders" tab) first. Verified from this end: typecheck/build clean, the live
-      proxy confirmed working, and the real fetch-and-parse logic confirmed against live data
-      for 3 of the 10 tracked people (issuer/ticker/officer title/transaction codes all came
-      back correct) — but this session's sandboxed test browser couldn't reach `data.sec.gov`
-      at all (a sandbox network restriction, not a code bug — confirmed by also failing to
-      reach `example.com` from the same browser, while plain `curl` from the same session
-      reached both fine), so the UI's real-data rendering itself hasn't been seen on screen from
-      this end. The empty/loading/error states were confirmed to render cleanly rather than
-      crash, which is what that failure actually exercised.
+      secret — not sensitive), not hardcoded. **Deployed to `msv-web`, 2026-10-16** — Jozsua
+      reviewed `http://localhost:5174/?page=trading-insider` (the "Company Insiders" tab)
+      himself and approved it, per the standing rule. Rebuilt (`react-poc`'s `tsc --noEmit &&
+      vite build`, clean) and deployed via `npx wrangler deploy` (version
+      `01e22591-4542-443b-a63b-5717bed31ab1`); confirmed live afterward by fetching the deployed
+      JS bundle directly and checking it contains the Company Insiders feature (it didn't
+      before this deploy — the site's previous live bundle, last pushed 2026-10-14, predated
+      this feature), and that `/app/?page=trading-insider` returns 200. Earlier verification
+      from this end: typecheck/build clean, the live proxy confirmed working, and the real
+      fetch-and-parse logic confirmed against live data for 3 of the 10 tracked people
+      (issuer/ticker/officer title/transaction codes all came back correct) — but that earlier
+      session's sandboxed test browser couldn't reach `data.sec.gov` at all (a sandbox network
+      restriction, not a code bug), so the UI's real-data rendering itself was only ever seen on
+      screen by Jozsua, not by Claude directly — this is expected and consistent with the
+      standing review rule, not a gap.
 - [ ] **Next: Tier 3 (13F institutional holdings — Buffett, Burry, Ackman, Wood).** Not started.
       Needs its own new `msv-api` proxy route (same SEC Archives host, same CORS gap) plus a
       SECOND proxy (OpenFIGI, for CUSIP→ticker mapping — 13F holdings are identified by CUSIP,
